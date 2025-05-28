@@ -1,6 +1,6 @@
 # SetUp
 ## git clone
-C:\Users\{ユーザー名}配下でgit clone
+任意のディレクトリでgit clone
 
 ```
 git clone {リポジトリurl}
