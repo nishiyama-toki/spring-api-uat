@@ -1,0 +1,89 @@
+package com.example.api.controller;
+
+import com.example.api.entity.Employee;
+import com.example.api.entity.Phase;
+import com.example.api.repository.EmployeeRepository;
+import com.example.api.repository.EvaluationRepository;
+import com.example.api.repository.PhaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@RestController
+public class HomeApiController {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EvaluationRepository evaluationRepository;
+
+    @Autowired
+    private PhaseRepository phaseRepository;
+
+    @GetMapping("/api/home")
+    public ResponseEntity<?> getHome() {
+        // ★ id=2のユーザーに変更
+        Employee employee = employeeRepository.findById(1).orElseThrow();
+
+        // ★ 現在のフェーズを取得（start_date <= 今日 <= end_date）
+        Phase currentPhase = phaseRepository
+                .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now())
+                .orElse(null);
+
+        if (currentPhase == null) {
+            return ResponseEntity.ok(Map.of(
+                    "message", "現在有効な評価フェーズはありません。",
+                    "alert_list", List.of(),
+                    "not_submitted_list", List.of(),
+                    "user_name", employee.getName(),
+                    "is_admin", employee.getIsAdmin()
+            ));
+        }
+
+        // ★ 提出済みかどうか判定
+        boolean hasSubmitted = evaluationRepository.existsByEvaluatorIdAndPhaseId(employee.getId(), currentPhase.getId());
+
+        List<Map<String, Object>> alertList = new ArrayList<>();
+        if (!hasSubmitted && !employee.getIsAdmin()) {
+            alertList.add(Map.of(
+                    "message", "あなたはまだ評価項目を提出していません",
+                    "date", LocalDate.now().toString(),
+                    "type", "warning"
+            ));
+        }
+
+        List<Map<String, String>> notSubmittedList = null;
+        if (employee.getIsAdmin()) {
+            List<Employee> unsubmitted = evaluationRepository.findEmployeesNotSubmitted(currentPhase.getId());
+            notSubmittedList = unsubmitted.stream()
+                    .map(e -> Map.of("name", e.getName(), "email", e.getEmail()))
+                    .collect(Collectors.toList());
+        }
+
+        // notSubmittedList が null の場合は空リストにして Map.of に渡す
+        Map<String, Object> response = Map.of(
+                "overview", "多面評価の概要テキストです。",
+                "alert_list", alertList,
+                "not_submitted_list", notSubmittedList != null ? notSubmittedList : List.of(),
+                "user_name", employee.getName(),
+                "is_admin", employee.getIsAdmin(),
+                "current_phase", Map.of(
+                        "name", currentPhase.getName(),
+                        "start_date", currentPhase.getStartDate().toString(),
+                        "end_date", currentPhase.getEndDate().toString(),
+                        "self_eval_due",
+                                currentPhase.getSelfEvalDue() != null ? currentPhase.getSelfEvalDue().toString() : "",
+                        "peer_eval_due",
+                                currentPhase.getPeerEvalDue() != null ? currentPhase.getPeerEvalDue().toString() : ""
+                )
+        );
+
+        return ResponseEntity.ok(response);
+    }
+}
