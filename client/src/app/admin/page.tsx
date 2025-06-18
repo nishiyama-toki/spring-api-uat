@@ -24,7 +24,12 @@ export default function AdminHome() {
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
 
   useEffect(() => {
-    fetch('/api/home')
+    const token = localStorage.getItem('token');
+    fetch('/api/home', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
       .then(res => res.json())
       .then((data: {
         overview: string;

@@ -5,8 +5,10 @@ import com.example.api.entity.Phase;
 import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.EvaluationRepository;
 import com.example.api.repository.PhaseRepository;
+import com.example.api.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,11 +29,11 @@ public class HomeApiController {
     private PhaseRepository phaseRepository;
 
     @GetMapping("/api/home")
-    public ResponseEntity<?> getHome() {
-        // ★ id=2のユーザーに変更
-        Employee employee = employeeRepository.findById(1).orElseThrow();
+    public ResponseEntity<?> getHome(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        // ★JWT経由で認証されたユーザー情報を取得
+        Employee employee = employeeRepository.findById(userDetails.getId()).orElseThrow();
 
-        // ★ 現在のフェーズを取得（start_date <= 今日 <= end_date）
+        // ★ 現在のフェーズを取得
         Phase currentPhase = phaseRepository
                 .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now())
                 .orElse(null);
@@ -66,7 +68,6 @@ public class HomeApiController {
                     .collect(Collectors.toList());
         }
 
-        // notSubmittedList が null の場合は空リストにして Map.of に渡す
         Map<String, Object> response = Map.of(
                 "overview", "多面評価の概要テキストです。",
                 "alert_list", alertList,

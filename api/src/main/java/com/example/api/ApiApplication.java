@@ -1,3 +1,4 @@
+// Spring Boot起動クラス
 package com.example.api;
 
 import org.springframework.boot.SpringApplication;
@@ -11,3 +12,5 @@ public class ApiApplication {
         SpringApplication.run(ApiApplication.class, args);
     }
 }
+
+

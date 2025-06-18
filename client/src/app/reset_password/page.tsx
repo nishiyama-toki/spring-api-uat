@@ -22,8 +22,12 @@ export default function ResetPasswordPage() {
       await axios.post('http://localhost:8080/api/reset-password', {
         token,
         newPassword: password
+      }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
       })
-      router.push('/reset-password/success')
+      router.push('/reset_password/success')
     } catch {
       setError('再設定に失敗しました')
     }
