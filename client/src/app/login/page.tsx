@@ -58,6 +58,10 @@ export default function LoginPage() {
       })
       const homeData = homeRes.data
 
+      // ここでis_adminをlocalStorageへ保存！（この1行追加）
+      localStorage.setItem('is_admin', homeData.is_admin ? 'true' : 'false')
+
+
       // 3. is_adminで画面振り分け
       if (homeData.is_admin) {
         router.push('/admin')

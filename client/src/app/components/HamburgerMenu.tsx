@@ -8,12 +8,27 @@ export default function HamburgerMenu() {
   const pathname = usePathname()
 
   useEffect(() => {
-    const permission = typeof window !== "undefined" ? localStorage.getItem('permission') : null
-    setIsAdmin(permission === 'admin')
+    const isAdminStr = typeof window !== "undefined" ? localStorage.getItem('is_admin') : null
+    setIsAdmin(isAdminStr === 'true')
   }, [pathname])
 
   const [open, setOpen] = useState(false)
 
+  // 除外したいパス（完全一致 or 前方一致でまとめる）
+  const hiddenPaths = [
+    '/login',
+    '/reset_password',
+    '/reset_password/success',
+    '/reset_mail',
+    '/reset_mail/sent'
+  ]
+
+  // 完全一致 or サブパス一致も考慮したい場合はこちら（下記で対応）
+  if (hiddenPaths.some(p => pathname === p)) {
+    return null
+  }
+
+  // 以下は今まで通り
   const menuItems = [
     { name: 'ホーム', href: '/home' },
     { name: '評価提出依頼', href: '/selfEvaluation' },
@@ -24,11 +39,10 @@ export default function HamburgerMenu() {
   ]
 
   const adminItems = [
-    { name: '評価期間設定', href: '/submission_period' }, ///evaluation-period-setting を変更
+    { name: '評価期間設定', href: '/submission_period' },
     { name: 'ユーザー管理', href: '/user-management' },
     { name: '全社員評価確認', href: '/all-evaluations' },
     { name: '未提出者確認', href: '/pending-submissions' },
-    
   ]
 
   return (

@@ -1,6 +1,5 @@
 package com.example.api.security;
 
-import com.example.api.entity.Employee;
 import com.example.api.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -24,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
     private final String secretKey;
 
-    public JwtAuthenticationFilter(CustomUserDetailsService userDetailsService, 
+    public JwtAuthenticationFilter(CustomUserDetailsService userDetailsService,
                                    @Value("${jwt.secret}") String secretKey) {
         this.userDetailsService = userDetailsService;
         this.secretKey = secretKey;
@@ -36,11 +35,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // --- 認証不要APIはJWT認証をスキップ ---
+        if (
+            path.equals("/api/login") ||
+            path.equals("/api/reset-mail") ||
+            path.startsWith("/api/reset-password")
+        ) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
         String token = null;
 
         if (header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7); // "Bearer "の後ろだけ抜き出す
+            token = header.substring(7);
         }
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -52,10 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String userId = claims.getSubject();
 
-                // UserDetailsServiceでDBからユーザー取得
                 UserDetails userDetails = userDetailsService.loadUserById(Integer.parseInt(userId));
 
-                // SecurityContextに認証済みとしてセット
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
@@ -63,7 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception ex) {
-                // トークン不正等
                 System.out.println("JWT認証エラー: " + ex.getMessage());
             }
         }
