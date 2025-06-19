@@ -29,32 +29,50 @@ const SubmissionPeriod = () => {
   const [dateList, setDateList] = useState<PhaseData[]>([])
 
   // ------------------------
+  // トークン取得
+  // ------------------------
+  const [token, setToken] = useState<string | null>(null)
+
+  useEffect(() => {
+  const storedToken = localStorage.getItem('token')
+  setToken(storedToken)
+}, [])
+
+  // ------------------------
   // DBから値を取得
   // ------------------------
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('http://localhost:8080/api/submission_periods')
-        if (res.ok) {
-          const data = await res.json()
-          const formatted = data.map((item: any) => ({
-            id: String(item.id),
-            name: String(item.phaseNumber),
-            period_name: item.periodName,
-            start_date: item.startDate,
-            end_date: item.endDate,
-          }))
-          setDateList(formatted)
-        } else {
-          console.error('取得失敗:', await res.text())
-        }
-      } catch (err) {
-        console.error('取得中にエラー:', err)
-      }
-    }
+  const fetchData = async () => {
+    if (!token) return //トークンが取得できたときだけfetch
 
-    fetchData()
-  }, [])
+    try {
+      const res = await fetch('http://localhost:8080/api/submission_periods', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const formatted = data.map((item: any) => ({
+          id: String(item.id),
+          name: String(item.phaseNumber),
+          period_name: item.periodName,
+          start_date: item.startDate,
+          end_date: item.endDate,
+        }))
+        setDateList(formatted)
+      } else {
+        console.error('取得失敗:', await res.text())
+      }
+    } catch (err) {
+      console.error('取得中にエラー:', err)
+    }
+  }
+
+  fetchData()
+}, [token])
+
 
   // ------------------------
   // プルダウン定義
@@ -116,7 +134,10 @@ const SubmissionPeriod = () => {
     try {
       const res = await fetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' ,
+        Authorization: `Bearer ${token}`
+        },
+        credentials: 'include',
         body: JSON.stringify(payload),
       })
 

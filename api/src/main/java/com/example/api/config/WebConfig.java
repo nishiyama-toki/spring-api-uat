@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")  // ← API配下だけCORS許可
-                .allowedOrigins("http://localhost:3000")  // ← フロントのURL（Next.js）
+                .allowedOrigins("http://localhost:3000","http://localhost:3001")  // ← フロントのURL（Next.js）
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

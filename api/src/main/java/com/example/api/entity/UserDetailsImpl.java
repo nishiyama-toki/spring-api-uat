@@ -1,65 +1,65 @@
-// package com.example.api.security;
+package com.example.api.security;
 
-// import com.example.api.entity.Employee;
-// import org.springframework.security.core.GrantedAuthority;
-// import org.springframework.security.core.userdetails.UserDetails;
+import com.example.api.entity.Employee;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-// import java.util.Collection;
+import java.util.Collection;
 
-// public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
-//     private final Long id;
-//     private final String email;
-//     private final String password;
-//     private final boolean admin;
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final boolean admin;
 
-//     public UserDetailsImpl(Employee employee) {
-//         this.id = employee.getId();
-//         this.email = employee.getEmail();
-//         this.password = employee.getPassword();
-//         this.admin = employee.isAdmin(); // boolean型のgetter（例：isAdmin()）
-//     }
+    public UserDetailsImpl(Employee employee) {
+        this.id = employee.getId();
+        this.email = employee.getEmail();
+        this.password = employee.getPassword();
+        this.admin = employee.isAdmin(); // boolean型のgetter（例：isAdmin()）
+    }
 
-//     public Long getId() {
-//         return id;
-//     }
+    public Long getId() {
+        return id;
+    }
 
-//     public boolean isAdmin() {
-//         return admin;
-//     }
+    public boolean isAdmin() {
+        return admin;
+    }
 
-//     @Override
-//     public Collection<? extends GrantedAuthority> getAuthorities() {
-//         return null; // 権限が必要ならここに追加
-//     }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null; // 権限が必要ならここに追加
+    }
 
-//     @Override
-//     public String getPassword() {
-//         return password;
-//     }
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-//     @Override
-//     public String getUsername() {
-//         return email;
-//     }
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-//     @Override
-//     public boolean isAccountNonExpired() {
-//         return true;
-//     }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-//     @Override
-//     public boolean isAccountNonLocked() {
-//         return true;
-//     }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-//     @Override
-//     public boolean isCredentialsNonExpired() {
-//         return true;
-//     }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-//     @Override
-//     public boolean isEnabled() {
-//         return true;
-//     }
-// }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}

@@ -8,6 +8,8 @@ import com.example.api.phase.repository.PhaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.api.security.UserDetailsImpl;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.Map;
 
@@ -97,21 +99,25 @@ public class PhaseController {
     // 評価期間一覧取得API
     // -------------------------------
     @GetMapping("/submission_periods")
-    public ResponseEntity<?> getAllPhases() {
+    public ResponseEntity<?> getAllPhases(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("認証情報: " + userDetails); // ←ログ出力
+
+        if (userDetails == null || !userDetails.isAdmin()) {
+            return ResponseEntity.status(403).body("管理者権限が必要です");
+        }
+
         return ResponseEntity.ok(phaseRepository.findAll());
     }
-
+    
     // -------------------------------
-    //トークン認証 
+    // トークン認証 
     // -------------------------------
-//     @GetMapping("/api/admin-only")
-//     public ResponseEntity<?> adminCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//     if (!userDetails.isAdmin()) {
-//         return ResponseEntity.status(403).body("管理者権限が必要です");
-//     }
+    @GetMapping("/admin-only")
+    public ResponseEntity<?> adminCheck(@AuthenticationPrincipal(expression = "this") UserDetailsImpl userDetails) {
+        if (userDetails == null || !userDetails.isAdmin()) {
+            return ResponseEntity.status(403).body("管理者権限が必要です");
+        }
 
-//     return ResponseEntity.ok("管理者アクセスOK");
-// }
-
-
+        return ResponseEntity.ok("管理者アクセスOK");
+    }
 }

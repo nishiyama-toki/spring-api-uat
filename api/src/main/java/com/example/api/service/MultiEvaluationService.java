@@ -6,7 +6,7 @@ import com.example.api.entity.Evaluation;
 import com.example.api.phase.entity.Phase;
 import com.example.api.repository.EvaluationRepository;
 import com.example.api.exception.InvalidEvaluationPeriodException; 
-import com.example.api.security.JwtService;
+import com.example.api.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

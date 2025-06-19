@@ -39,7 +39,12 @@ export default function MultiEvaluations() {
   // 画面初期表示時：評価対象者一覧を取得
   // -------------------------
   useEffect(() => {
+    const token = localStorage.getItem("token")//トークン取得
+
     fetch('http://localhost:8080/api/multi-evaluations/targets', {
+      headers: {
+      Authorization: `Bearer ${token}`,
+    },
       credentials: 'include',
     })
       .then((res) => res.json())
@@ -56,6 +61,11 @@ export default function MultiEvaluations() {
         setTargets(data)
         setEvaluations(initialEvaluations)
       })
+
+      .catch((err) => {
+      console.error(err)
+      alert('⛔ 認証エラー：再ログインしてください')
+    })
   }, [])
 
   // -------------------------
@@ -87,9 +97,14 @@ export default function MultiEvaluations() {
   // -------------------------
   const handleSubmit = async () => {
     try {
+      const token = localStorage.getItem("token"); 
+
+
       const res = await fetch('http://localhost:8080/api/multi-evaluations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' ,
+          'Authorization': `Bearer ${token}`
+        },
         credentials: 'include',
         body: JSON.stringify({
           phase_id: 1,
@@ -183,7 +198,7 @@ export default function MultiEvaluations() {
                 className="block border w-full p-2 mt-1"
               />
               <small className="text-sm text-gray-500">
-                {evaluations[i].comment.length}/255
+                {evaluations[i].comment.length}/1000
               </small>
             </label>
           </div>

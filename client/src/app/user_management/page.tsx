@@ -42,34 +42,57 @@ export default function UserManagementPage() {
 // ------------------------
 // ユーザー一覧取得
 // ------------------------
-  useEffect(() => {
-    axios.get<User[]>('http://localhost:8080/api/user_management_DB')
-    .then(res => setUsers(res.data))//表示のためのstate格納
-    .catch(err => console.error('取得失敗:' , err))
-  },[])
+useEffect(() => {
+  const token = localStorage.getItem("token") //トークン取得
+
+  axios.get<User[]>('http://localhost:8080/api/user_management_DB', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => setUsers(res.data)) //表示のためのstate格納
+    .catch(err => {
+      console.error('取得失敗:' , err)
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        alert('⛔ 認証エラー：再ログインしてください')
+      }
+    })
+}, [])
 
 // ------------------------
 // 新規ユーザー登録処理
 // ------------------------
-   const handleRegister = async () => {
-    try {
-      const res = await axios.post<User>(
-        'http://localhost:8080/api/user_management_register',
-         newUser,
-        { withCredentials: true }//CORS許可設定
-      )
-      setUsers(prev => [...prev, res.data]) // prev（前のstate）を使って一覧に追加
-      setNewUser({                         // newUser を初期状態に戻す
-        name: '',
-        email: '',
-        password: '',
-        isAdmin: false,
-        role: 'スペシャリスト'
-      }) 
-    } catch (e) {
+const handleRegister = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post<User>(
+      'http://localhost:8080/api/user_management_register',
+      newUser,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      } //CORS許可設定
+    );
+    setUsers(prev => [...prev, res.data]) // prev（前のstate）を使って一覧に追加
+    setNewUser({                         // newUser を初期状態に戻す
+      name: '',
+      email: '',
+      password: '',
+      isAdmin: false,
+      role: 'スペシャリスト'
+    }) 
+  } catch (e: any) {
+    if (e.response?.status === 401 || e.response?.status === 403) {
+      alert('⛔ 認証エラー：再ログインしてください')
+    } else {
       alert('登録失敗')
     }
   }
+}
+
 
 // ------------------------
 // 編集
@@ -88,35 +111,62 @@ export default function UserManagementPage() {
 // ------------------------
 const handleSave = async (user: User) => {
   try {
-    const { id, name, email, isAdmin, role } = user // passwordを除外(ハッシュ化を行っている関係上)
-    await axios.put('http://localhost:8080/api/user_management_edit', {
-      id, name, email, isAdmin, role
-    }, {
-      withCredentials: true,
-    })
-    alert('変更を保存しました')
-  } catch (e) {
-    alert('保存失敗')
+    const token = localStorage.getItem("token");
+
+    await axios.put('http://localhost:8080/api/user_management_edit',
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,  // ← 明示的に1個ずつ渡す
+        role: user.role
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    alert('変更を保存しました');
+  } catch (e: any) {
+    if (e.response?.status === 401 || e.response?.status === 403) {
+      alert('⛔ 認証エラー：再ログインしてください');
+    } else {
+      alert('保存失敗');
+    }
   }
-}
+};
+
+
 
 // ------------------------
 // 削除処理（モーダルから実行） 
 // ------------------------
-  const handleDeleteConfirmed = async () => {
-    if (!userToDelete) return
-    try{
-       await axios.delete('http://localhost:8080/api/user_management_delete',{
-        data: { id: userToDelete.id },
-        withCredentials: true,
-       })
-       setUsers(users.filter(u => u.id !== userToDelete.id))
-       setIsModalOpen(false)//モーダルを閉じる
-       setUserToDelete(null) 
-    }catch(e) {
-        alert('削除失敗')
+const handleDeleteConfirmed = async () => {
+  if (!userToDelete) return
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.delete('http://localhost:8080/api/user_management_delete', {
+      data: { id: userToDelete.id },
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    setUsers(users.filter(u => u.id !== userToDelete.id))
+    setIsModalOpen(false) //モーダルを閉じる
+    setUserToDelete(null)
+  } catch (e: any) {
+    if (e.response?.status === 401 || e.response?.status === 403) {
+      alert('⛔ 認証エラー：再ログインしてください')
+    } else {
+      alert('削除失敗')
     }
   }
+}
+
 
 // ------------------------
 // HTML 

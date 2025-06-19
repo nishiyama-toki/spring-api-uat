@@ -58,3 +58,9 @@ This is a test page.と出力されること
 http://localhost:80/api
 
 Hello, World!と出力されること
+
+
+仮ユーザー
+
+Secure!2024
+dummy2@example.com
