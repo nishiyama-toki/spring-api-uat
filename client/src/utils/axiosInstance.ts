@@ -8,7 +8,8 @@ const instance = axios.create({
 // リクエストごとにトークンをセット（localStorageから）
 instance.interceptors.request.use(config => {
   const token = localStorage.getItem('token')
-  if (token) {
+   // /api/login のときは Authorization ヘッダーを付けない
+  if (token && config.url !== '/api/login') {
     config.headers.Authorization = `Bearer ${token}` // Bearer を付ける
   }
   return config
