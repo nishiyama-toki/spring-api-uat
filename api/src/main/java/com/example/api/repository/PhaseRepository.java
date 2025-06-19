@@ -2,9 +2,7 @@ package com.example.api.repository;
 
 import com.example.api.entity.Phase;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface PhaseRepository extends JpaRepository<Phase, Integer> {
-    // findById() が使えます
+// Phaseエンティティの主キーの型に合わせて、Longを指定します
+public interface PhaseRepository extends JpaRepository<Phase, Long> {
 }

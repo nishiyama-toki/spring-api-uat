@@ -1,7 +1,7 @@
 package com.example.api.service;
 
 import com.example.api.dto.SelfEvaluationRequest;
-import com.example.api.dto.SelfEvaluationResponseDTO; // ★インポートを追加
+import com.example.api.dto.SelfEvaluationResponseDTO;
 import com.example.api.entity.Employee;
 import com.example.api.entity.Evaluation;
 import com.example.api.entity.Phase;
@@ -31,13 +31,12 @@ public class SelfEvaluationService {
         this.employeeRepository = employeeRepository;
         this.phaseRepository = phaseRepository;
     }
-    
-    // ★★★ データ取得のための新しいメソッドを追加 ★★★
+
     @Transactional(readOnly = true)
-    public Optional<SelfEvaluationResponseDTO> getSelfEvaluation(Integer phaseId, Integer userId) {
+    public Optional<SelfEvaluationResponseDTO> getSelfEvaluation(Long phaseId, Long userId) {
         return evaluationRepository
             .findByEvaluator_IdAndTarget_IdAndPhase_Id(userId, userId, phaseId)
-            .map(SelfEvaluationResponseDTO::new); // 見つかったEvaluationエンティティをDTOに変換
+            .map(SelfEvaluationResponseDTO::new);
     }
 
     @Transactional
@@ -54,10 +53,13 @@ public class SelfEvaluationService {
             evaluation = existingEvaluationOpt.get();
         } else {
             evaluation = new Evaluation();
+            
             Employee evaluator = employeeRepository.findById(request.getEvaluatorId())
                 .orElseThrow(() -> new EntityNotFoundException("評価者が見つかりません: " + request.getEvaluatorId()));
+            
             Employee target = employeeRepository.findById(request.getTargetId())
                 .orElseThrow(() -> new EntityNotFoundException("対象者が見つかりません: " + request.getTargetId()));
+
             Phase phase = phaseRepository.findById(request.getPhaseId())
                 .orElseThrow(() -> new EntityNotFoundException("フェーズが見つかりません: " + request.getPhaseId()));
 

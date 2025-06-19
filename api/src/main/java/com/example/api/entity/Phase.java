@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 public class Phase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id; // ★ IntegerからLongに変更
 
     @Column(name = "phase_number", nullable = false)
-    private Integer phaseNumber;  // 期番号 (例：18)
+    private Integer phaseNumber;
 
     @Column(name = "name", nullable = false)
-    private String name;          // 四半期文字列 (例："1Q")
+    private String name;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -29,17 +29,15 @@ public class Phase {
     @Column(name = "peer_eval_due")
     private LocalDateTime peerEvalDue;
 
-    @Column(name = "created_at",
-            columnDefinition = "TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP",
-            updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at",
-            columnDefinition = "TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    // --- Getters and Setters ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public Integer getPhaseNumber() { return phaseNumber; }
     public void setPhaseNumber(Integer phaseNumber) { this.phaseNumber = phaseNumber; }
@@ -60,5 +58,8 @@ public class Phase {
     public void setPeerEvalDue(LocalDateTime peerEvalDue) { this.peerEvalDue = peerEvalDue; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

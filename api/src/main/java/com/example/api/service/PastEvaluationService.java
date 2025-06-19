@@ -1,79 +1,88 @@
-// /src/main/java/com/example/api/service/PastEvaluationService.java
 package com.example.api.service;
 
 import com.example.api.dto.CommentDTO;
 import com.example.api.dto.EvaluationRawDTO;
 import com.example.api.dto.PastEvaluationResponse;
+import com.example.api.entity.Employee;
 import com.example.api.entity.Evaluation;
+import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.EvaluationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class PastEvaluationService {
 
     private final EvaluationRepository evaluationRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public PastEvaluationService(EvaluationRepository evaluationRepository) {
+    public PastEvaluationService(EvaluationRepository evaluationRepository, EmployeeRepository employeeRepository) {
         this.evaluationRepository = evaluationRepository;
+        this.employeeRepository = employeeRepository;
     }
 
-    public PastEvaluationResponse getPastEvaluation(Integer phaseId, Integer targetId) {
-        // (1) DB から全レコードを取得 (より確実な@Query付きメソッドを呼び出す)
-        List<Evaluation> evaluations =
-            evaluationRepository.findByPhaseAndTarget(phaseId, targetId);
+    public PastEvaluationResponse getPastEvaluation(Long targetId, Long phaseId) {
+        // 対象者の名前を取得
+        Employee target = employeeRepository.findById(targetId)
+            .orElseThrow(() -> new EntityNotFoundException("対象者が見つかりません: " + targetId));
 
-        // (2) データベースから対応する評価が見つからなかった場合の処理
+        // ★ Repositoryに新しく定義した、正しいメソッドを呼び出す
+        List<Evaluation> evaluations = evaluationRepository.findByTarget_IdAndPhase_Id(targetId, phaseId);
+
         if (evaluations.isEmpty()) {
-            PastEvaluationResponse res = new PastEvaluationResponse();
-            res.setPhaseNumber(0);
-            res.setName("");
-            res.setSkillScore(0f);
-            res.setBusinessScore(0f);
-            res.setTeamScore(0f);
-            res.setComments(Collections.emptyList());
-            res.setRawEvaluations(Collections.emptyList());
-            return res;
+            return new PastEvaluationResponse(); // データがない場合は空のオブジェクトを返す
         }
 
-        // (3) 生データをそのまま詰める (nullを0fに変換する)
-        List<EvaluationRawDTO> rawList = evaluations.stream()
-            .map(e -> {
-                float skillScore = (e.getSkillScore() != null) ? e.getSkillScore().floatValue() : 0f;
-                float businessScore = (e.getBusinessScore() != null) ? e.getBusinessScore().floatValue() : 0f;
-                float teamScore = (e.getTeamScore() != null) ? e.getTeamScore().floatValue() : 0f;
+        // --- 平均スコアを計算 ---
+        long count = evaluations.stream().filter(e -> e.getSkillScore() != null).count();
+        if (count == 0) count = 1; // 0除算を避ける
 
-                return new EvaluationRawDTO(
-                    skillScore,
-                    businessScore,
-                    teamScore,
-                    e.getComment(),
-                    e.getEvaluator().getName()
-                );
-            })
+        BigDecimal avgSkillScore = evaluations.stream()
+            .map(Evaluation::getSkillScore)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(count), 1, RoundingMode.HALF_UP);
+        
+        // (他のスコアも同様に計算)
+        BigDecimal avgBusinessScore = evaluations.stream()
+            .map(Evaluation::getBusinessScore).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(count), 1, RoundingMode.HALF_UP);
+
+        BigDecimal avgTeamScore = evaluations.stream()
+            .map(Evaluation::getTeamScore).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(count), 1, RoundingMode.HALF_UP);
+
+        // --- コメントと生データを抽出 ---
+        List<CommentDTO> comments = evaluations.stream()
+            .filter(e -> e.getComment() != null && !e.getComment().isBlank())
+            .map(e -> new CommentDTO(e.getEvaluator().getName(), e.getComment()))
             .collect(Collectors.toList());
-
-        // (4) コメント一覧だけ抽出
-        List<CommentDTO> commentList = evaluations.stream()
-            .map(e -> new CommentDTO(
-                e.getEvaluator().getName(),
-                e.getComment()
+        
+        List<EvaluationRawDTO> rawEvaluations = evaluations.stream()
+            .map(e -> new EvaluationRawDTO(
+                e.getSkillScore() != null ? e.getSkillScore().floatValue() : 0.0f,
+                e.getBusinessScore() != null ? e.getBusinessScore().floatValue() : 0.0f,
+                e.getTeamScore() != null ? e.getTeamScore().floatValue() : 0.0f,
+                e.getComment(),
+                e.getEvaluator().getName()
             ))
             .collect(Collectors.toList());
 
-        // (5) レスポンス組み立て
-        PastEvaluationResponse res = new PastEvaluationResponse();
-        res.setPhaseNumber(evaluations.get(0).getPhase().getPhaseNumber());
-        res.setName(evaluations.get(0).getPhase().getName());
-        res.setSkillScore(0f); // 平均値はフロントエンドで計算するため0fをセット
-        res.setBusinessScore(0f);
-        res.setTeamScore(0f);
-        res.setComments(commentList);
-        res.setRawEvaluations(rawList);
-
-        return res;
+        // --- 最終的なレスポンスオブジェクトを組み立てる ---
+        PastEvaluationResponse response = new PastEvaluationResponse();
+        response.setName(target.getName());
+        response.setAverageSkillScore(avgSkillScore);
+        response.setAverageBusinessScore(avgBusinessScore);
+        response.setAverageTeamScore(avgTeamScore);
+        response.setComments(comments);
+        response.setRawEvaluations(rawEvaluations);
+        
+        return response;
     }
 }

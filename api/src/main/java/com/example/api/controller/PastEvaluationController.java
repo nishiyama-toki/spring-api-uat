@@ -2,6 +2,8 @@ package com.example.api.controller;
 
 import com.example.api.dto.PastEvaluationResponse;
 import com.example.api.service.PastEvaluationService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,17 +11,27 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class PastEvaluationController {
 
-    private final PastEvaluationService service;
+    private final PastEvaluationService pastEvaluationService;
 
-    public PastEvaluationController(PastEvaluationService service) {
-        this.service = service;
+    public PastEvaluationController(PastEvaluationService pastEvaluationService) {
+        this.pastEvaluationService = pastEvaluationService;
     }
 
-    @GetMapping("/record")
-    public PastEvaluationResponse getRecord(
-      @RequestParam("phase_id")  int phaseId,
-      @RequestParam("target_id") int targetId
+    /**
+     * 過去の評価履歴を取得します。
+     * phaseIdと、JWTから取得した安全なuserIdを使用します。
+     */
+    @GetMapping("/past-evaluations")
+    public ResponseEntity<PastEvaluationResponse> getPastEvaluations(
+            @RequestParam("phase_id") Long phaseId, // ★ intからLongに変更
+            Authentication authentication
     ) {
-        return service.getPastEvaluation(phaseId, targetId);
+        // JWTから安全に本人IDを取得
+        Long targetId = Long.parseLong(authentication.getName());
+        
+        // Serviceを呼び出す
+        PastEvaluationResponse response = pastEvaluationService.getPastEvaluation(targetId, phaseId);
+        
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,52 +1,39 @@
-// src/main/java/com/example/api/dto/PastEvaluationResponse.java
 package com.example.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 過去の評価履歴の結果をフロントエンドに返すためのクラス(DTO)
+ */
 public class PastEvaluationResponse {
-    @JsonProperty("phase_number")
-    private int phaseNumber;
-
-    @JsonProperty("name")
+    // このDTOに含まれるべきフィールドを想定して定義
     private String name;
-
-    // （従来の平均用フィールドは残しておいても OK）
-    @JsonProperty("skillScore")
-    private float skillScore;
-
-    @JsonProperty("businessScore")
-    private float businessScore;
-
-    @JsonProperty("teamScore")
-    private float teamScore;
-
-    @JsonProperty("comments")
+    private BigDecimal averageSkillScore;
+    private BigDecimal averageBusinessScore;
+    private BigDecimal averageTeamScore;
     private List<CommentDTO> comments;
-
-    // ← ここに追加 ↓
-    @JsonProperty("rawEvaluations")
     private List<EvaluationRawDTO> rawEvaluations;
 
-    // --- getters / setters ---
-    public int getPhaseNumber() { return phaseNumber; }
-    public void setPhaseNumber(int n) { this.phaseNumber = n; }
+    // テストコードから new PastEvaluationResponse() で呼び出せるように、空のコンストラクタを用意
+    public PastEvaluationResponse() {}
 
+    // --- 以下、エラーログで不足していたGetters/Setters ---
     public String getName() { return name; }
-    public void setName(String s) { this.name = s; }
+    public void setName(String name) { this.name = name; }
 
-    public float getSkillScore() { return skillScore; }
-    public void setSkillScore(float f) { this.skillScore = f; }
+    public BigDecimal getAverageSkillScore() { return averageSkillScore; }
+    public void setAverageSkillScore(BigDecimal averageSkillScore) { this.averageSkillScore = averageSkillScore; }
+    
+    public BigDecimal getAverageBusinessScore() { return averageBusinessScore; }
+    public void setAverageBusinessScore(BigDecimal averageBusinessScore) { this.averageBusinessScore = averageBusinessScore; }
 
-    public float getBusinessScore() { return businessScore; }
-    public void setBusinessScore(float f) { this.businessScore = f; }
-
-    public float getTeamScore() { return teamScore; }
-    public void setTeamScore(float f) { this.teamScore = f; }
+    public BigDecimal getAverageTeamScore() { return averageTeamScore; }
+    public void setAverageTeamScore(BigDecimal averageTeamScore) { this.averageTeamScore = averageTeamScore; }
 
     public List<CommentDTO> getComments() { return comments; }
-    public void setComments(List<CommentDTO> list) { this.comments = list; }
-
+    public void setComments(List<CommentDTO> comments) { this.comments = comments; }
+    
     public List<EvaluationRawDTO> getRawEvaluations() { return rawEvaluations; }
-    public void setRawEvaluations(List<EvaluationRawDTO> list) { this.rawEvaluations = list; }
+    public void setRawEvaluations(List<EvaluationRawDTO> rawEvaluations) { this.rawEvaluations = rawEvaluations; }
 }

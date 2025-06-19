@@ -1,11 +1,13 @@
+// 従業員検索/認証用
 package com.example.api.repository;
 
 import com.example.api.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-    // このファイルは基本的に空でOKです。
-    // JpaRepositoryを継承することで、基本的なDB操作（findByIdなど）が自動的に使えるようになります。
+// Employeeエンティティに対するリポジトリ（DBアクセス）を定義
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    
+    // メールアドレスでユーザーを検索するメソッド（ログイン時に使用）
+    Optional<Employee> findByEmail(String email);
 }
