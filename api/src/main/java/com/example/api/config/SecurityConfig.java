@@ -56,8 +56,9 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider()) // ✅ ←ここでOK！
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class); // ★追加（認証後にトークン再発行）
-
+            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class) // 追加（認証後にトークン再発行）
+            // DaoAuthenticationProvider を明示的に登録
+            .authenticationProvider(authenticationProvider());
         return http.build();
     }
 

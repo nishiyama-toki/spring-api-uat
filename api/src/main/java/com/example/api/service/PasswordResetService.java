@@ -49,6 +49,9 @@ public class PasswordResetService {
         Employee employee = resetToken.getEmployee();
 
         employee.setPassword(passwordEncoder.encode(newPassword));
+        employee.setIsLocked(false);
+        employee.setFailedCount(0);
+        employee.setLockedAt(null);
         employeeRepo.save(employee);
 
         resetToken.setUsed(true);
