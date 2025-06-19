@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import {TermQuarterSelector} from '../components/TermQuarterSelector';
 import { UnsubmittedTable } from './components/UnsubmittedTable';
 import styles from './UnsubmittedPage.module.css';
+import { withAdminAuth } from '../hooks/useAuth';
 
 type UnsubmittedResponse = {
   name: string;
 };
 
-export default function UnsubmittedPage() {
+function UnsubmittedPage() {
     // 選択された評価期ID(phaseId)を管理
     const [selectedPhaseId, setSelectedPhaseId] = useState<string>('');  // Reactの沼
 
@@ -63,3 +64,5 @@ export default function UnsubmittedPage() {
         </div>
     );
 }
+
+export default withAdminAuth(UnsubmittedPage);

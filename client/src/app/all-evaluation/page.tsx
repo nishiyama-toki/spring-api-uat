@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {TermQuarterSelector} from '../components/TermQuarterSelector';
+import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
+import { withAdminAuth } from '../hooks/useAuth';
 
 type EmployeeEvaluation = {
     targetId: number;
@@ -170,4 +171,4 @@ const EvaluationSummaryPage: React.FC = () => {
 
 };
 
-export default EvaluationSummaryPage;
+export default withAdminAuth(EvaluationSummaryPage);
