@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import {TermQuarterSelector} from '../components/TermQuarterSelector';
 import { UnsubmittedTable } from './components/UnsubmittedTable';
 import styles from './UnsubmittedPage.module.css';
+import axios from '../../utils/axiosInstance'; 
 import { withAdminAuth } from '../hooks/useAuth';
 
 type UnsubmittedResponse = {
@@ -26,16 +27,14 @@ function UnsubmittedPage() {
 
         const fetchUnsubmitted = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/unsubmitted?phase_id=${selectedPhaseId}`);
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`)
-                }
-                const data = await response.json();
+                const response = await axios.get('/api/unsubmitted', {
+                    params: { phase_id: selectedPhaseId }
+                });
 
-                if (data && Array.isArray(data.unsubmitted_list)) {
-                    setUnsubmittedEmployees(data.unsubmitted_list);
+                if (response.data && Array.isArray(response.data.unsubmitted_list)) {
+                    setUnsubmittedEmployees(response.data.unsubmitted_list);
                 } else {
-                    console.error('API did not return a valid unsubmitted_list array:', data);
+                    console.error('API did not return a valid unsubmitted_list array:', response.data);
                     setUnsubmittedEmployees([]);
                 }
             }   catch (error) {

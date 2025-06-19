@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
+import axios from '../../utils/axiosInstance';
 import { withAdminAuth } from '../hooks/useAuth';
 
 type EmployeeEvaluation = {
@@ -39,21 +40,15 @@ const EvaluationSummaryPage: React.FC = () => {
 
         const fetchEvaluations = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/all_evaluations?phase_id=${periodId}`);
-                // APIがエラーを返した場合の処理
-                if (!response.ok) {
-                    // エラー内容をコンソールに出力して、処理を中断
-                    const errorData = await response.json().catch(() => ({ message: 'API error response is not valid JSON'}));
-                    console.error('API Error:', response.status, errorData);
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-
-                const data = await response.json();
+                const response = await axios.get('/api/all_evaluations', {
+                    params: { phase_id: periodId }
+                });
+            
                 // APIからのデータが配列であることを確認
-                if (data && Array.isArray(data.employees)) {
-                    setEvaluations(data.employees);
+                if (response.data && Array.isArray(response.data.employees)) {
+                    setEvaluations(response.data.employees);
                 } else {
-                    console.error('API did not return a valid employees array:', data);
+                    console.error('API did not return a valid employees array:', response.data);
                     setEvaluations([]);
                 }
             }catch (error) {
@@ -74,9 +69,10 @@ const EvaluationSummaryPage: React.FC = () => {
         setIsLoadingComments(true);
 
         try {
-            const response = await fetch(`http://localhost:8080/api/employees/${targetId}/comments?phase_id=${periodId}`);
-            const data = await response.json();
-            setComments(data);
+            const response = await axios.get(`/api/employees/${targetId}/comments`, {
+                params: { phase_id: periodId }
+            });
+            setComments(response.data);
         }   catch (error) {
                 console.error('コメントの取得に失敗しました', error);
                 setComments([]);

@@ -49,10 +49,10 @@ export default function LoginPage() {
 
     try {
       const res = await axios.post('http://localhost:8080/api/login', { email, password })
-      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('jwt', res.data.token)
 
       if (res.data.permission === 'admin') {
-        router.push('/reset_mail')
+        router.push('/unsubmitted-list')
       } else {
         router.push('/home')
       }
