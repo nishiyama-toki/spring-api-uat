@@ -2,7 +2,9 @@
 package com.example.api.config;
 
 import com.example.api.security.JwtAuthenticationFilter;
+import com.example.api.security.TokenRefreshFilter; // 追加
 import com.example.api.service.CustomUserDetailsService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,18 +28,21 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final TokenRefreshFilter tokenRefreshFilter; // 追加
     private final CustomUserDetailsService customUserDetailsService;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          TokenRefreshFilter tokenRefreshFilter,
                           CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.tokenRefreshFilter = tokenRefreshFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors() // CORSを有効化
+            .cors()
             .and()
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
@@ -48,7 +53,8 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class); // ★追加（認証後にトークン再発行）
 
         return http.build();
     }
@@ -71,7 +77,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // CORS 設定をSecurity用に明示
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
