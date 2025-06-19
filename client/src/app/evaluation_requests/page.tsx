@@ -3,7 +3,7 @@
 
 // --- 必要なライブラリやフックをインポート ---
 import React, { useEffect, useState } from 'react'; // Reactの基本機能とHooks
-import axios from 'axios'; // HTTPリクエスト送信用ライブラリ
+import axios from 'utils/axiosInstance'; // ← 修正：共通のaxiosインスタンスに変更
 import { useRouter } from 'next/navigation'; // ページ遷移用のフック
 
 // --- JWTの中身をデコードするユーティリティ関数（Base64 → JSON） ---
@@ -49,7 +49,7 @@ export default function EvaluationRequestPage() {
 
     // Spring BootのバックエンドAPIにGETリクエストを送信する（認証ヘッダー付き）
     axios
-      .get(`http://localhost:8080/api/evaluations?evaluatorId=${evaluatorId}`, {
+      .get(`/api/evaluations?evaluatorId=${evaluatorId}`, { // ← 相対パスに変更（共通axiosのbaseURL適用）
         headers: {
           Authorization: `Bearer ${token}`, // ← トークンをAuthorizationヘッダーに付与
         },

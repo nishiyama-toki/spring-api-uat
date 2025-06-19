@@ -51,11 +51,15 @@ export default function LoginPage() {
       const res = await axios.post('http://localhost:8080/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
-      if (res.data.permission === 'admin') {
-        router.push('/reset_mail')
-      } else {
-        router.push('/home')
-      }
+      // if (res.data.permission === 'admin') {
+      //   router.push('/reset_mail')
+      // } else {
+      //   router.push('/home')
+      // }
+
+      // 一時的に評価依頼一覧へ遷移（元は reset_mail / home）
+      router.push('/evaluation_requests');
+      
     } catch (err) {
       setAuthError('メールアドレスまたはパスワードが正しくありません。')
     }
