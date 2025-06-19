@@ -52,7 +52,7 @@ export default function LoginPage() {
       localStorage.setItem('jwt', res.data.token)
 
       if (res.data.permission === 'admin') {
-        router.push('/reset_mail')
+        router.push('/admin')
       } else {
         router.push('/home')
       }
