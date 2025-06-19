@@ -1,66 +1,80 @@
 package com.example.api.entity;
 
 import jakarta.persistence.*;
-// import lombok.Getter; // Lombokが不安定なため、手動でGetter/Setterを定義
-// import lombok.Setter;
-// import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "employees")
-// @Getter @Setter @NoArgsConstructor // Lombokの代わりに手動で定義
-public class Employee {
+@Getter @Setter @NoArgsConstructor
+public class Employee implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;                // PK
 
     @Column(nullable = false)
-    private String name;
+    private String name;            // 氏名
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String email;           // メールアドレス
 
     @Column(nullable = false)
-    private String password;
+    private String password;        // ハッシュ化済み PW
 
     @Column(name = "is_admin")
-    private Boolean isAdmin;
+    private Boolean isAdmin;        // 管理者フラグ
 
-    private String permission;
+    @Column(nullable = false)
+    private String permission;      // 権限文字列
 
     @Column(name = "failed_count")
-    private Integer failedCount;
+    private Integer failedCount;    // ログイン失敗回数
 
     @Column(name = "is_locked")
-    private Boolean isLocked;
+    private Boolean isLocked;       // ロック中か
 
     @Column(name = "locked_at")
-    private java.time.LocalDateTime lockedAt;
+    private LocalDateTime lockedAt; // ロック時刻
 
-    private String role;
+    private String role;            // 役職
 
-    // --- Constructors ---
-    public Employee() {}
+    // ==== UserDetails の実装部分 ====
 
-    // --- Getters and Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public Boolean getIsAdmin() { return isAdmin; }
-    public void setIsAdmin(Boolean isAdmin) { this.isAdmin = isAdmin; }
-    public String getPermission() { return permission; }
-    public void setPermission(String permission) { this.permission = permission; }
-    public Integer getFailedCount() { return failedCount; }
-    public void setFailedCount(Integer failedCount) { this.failedCount = failedCount; }
-    public Boolean getIsLocked() { return isLocked; }
-    public void setIsLocked(Boolean isLocked) { this.isLocked = isLocked; }
-    public java.time.LocalDateTime getLockedAt() { return lockedAt; }
-    public void setLockedAt(java.time.LocalDateTime lockedAt) { this.lockedAt = lockedAt; }
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList(); // 必要に応じてロールを返す
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // 有効期限切れの概念を使わないなら true 固定
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !Boolean.TRUE.equals(this.isLocked); // ロックされていないとき true
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // パスワード有効期限も使わないなら true 固定
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // アカウント無効フラグなどを使うならここで制御
+    }
 }
