@@ -3,7 +3,9 @@ package com.example.api.controller; // コントローラーのパッケージ�
 
 import com.example.api.dto.EvaluationResponseDTO; // レスポンス用DTO
 import com.example.api.service.EvaluationService; // 評価取得サービス
+import com.example.api.security.LoginUserDetails; // JWTから取り出すログインユーザー情報（UserDetails実装）
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // 認証済みユーザーを受け取るアノテーション
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +22,15 @@ public class EvaluationController {
     }
 
     /**
-     * evaluatorId を指定して、そのユーザーに対する提出期間中の評価依頼を取得する。
+     * ログイン中のユーザーに対して、提出期間中の評価依頼を取得する。
+     * evaluatorId は JWT トークンから取得された LoginUserDetails から取得する。
      *
-     * @param evaluatorId 評価者ID（クエリパラメータで受け取る）
+     * @param loginUser ログイン中のユーザー情報（JWTから自動で取得）
      * @return フェーズ内の評価依頼一覧（提出済み・未済問わず）
      */
     @GetMapping
-    public List<EvaluationResponseDTO> getEvaluations(@RequestParam Long evaluatorId) {
-        return evaluationService.getEvaluationsInPeriod(evaluatorId); // 新メソッドに変更
+    public List<EvaluationResponseDTO> getEvaluations(@AuthenticationPrincipal LoginUserDetails loginUser) {
+        Long evaluatorId = loginUser.getUserId(); // JWTトークン内のユーザーIDを取得
+        return evaluationService.getEvaluationsInPeriod(evaluatorId); // 評価取得サービスを呼び出し
     }
 }
