@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("/api")
 // Reactアプリ（http://localhost:3000）からの全メソッドのアクセスを許可
 @CrossOrigin(origins = "http://localhost:3000")
-public class PhaseController {
+public class AdminPhaseController {
 
     @Autowired
     private PhaseRepository phaseRepository;
