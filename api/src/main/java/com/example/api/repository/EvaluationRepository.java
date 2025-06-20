@@ -1,16 +1,17 @@
 package com.example.api.repository;
 
-import com.example.api.entity.Employee;
 import com.example.api.entity.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+// import org.springframework.stereotype.Repository;
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface EvaluationRepository extends JpaRepository<Evaluation, Integer> {
-    boolean existsByEvaluatorIdAndPhaseId(Integer evaluatorId, Integer phaseId);
+public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
+    List<Evaluation> findByPhaseId(Long phaseId);
+    List<Evaluation> findByTargetIdAndPhaseIdAndCommentIsNotNull(Long targetId, Long phaseId);
 
-    // evaluatorIdで判定するのが「未提出者」
-    @Query("SELECT e FROM Employee e WHERE NOT EXISTS " +
-           "(SELECT 1 FROM Evaluation ev WHERE ev.evaluatorId = e.id AND ev.phaseId = :phaseId)")
-    List<Employee> findEmployeesNotSubmitted(Integer phaseId);
+    @Query("SELECT DISTINCT e.evaluator.id FROM Evaluation e WHERE e.phase.id = :phaseId")
+    List<Long> findEvaluatorIdsByPhaseId(@Param("phaseId") Long phaseId);
 }
+

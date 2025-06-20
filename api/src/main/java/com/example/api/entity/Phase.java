@@ -3,23 +3,32 @@ package com.example.api.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "phases", schema = "evaluation")
+@Table(name = "phases")
 @Data
 public class Phase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String name;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalDateTime selfEvalDue;
-    private LocalDateTime peerEvalDue;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Long id;
+    
+    @Column(name = "phase_number")
     private Integer phaseNumber;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    public Integer getPhaseNumber() {
+        return this.phaseNumber;
+    }
+
+    public void setPhaseNumber(Integer phaseNumber) {
+        this.phaseNumber = phaseNumber;
+    }
 }
