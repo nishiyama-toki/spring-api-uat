@@ -1,4 +1,3 @@
-// リクエストからトークン抽出・検証処理
 package com.example.api.security;
 
 import com.example.api.entity.JwtToken;
@@ -38,48 +37,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        /* --- 1. Authorization ヘッダーからトークン抽出 --- */
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        }
+        try {
+            String authHeader = request.getHeader("Authorization");
+            String token = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            }
 
-        /* --- 2. トークン検証 & SecurityContext 未設定の場合のみ処理 --- */
-        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (jwtTokenProvider.isValid(token)) {
+                    boolean revoked = jwtTokenRepository.findByToken(token)
+                            .map(JwtToken::getIsRevoked)
+                            .orElse(true); // 見つからない→無効扱い
+                    if (!revoked) {
+                        String userId = jwtTokenProvider.extractUserId(token);
+                        // ==== ここを修正！ ====
+                        UserDetails userDetails = userDetailsService.loadUserById(Integer.parseInt(userId));
+                        // =====================
 
-            // 2-1 署名 & 期限チェック
-            if (jwtTokenProvider.isValid(token)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 2-2 DB上で失効していないかチェック
-                boolean revoked = jwtTokenRepository.findByToken(token)
-                                 .map(JwtToken::getIsRevoked)
-                                 .orElse(true);          // 見つからない→無効扱い
-                if (!revoked) {
-
-                    // 2-3 ユーザーIDを取得し UserDetails をロード
-                    String userId = jwtTokenProvider.extractUserId(token);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-
-                    // 2-4 SecurityContext に認証情報をセット
-                    UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    } else {
+                        System.out.println("JWT認証エラー: トークンが失効しています");
+                    }
+                } else {
+                    System.out.println("JWT認証エラー: トークンが無効です");
                 }
             }
+        } catch (Exception ex) {
+            System.out.println("JWT認証エラー: " + ex.getMessage());
+            ex.printStackTrace();
         }
-
-        /* --- 3. 後続フィルターへ --- */
         filterChain.doFilter(request, response);
     }
 
-    /* ログインAPIのみ除外 */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "/api/login".equals(request.getRequestURI());
+        // ここで認証不要エンドポイントを列挙
+        String path = request.getRequestURI();
+        return path.equals("/api/login")
+            || path.equals("/api/reset-mail")
+            || path.startsWith("/api/reset-password");
     }
 }

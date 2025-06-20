@@ -1,4 +1,3 @@
-// Spring Securityの全体設定
 package com.example.api.config;
 
 import com.example.api.security.JwtAuthenticationFilter;
@@ -81,7 +80,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        // ここを setAllowedOrigins から setAllowedOriginPatterns に変更
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);

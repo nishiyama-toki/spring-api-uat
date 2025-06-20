@@ -18,7 +18,6 @@ export default function LoginPage() {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
     let isValid = true
 
-    // メール必須チェック
     if (!email) {
       setEmailError('必須項目です。')
       isValid = false
@@ -29,7 +28,6 @@ export default function LoginPage() {
       setEmailError('')
     }
 
-    // パスワード必須チェック
     if (!password) {
       setPasswordError('必須項目です。')
       isValid = false
@@ -48,7 +46,8 @@ export default function LoginPage() {
     if (!validate()) return
 
     try {
-      const res = await axios.post('http://localhost:8080/api/login', { email, password })
+      // 1. ログインリクエスト
+      const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
       if (res.data.permission === 'admin') {
