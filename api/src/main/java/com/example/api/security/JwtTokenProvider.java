@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         }
     }
 
-    /** トークンからユーザーID（Subject）を取得 */
+    // トークンからユーザーID(Sub) を取り出す
     public String extractUserId(String token) {
         Claims claims = Jwts.parser()
                             .setSigningKey(secretKey)
@@ -57,12 +57,22 @@ public class JwtTokenProvider {
         return claims.getSubject(); // setSubject に入れた値（email）
     }
 
-    /** トークンから権限(role) を取り出す */
+    // トークンから権限(role) を取り出す（必要なら）
     public String extractRole(String token) {
         Claims claims = Jwts.parser()
                             .setSigningKey(secretKey)
                             .parseClaimsJws(token)
                             .getBody();
         return claims.get("role", String.class);
+    }
+
+    // トークンから有効期限（exp クレーム）を取り出す
+    public Instant extractExpiration(String token) {
+    return Jwts.parser()
+               .setSigningKey(secretKey)
+               .parseClaimsJws(token)
+               .getBody()
+               .getExpiration()
+               .toInstant();
     }
 }

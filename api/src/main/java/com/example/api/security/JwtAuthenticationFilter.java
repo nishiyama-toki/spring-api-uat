@@ -40,9 +40,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain)
+    // ログイン関係のAPIはフィルターから除外
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/api/login")
+            || path.equals("/api/reset-mail")
+            || path.equals("/api/reset-password");
+    }
+
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
         try {
@@ -106,31 +116,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-    }
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        // ここで認証不要エンドポイントを列挙
-        String path = request.getRequestURI();
-        return path.equals("/api/login")
-            || path.equals("/api/reset-mail")
-            || path.startsWith("/api/reset-password");
-    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        String path = request.getRequestURI();
-        log.info("--- JwtAuthenticationFilter ---");
-        log.info("Checking if filter should be skipped for path: {}", path);
-
-        List<String> publicPaths = List.of(
-            "/api/login",
-            "/api/reset-mail",
-            "/api/reset-password"
-        );
-
-        boolean shouldBeSkipped = publicPaths.stream()
-                .anyMatch(p -> path.startsWith(p));
-
-        log.info("Path: {}, Should be skipped: {}", path, shouldBeSkipped);
-        
-        return shouldBeSkipped;
     }
 }
