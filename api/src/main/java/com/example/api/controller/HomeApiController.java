@@ -32,22 +32,26 @@ public class HomeApiController {
         // 認証済みユーザー情報がemployeeに直接入る
 
         // 現在のフェーズを取得
-        Phase currentPhase = phaseRepository
-                .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now())
-                .orElse(null);
+        List<Phase> phases = phaseRepository
+    .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now());
+
+        Phase currentPhase = phases.isEmpty() ? null : phases.get(0);
 
         if (currentPhase == null) {
-            return ResponseEntity.ok(Map.of(
-                    "message", "現在有効な評価フェーズはありません。",
-                    "alert_list", List.of(),
-                    "not_submitted_list", List.of(),
-                    "user_name", employee.getName(),
-                    "is_admin", employee.getIsAdmin()
-            ));
+        return ResponseEntity.ok(Map.of(
+                "message", "現在有効な評価フェーズはありません。",
+                "alert_list", List.of(),
+                "not_submitted_list", List.of(),
+                "user_name", employee.getName(),
+                "is_admin", employee.getIsAdmin()
+        ));
         }
 
+
         // 提出済みかどうか判定
-        boolean hasSubmitted = evaluationRepository.existsByEvaluatorIdAndPhaseId(employee.getId(), currentPhase.getId());
+        evaluationRepository.existsByEvaluatorIdAndPhaseId(
+        employee.getId().longValue(), currentPhase.getId().longValue()
+        );
 
         List<Map<String, Object>> alertList = new ArrayList<>();
         if (!hasSubmitted && !Boolean.TRUE.equals(employee.getIsAdmin())) {

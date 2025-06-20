@@ -2,11 +2,11 @@ package com.example.api.service;
 
 import com.example.api.dto.SelfEvaluationRequest;
 import com.example.api.dto.SelfEvaluationResponseDTO;
-import com.example.api.entity.Employee;
 import com.example.api.entity.Evaluation;
+import com.example.api.entity.Employee;
 import com.example.api.entity.Phase;
-import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.EvaluationRepository;
+import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.PhaseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,21 +22,19 @@ public class SelfEvaluationService {
     private final EmployeeRepository employeeRepository;
     private final PhaseRepository phaseRepository;
 
-    public SelfEvaluationService(
-        EvaluationRepository evaluationRepository,
-        EmployeeRepository employeeRepository,
-        PhaseRepository phaseRepository
-    ) {
-        this.evaluationRepository = evaluationRepository;
-        this.employeeRepository = employeeRepository;
-        this.phaseRepository = phaseRepository;
+    public SelfEvaluationService(EvaluationRepository er, EmployeeRepository empRepo, PhaseRepository pr) {
+        this.evaluationRepository = er;
+        this.employeeRepository = empRepo;
+        this.phaseRepository = pr;
     }
 
     @Transactional(readOnly = true)
     public Optional<SelfEvaluationResponseDTO> getSelfEvaluation(Long phaseId, Long userId) {
         return evaluationRepository
-            .findByEvaluator_IdAndTarget_IdAndPhase_Id(userId, userId, phaseId)
-            .map(SelfEvaluationResponseDTO::new);
+                .findByEvaluator_IdAndTarget_IdAndPhase_Id(userId, userId, phaseId)
+                .stream()
+                .findFirst()
+                .map(SelfEvaluationResponseDTO::new);
     }
 
     @Transactional
@@ -53,10 +51,10 @@ public class SelfEvaluationService {
             evaluation = existingEvaluationOpt.get();
         } else {
             evaluation = new Evaluation();
-            
+
             Employee evaluator = employeeRepository.findById(request.getEvaluatorId())
                 .orElseThrow(() -> new EntityNotFoundException("評価者が見つかりません: " + request.getEvaluatorId()));
-            
+
             Employee target = employeeRepository.findById(request.getTargetId())
                 .orElseThrow(() -> new EntityNotFoundException("対象者が見つかりません: " + request.getTargetId()));
 

@@ -55,29 +55,22 @@ public class SecurityConfig {
                     "/api/reset-mail",
                     "/api/reset-password/**"
                 ).permitAll()
-
-                 //管理者のみアクセス可能なエンドポイント
-            .requestMatchers(
-                "/api/admin-only",
-                "/api/user_management_register",
-                "/api/user_management_edit",
-                "/api/user_management_delete",
-                "/api/user_management_DB"
-            ).hasAuthority("ROLE_ADMIN")
-
-                .anyRequest().authenticated()  // それ以外はすべて認証必要
+                .requestMatchers(
+                    "/api/admin-only",
+                    "/api/user_management_register",
+                    "/api/user_management_edit",
+                    "/api/user_management_delete",
+                    "/api/user_management_DB"
+                ).hasAuthority("ROLE_ADMIN")
+            .anyRequest().authenticated() // ✅ 最後のみに書く
             )
-            //JWTフィルターをログイン処理の前に挿入し、トークンリフレッシュフィルターをその後に
-                .anyRequest().authenticated()
-                
-            )
-            .authenticationProvider(authenticationProvider()) // ✅ ←ここでOK！
+            .authenticationProvider(authenticationProvider()) // ✅ ここは一度だけ
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class) // 追加（認証後にトークン再発行）
-            // DaoAuthenticationProvider を明示的に登録
-            .authenticationProvider(authenticationProvider());
+            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class);
+
         return http.build();
     }
+
 
     //認証マネージャのBean定義
     @Bean

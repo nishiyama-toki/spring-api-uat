@@ -29,10 +29,11 @@ public class ReminderBatchController {
 
     @PostMapping("/api/reminder/batch")
     public ResponseEntity<?> sendReminderBatch() {
-        // 現在の評価フェーズ取得（修正版）
-        Phase currentPhase = phaseRepository
-            .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now())
-            .orElse(null);
+        // 現在の評価フェーズ取得（Listから先頭要素を取り出す方式に変更）
+        List<Phase> phases = phaseRepository
+            .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now());
+
+        Phase currentPhase = phases.isEmpty() ? null : phases.get(0);
 
         if (currentPhase == null) {
             return ResponseEntity.badRequest().body(Map.of("結果", "failure", "エラーメッセージ", "現在有効な評価フェーズがありません"));

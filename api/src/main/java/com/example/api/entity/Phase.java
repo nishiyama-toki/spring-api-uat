@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Phase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // ★ IntegerからLongに変更
+    private Long id;
 
     @Column(name = "phase_number", nullable = false)
     private Integer phaseNumber;
@@ -23,13 +23,6 @@ public class Phase {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    public Integer getPhaseNumber() {
-        return this.phaseNumber;
-    }
-
-    public void setPhaseNumber(Integer phaseNumber) {
-        this.phaseNumber = phaseNumber;
-    }
     @Column(name = "self_eval_due")
     private LocalDateTime selfEvalDue;
 
@@ -42,31 +35,23 @@ public class Phase {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // --- Getters and Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Integer getPhaseNumber() { return phaseNumber; }
-    public void setPhaseNumber(Integer phaseNumber) { this.phaseNumber = phaseNumber; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-
-    public LocalDateTime getSelfEvalDue() { return selfEvalDue; }
-    public void setSelfEvalDue(LocalDateTime selfEvalDue) { this.selfEvalDue = selfEvalDue; }
-
-    public LocalDateTime getPeerEvalDue() { return peerEvalDue; }
-    public void setPeerEvalDue(LocalDateTime peerEvalDue) { this.peerEvalDue = peerEvalDue; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    // getters/setters (省略)
+    public Long getId() {return id;}
+    public void setId(Long id){this.id=id;}
+    public Integer getPhaseNumber(){return phaseNumber;}
+    public void setPhaseNumber(Integer p){this.phaseNumber=p;}
+    public String getName(){return name;}
+    public void setName(String n){this.name=n;}
+    public LocalDate getStartDate(){return startDate;}
+    public void setStartDate(LocalDate d){this.startDate=d;}
+    public LocalDate getEndDate(){return endDate;}
+    public void setEndDate(LocalDate d){this.endDate=d;}
+    public LocalDateTime getSelfEvalDue(){return selfEvalDue;}
+    public void setSelfEvalDue(LocalDateTime t){this.selfEvalDue=t;}
+    public LocalDateTime getPeerEvalDue(){return peerEvalDue;}
+    public void setPeerEvalDue(LocalDateTime t){this.peerEvalDue=t;}
+    public LocalDateTime getCreatedAt(){return createdAt;}
+    public void setCreatedAt(LocalDateTime t){this.createdAt=t;}
+    public LocalDateTime getUpdatedAt(){return updatedAt;}
+    public void setUpdatedAt(LocalDateTime t){this.updatedAt=t;}
 }

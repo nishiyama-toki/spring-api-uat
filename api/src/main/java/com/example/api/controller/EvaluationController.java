@@ -1,10 +1,10 @@
 package com.example.api.controller;
 
 import com.example.api.dto.EvaluationResponse;
-import com.example.api.dto.CommentResponse;
 import com.example.api.service.EvaluationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,29 +12,29 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class EvaluationController {
-    
+
     private final EvaluationService evaluationService;
 
     public EvaluationController(EvaluationService evaluationService) {
         this.evaluationService = evaluationService;
     }
 
+    /** 一覧 */
     @GetMapping("/all_evaluations")
     public ResponseEntity<?> getAllEvaluations(@RequestParam("phase_id") Long phaseId) {
         if (phaseId == null) {
-            return ResponseEntity.badRequest().body(Map.of("validation_error","期・Qが未選択です"));
+            return ResponseEntity.badRequest().body(Map.of("validation_error", "期・Qが未選択です"));
         }
-
         List<EvaluationResponse> evaluations = evaluationService.getAllEvaluations(phaseId);
-        return ResponseEntity.ok(Map.of("employees",evaluations));
+        return ResponseEntity.ok(Map.of("employees", evaluations));
     }
 
-    @GetMapping("/employees/{targetId}/comments") // {targetId}には特定の社員のIDが入る
-    public ResponseEntity<List<CommentResponse>> getComments(
+    /** コメント一覧 */
+    @GetMapping("/employees/{targetId}/comments")
+    public ResponseEntity<List<EvaluationResponse>> getComments(
             @PathVariable Long targetId,
             @RequestParam("phase_id") Long phaseId) {
-        
-        List<CommentResponse> comments = evaluationService.getCommentsForTarget(targetId, phaseId);
+        List<EvaluationResponse> comments = evaluationService.getCommentsForTarget(targetId, phaseId);
         return ResponseEntity.ok(comments);
     }
 }

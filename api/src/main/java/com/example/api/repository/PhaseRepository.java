@@ -1,26 +1,21 @@
-<<<<<<< HEAD
-package com.example.api.phase.repository;
-
-import com.example.api.phase.entity.Phase;
-import org.springframework.data.jpa.repository.JpaRepository;//DBへの操作を容易にするためのクラス
-import org.springframework.stereotype.Repository;//レポジトリであることの宣言
-
-@Repository
-public interface PhaseRepository extends JpaRepository<Phase, Long> {
-    
-    // フェーズ番号とクォーター名の組み合わせが既に存在するかチェック
-    boolean existsByPhaseNumberAndPeriodName(Integer phaseNumber, String periodName);
-
-    // 編集用に、指定したID以外で同じ phaseNumber & periodName のデータが存在するかチェック
-    boolean existsByPhaseNumberAndPeriodNameAndIdNot(Integer phaseNumber, String periodName, Long id);
-
-=======
 package com.example.api.repository;
 
 import com.example.api.entity.Phase;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-// Phaseエンティティの主キーの型に合わせて、Longを指定します
+import java.time.LocalDate;
+import java.util.List;
+
+@Repository
 public interface PhaseRepository extends JpaRepository<Phase, Long> {
->>>>>>> origin/hideaki.hattori
+
+    /** 新規登録時の重複チェック */
+    boolean existsByPhaseNumberAndPeriodName(Integer phaseNumber, String periodName);
+
+    /** 編集時の重複チェック（自分以外） */
+    boolean existsByPhaseNumberAndPeriodNameAndIdNot(Integer phaseNumber, String periodName, Long id);
+
+    /** 今日が期間に含まれているフェーズを取得（ホーム画面・バッチ用） */
+    List<Phase> findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate today1, LocalDate today2);
 }

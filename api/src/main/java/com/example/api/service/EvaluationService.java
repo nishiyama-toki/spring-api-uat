@@ -1,30 +1,39 @@
+package com.example.api.service;
 
-package com.example.api.service; // サービス用クラスをまとめるパッケージ
-
+import com.example.api.dto.EvaluationResponse;
+import com.example.api.repository.EvaluationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import com.example.api.dto.EvaluationResponseDTO; // クライアント側に返す評価情報DTO
-import com.example.api.repository.EvaluationRepository; // リポジトリ（DBアクセス用）
-
-@Service // このクラスがサービス層であることを示す（DI対象になる）
+@Service
+@RequiredArgsConstructor
 public class EvaluationService {
 
     private final EvaluationRepository evaluationRepository;
 
-    @Autowired // コンストラクタによる依存性注入
-    public EvaluationService(EvaluationRepository evaluationRepository) {
-        this.evaluationRepository = evaluationRepository;
+    /** フェーズIDで全評価一覧取得 */
+    public List<EvaluationResponse> getAllEvaluations(Long phaseId) {
+        return evaluationRepository.findByPhaseId(phaseId)
+                .stream()
+                .map(EvaluationResponse::fromEntity)
+                .toList();
     }
 
-    /**
-     * 指定された evaluatorId に対応する提出期間中の評価依頼一覧を取得する。
-     * 
-     * 評価済み・未評価問わず、フェーズの期間内であれば取得対象とする。
-     */
-    public List<EvaluationResponseDTO> getEvaluationsInPeriod(Long evaluatorId) {
-        return evaluationRepository.findEvaluationsInPeriod(evaluatorId);
+    /** 指定ターゲットのコメント付き評価取得 */
+    public List<EvaluationResponse> getCommentsForTarget(Long targetId, Long phaseId) {
+        return evaluationRepository.findByTargetIdAndPhaseIdAndCommentIsNotNull(targetId, phaseId)
+                .stream()
+                .map(EvaluationResponse::fromEntity)
+                .toList();
+    }
+
+    /** 今期 evaluator が行った評価一覧取得 */
+    public List<EvaluationResponse> getEvaluationsInPeriod(Long evaluatorId) {
+        return evaluationRepository.findEvaluationsByEvaluatorIdInCurrentPeriod(evaluatorId)
+                .stream()
+                .map(EvaluationResponse::fromEntity)
+                .toList();
     }
 }
