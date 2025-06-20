@@ -1,63 +1,34 @@
-'use client'
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import HamburgerMenu from '../components/HamburgerMenu'
+'use client'; // このファイルはクライアントコンポーネントであると明示
 
+// React本体（JSX使用のため）と、Next.jsのルーティング機能をインポート
+import React from 'react';
+import { useRouter } from 'next/navigation';
+
+// このコンポーネントが「送信完了画面」の本体
 export default function SubmittedPage() {
-  const router = useRouter()
+  // Next.jsのuseRouterフックでルーターオブジェクトを取得
+  const router = useRouter();
 
+  // 「評価依頼一覧へ」ボタンが押されたときに実行される処理
   const handleBack = () => {
-    router.push('/evaluation-requests')
-  }
+    // 一覧画面（評価依頼一覧）にクライアント遷移する
+    router.push('/evaluation-requests'); // ← URIは画面ID「Evaluation-008」に対応
+  };
 
+  // 実際の画面の構成を返す（JSXで定義）
   return (
-    <div className="pe-container">
-      {/* ハンバーガーメニュー（全画面共通） */}
-      <HamburgerMenu />
+    <main className="submitted-container">
+      {/* 完了アイコン（チェックマーク） */}
+      <div className="submitted-icon">✅</div>
 
-      {/* タイトルバー */}
-      <div className="pe-titleBar">
-        <h1>評価提出</h1>
-      </div>
+      {/* メッセージテキスト */}
+      <h1 className="submitted-message">送信完了しました</h1>
 
-      {/* メインコンテンツ */}
-      <div className="pe-mainContent" style={{ justifyContent: 'center' }}>
-        <div className="pe-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 60 }}>
-          {/* チェックマーク */}
-          <div
-            style={{
-              fontSize: '4rem',
-              marginBottom: '16px',
-              userSelect: 'none',
-            }}
-            className="submitted-icon"
-          >✅</div>
-
-          {/* メッセージ */}
-          <h2 className="submitted-message" style={{ marginBottom: '20px', color: '#333' }}>送信完了しました</h2>
-
-          {/* ボタン */}
-          <button
-            onClick={handleBack}
-            className="submitted-button"
-            style={{
-              backgroundColor: '#0070f3',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 4,
-              padding: '10px 32px',
-              fontSize: 18,
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              marginTop: 10,
-            }}
-          >
-            評価依頼一覧へ
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+      {/* 「評価依頼一覧へ」ボタン */}
+      <button onClick={handleBack} className="submitted-button">
+        評価依頼一覧へ
+      </button>
+    </main>
+  );
 }
