@@ -4,12 +4,17 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "employees", schema = "evaluation") // ← schemaは必須
 @Getter @Setter @NoArgsConstructor
-public class Employee {
+public class Employee implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +45,36 @@ public class Employee {
     private LocalDateTime lockedAt; // ロック時刻
 
     private String role; // 役職名など
+
+    // ==== UserDetails の実装部分 ====
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList(); // 必要に応じてロールを返す実装も可
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // 有効期限切れの概念を使わないなら true 固定
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !Boolean.TRUE.equals(this.isLocked); // ロックされていないとき true
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // パスワード有効期限も使わないなら true 固定
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // アカウント無効フラグなどを使うならここで制御
+    }
 }

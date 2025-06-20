@@ -2,7 +2,6 @@ package com.example.api.service;
 
 import com.example.api.entity.Employee;
 import com.example.api.repository.EmployeeRepository;
-import com.example.api.security.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,10 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("アカウントがロックされています");
         }
 
-        return new CustomUserDetails(employee); // ← ここで自作クラスを返す
+        return employee;
     }
 
-    // 追加！これがJwtAuthenticationFilter用
+    // JwtAuthenticationFilterなどでID検索が必要な場合
     public UserDetails loadUserById(int id) throws UsernameNotFoundException {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -38,6 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("アカウントがロックされています");
         }
 
-        return new CustomUserDetails(employee);
+        return employee;
     }
 }

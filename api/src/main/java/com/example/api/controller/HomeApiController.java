@@ -5,7 +5,6 @@ import com.example.api.entity.Phase;
 import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.EvaluationRepository;
 import com.example.api.repository.PhaseRepository;
-import com.example.api.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,11 +28,10 @@ public class HomeApiController {
     private PhaseRepository phaseRepository;
 
     @GetMapping("/api/home")
-    public ResponseEntity<?> getHome(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        // ★JWT経由で認証されたユーザー情報を取得
-        Employee employee = employeeRepository.findById(userDetails.getId()).orElseThrow();
+    public ResponseEntity<?> getHome(@AuthenticationPrincipal Employee employee) {
+        // 認証済みユーザー情報がemployeeに直接入る
 
-        // ★ 現在のフェーズを取得
+        // 現在のフェーズを取得
         Phase currentPhase = phaseRepository
                 .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now())
                 .orElse(null);
@@ -48,11 +46,11 @@ public class HomeApiController {
             ));
         }
 
-        // ★ 提出済みかどうか判定
+        // 提出済みかどうか判定
         boolean hasSubmitted = evaluationRepository.existsByEvaluatorIdAndPhaseId(employee.getId(), currentPhase.getId());
 
         List<Map<String, Object>> alertList = new ArrayList<>();
-        if (!hasSubmitted && !employee.getIsAdmin()) {
+        if (!hasSubmitted && !Boolean.TRUE.equals(employee.getIsAdmin())) {
             alertList.add(Map.of(
                     "message", "あなたはまだ評価項目を提出していません",
                     "date", LocalDate.now().toString(),
@@ -61,7 +59,7 @@ public class HomeApiController {
         }
 
         List<Map<String, String>> notSubmittedList = null;
-        if (employee.getIsAdmin()) {
+        if (Boolean.TRUE.equals(employee.getIsAdmin())) {
             List<Employee> unsubmitted = evaluationRepository.findEmployeesNotSubmitted(currentPhase.getId());
             notSubmittedList = unsubmitted.stream()
                     .map(e -> Map.of("name", e.getName(), "email", e.getEmail()))
@@ -78,10 +76,8 @@ public class HomeApiController {
                         "name", currentPhase.getName(),
                         "start_date", currentPhase.getStartDate().toString(),
                         "end_date", currentPhase.getEndDate().toString(),
-                        "self_eval_due",
-                                currentPhase.getSelfEvalDue() != null ? currentPhase.getSelfEvalDue().toString() : "",
-                        "peer_eval_due",
-                                currentPhase.getPeerEvalDue() != null ? currentPhase.getPeerEvalDue().toString() : ""
+                        "self_eval_due", currentPhase.getSelfEvalDue() != null ? currentPhase.getSelfEvalDue().toString() : "",
+                        "peer_eval_due", currentPhase.getPeerEvalDue() != null ? currentPhase.getPeerEvalDue().toString() : ""
                 )
         );
 

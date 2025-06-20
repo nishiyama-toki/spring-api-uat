@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
+import axios from 'utils/axiosInstance';  // ← 追加
 
 interface NotSubmittedUser {
   name: string;
@@ -24,19 +25,9 @@ export default function AdminHome() {
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch('/api/home', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    })
-      .then(res => res.json())
-      .then((data: {
-        overview: string;
-        user_name: string;
-        current_phase: Phase;
-        not_submitted_list?: NotSubmittedUser[];
-      }) => {
+    axios.get('/api/home')    // ← fetch から axios に
+      .then(res => {
+        const data = res.data;
         setOverview(data.overview);
         setUserName(data.user_name);
         setCurrentPhase(data.current_phase);

@@ -14,7 +14,7 @@ export default function HamburgerMenu() {
 
   const [open, setOpen] = useState(false)
 
-  // 除外したいパス（完全一致 or 前方一致でまとめる）
+  // 除外したいパス
   const hiddenPaths = [
     '/login',
     '/reset_password',
@@ -23,14 +23,13 @@ export default function HamburgerMenu() {
     '/reset_mail/sent'
   ]
 
-  // 完全一致 or サブパス一致も考慮したい場合はこちら（下記で対応）
   if (hiddenPaths.some(p => pathname === p)) {
     return null
   }
 
-  // 以下は今まで通り
+  // 「ホーム」だけ isAdmin でリンク先を切り替え
   const menuItems = [
-    { name: 'ホーム', href: '/home' },
+    { name: 'ホーム', href: isAdmin ? '/admin' : '/home' },
     { name: '評価提出依頼', href: '/selfEvaluation' },
     { name: '過去評価履歴', href: '/past-evaluations' },
     { name: '等級基準書', href: '/grade-guidelines.pdf', target: '_blank' },

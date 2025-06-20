@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import axios from 'axios'
+import axios from 'utils/axiosInstance'
 import { useRouter } from 'next/navigation'
 import styles from './login.module.css'
 
@@ -47,20 +47,15 @@ export default function LoginPage() {
 
     try {
       // 1. ログインリクエスト
-      const res = await axios.post('http://localhost:8080/api/login', { email, password })
+      const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
-      // 2. /api/homeでis_adminを判定
-      const homeRes = await axios.get('http://localhost:8080/api/home', {
-        headers: {
-          'Authorization': `Bearer ${res.data.token}`
-        }
-      })
+      // 2. /api/homeでis_adminを判定（headersは省略でOK！）
+      const homeRes = await axios.get('/api/home')
       const homeData = homeRes.data
 
       // ここでis_adminをlocalStorageへ保存！（この1行追加）
       localStorage.setItem('is_admin', homeData.is_admin ? 'true' : 'false')
-
 
       // 3. is_adminで画面振り分け
       if (homeData.is_admin) {

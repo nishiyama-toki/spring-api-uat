@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
+import axios from 'utils/axiosInstance'; // ← 追加
 
 interface Alert {
   message: string;
@@ -24,19 +25,9 @@ export default function UserHome() {
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch('/api/home', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    })
-      .then(res => res.json())
-      .then((data: {
-        overview: string;
-        user_name: string;
-        current_phase: Phase;
-        alert_list?: Alert[];
-      }) => {
+    axios.get('/api/home')
+      .then(res => {
+        const data = res.data;
         setOverview(data.overview);
         setAlerts(data.alert_list ?? []);
         setUserName(data.user_name);
