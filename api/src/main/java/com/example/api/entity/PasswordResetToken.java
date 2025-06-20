@@ -27,4 +27,8 @@ public class PasswordResetToken {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;                 // 発行日時
+
+    // 追加: メールアドレス（NOT NULL のため必須）
+    @Column(name = "email", nullable = false)
+    private String email;
 }

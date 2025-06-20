@@ -1,5 +1,3 @@
-// JWTの発行処理
-// JWTの発行・検証処理
 package com.example.api.security;
 
 import com.example.api.entity.Employee;
@@ -29,11 +27,12 @@ public class JwtTokenProvider {
         Instant now = Instant.now();
 
         return Jwts.builder()
-                .setSubject(String.valueOf(employee.getId()))                  // ユーザーID
-                .claim("role", employee.getPermission())                       // 権限
-                .setIssuedAt(Date.from(now))                                   // 発行日時
-                .setExpiration(Date.from(now.plus(30, ChronoUnit.MINUTES)))    // 30分で期限切れ
-                .signWith(SignatureAlgorithm.HS256, secretKey)                 // 署名
+                .setSubject(employee.getEmail())                         // トークンのsubjectにemailを入れる
+                .claim("id", employee.getId())                           // IDをclaimとして埋め込む
+                .claim("role", employee.getPermission())                 // 権限をclaimに追加
+                .setIssuedAt(Date.from(now))                             // 発行日時
+                .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))  // 有効期限：1日
+                .signWith(SignatureAlgorithm.HS256, secretKey)          // HMAC SHA256で署名
                 .compact();
     }
 
@@ -49,16 +48,16 @@ public class JwtTokenProvider {
         }
     }
 
-    /** トークンからユーザーID(Sub) を取り出す */
+    /** トークンからユーザーID（Subject）を取得 */
     public String extractUserId(String token) {
         Claims claims = Jwts.parser()
                             .setSigningKey(secretKey)
                             .parseClaimsJws(token)
                             .getBody();
-        return claims.getSubject(); // setSubject に入れた ID
+        return claims.getSubject(); // setSubject に入れた値（email）
     }
 
-    /** トークンから権限(role) を取り出す（必要なら） */
+    /** トークンから権限(role) を取り出す */
     public String extractRole(String token) {
         Claims claims = Jwts.parser()
                             .setSigningKey(secretKey)
@@ -67,4 +66,3 @@ public class JwtTokenProvider {
         return claims.get("role", String.class);
     }
 }
-

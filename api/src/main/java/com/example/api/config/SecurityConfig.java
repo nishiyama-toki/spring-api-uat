@@ -26,10 +26,14 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    //追加されたJwt用のフィルターをDI（JWT認証フィルター）
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    //カスタムユーザー詳細サービスのDI（ログイン認証用）
     private final TokenRefreshFilter tokenRefreshFilter; // 追加
     private final CustomUserDetailsService customUserDetailsService;
 
+    // 🔧 コンストラクタでDI
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           TokenRefreshFilter tokenRefreshFilter,
                           CustomUserDetailsService customUserDetailsService) {
@@ -38,6 +42,7 @@ public class SecurityConfig {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    //セキュリティ設定（フィルタチェイン定義）
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -50,8 +55,19 @@ public class SecurityConfig {
                     "/api/reset-mail",
                     "/api/reset-password/**"
                 ).permitAll()
-                .anyRequest().authenticated()
+
+                 //管理者のみアクセス可能なエンドポイント
+            .requestMatchers(
+                "/api/admin-only",
+                "/api/user_management_register",
+                "/api/user_management_edit",
+                "/api/user_management_delete",
+                "/api/user_management_DB"
+            ).hasAuthority("ROLE_ADMIN")
+
+                .anyRequest().authenticated()  // それ以外はすべて認証必要
             )
+            //JWTフィルターをログイン処理の前に挿入し、トークンリフレッシュフィルターをその後に
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class) // 追加（認証後にトークン再発行）
             // DaoAuthenticationProvider を明示的に登録
@@ -59,16 +75,19 @@ public class SecurityConfig {
         return http.build();
     }
 
+    //認証マネージャのBean定義
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    //パスワードエンコーダー（ハッシュ化）
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    //カスタムユーザー詳細サービス + パスワードエンコーダーを組み合わせる
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -77,6 +96,7 @@ public class SecurityConfig {
         return provider;
     }
 
+    //CORS（クロスオリジン）設定
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -84,7 +104,7 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(true); // CookieやAuthorizationヘッダを許可
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

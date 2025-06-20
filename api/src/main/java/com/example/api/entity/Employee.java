@@ -1,19 +1,22 @@
 package com.example.api.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
+// employeesテーブルに対応するEntity
 @Entity
-@Table(name = "employees", schema = "evaluation") // ← schemaは必須
-@Getter @Setter @NoArgsConstructor
+@Table(name = "employees")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Employee implements UserDetails {
 
     @Id
@@ -44,7 +47,12 @@ public class Employee implements UserDetails {
     @Column(name = "locked_at")
     private LocalDateTime lockedAt; // ロック時刻
 
-    private String role; // 役職名など
+    private String role;           // 役職
+
+    // --- 補足メソッド（booleanとしてのisAdmin判定） ---
+    public boolean isAdmin() {
+        return Boolean.TRUE.equals(isAdmin);
+    }
 
     // ==== UserDetails の実装部分 ====
 

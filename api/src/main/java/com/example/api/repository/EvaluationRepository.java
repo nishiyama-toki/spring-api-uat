@@ -15,3 +15,15 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     List<Long> findEvaluatorIdsByPhaseId(@Param("phaseId") Long phaseId);
 }
 
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
+
+    // 再送のため
+    Optional<Evaluation> findByEvaluatorIdAndTargetIdAndPhaseId(Integer evaluatorId, Integer targetId, Integer phaseId);
+
+    // フロント初期表示で既存スコア取得用
+    Optional<Evaluation> findByEvaluatorIdAndTargetId(Integer evaluatorId, Integer targetId);
+}

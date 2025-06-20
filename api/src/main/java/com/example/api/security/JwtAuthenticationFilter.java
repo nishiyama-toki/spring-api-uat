@@ -1,12 +1,15 @@
 package com.example.api.security;
 
+import com.example.api.service.JwtService;
 import com.example.api.entity.JwtToken;
 import com.example.api.repository.JwtTokenRepository;
 import com.example.api.service.CustomUserDetailsService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,6 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     System.out.println("JWT認証エラー: トークンが無効です");
                 }
+            } else {
+                System.out.println("❌ トークン署名 or 有効期限エラー");
             }
         } catch (Exception ex) {
             System.out.println("JWT認証エラー: " + ex.getMessage());

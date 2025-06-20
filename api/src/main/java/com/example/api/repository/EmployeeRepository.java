@@ -1,5 +1,6 @@
 package com.example.api.repository;
 
+import com.example.api.controller.TargetController.EmployeeProjection;
 import com.example.api.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
