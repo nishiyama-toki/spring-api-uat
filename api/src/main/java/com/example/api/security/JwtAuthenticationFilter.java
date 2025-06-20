@@ -33,6 +33,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    // ログイン関係のAPIはフィルターから除外
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/api/login")
+            || path.equals("/api/reset-mail")
+            || path.equals("/api/reset-password");
+    }
+
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -75,11 +85,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         /* --- 3. 後続フィルターへ --- */
         filterChain.doFilter(request, response);
-    }
-
-    /* ログインAPIのみ除外 */
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "/api/login".equals(request.getRequestURI());
     }
 }
