@@ -2,6 +2,7 @@ package com.example.api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,6 +49,36 @@ public class Evaluation {
     private String comment;
 
     @Column(name = "created_at")
+public class Evaluation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // ★ IntegerからLongに変更
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "evaluator_id", nullable = false)
+    private Employee evaluator;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_id", nullable = false)
+    private Employee target;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phase_id", nullable = false)
+    private Phase phase;
+
+    @Column(name = "skill_score", precision = 3, scale = 1)
+    private BigDecimal skillScore;
+
+    @Column(name = "business_score", precision = 3, scale = 1)
+    private BigDecimal businessScore;
+
+    @Column(name = "team_score", precision = 3, scale = 1)
+    private BigDecimal teamScore;
+
+    @Column(columnDefinition = "TEXT")
+    private String comment;
+
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
@@ -176,4 +207,26 @@ public class Evaluation {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
+
+    // --- Getters and Setters ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Employee getEvaluator() { return evaluator; }
+    public void setEvaluator(Employee evaluator) { this.evaluator = evaluator; }
+    public Employee getTarget() { return target; }
+    public void setTarget(Employee target) { this.target = target; }
+    public Phase getPhase() { return phase; }
+    public void setPhase(Phase phase) { this.phase = phase; }
+    public BigDecimal getSkillScore() { return skillScore; }
+    public void setSkillScore(BigDecimal skillScore) { this.skillScore = skillScore; }
+    public BigDecimal getBusinessScore() { return businessScore; }
+    public void setBusinessScore(BigDecimal businessScore) { this.businessScore = businessScore; }
+    public BigDecimal getTeamScore() { return teamScore; }
+    public void setTeamScore(BigDecimal teamScore) { this.teamScore = teamScore; }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

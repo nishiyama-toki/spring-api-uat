@@ -68,6 +68,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated()  // それ以外はすべて認証必要
             )
             //JWTフィルターをログイン処理の前に挿入し、トークンリフレッシュフィルターをその後に
+                .anyRequest().authenticated()
+                
+            )
+            .authenticationProvider(authenticationProvider()) // ✅ ←ここでOK！
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class) // 追加（認証後にトークン再発行）
             // DaoAuthenticationProvider を明示的に登録

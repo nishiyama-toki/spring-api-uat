@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.api.phase.repository;
 
 import com.example.api.phase.entity.Phase;
@@ -13,4 +14,13 @@ public interface PhaseRepository extends JpaRepository<Phase, Long> {
     // 編集用に、指定したID以外で同じ phaseNumber & periodName のデータが存在するかチェック
     boolean existsByPhaseNumberAndPeriodNameAndIdNot(Integer phaseNumber, String periodName, Long id);
 
+=======
+package com.example.api.repository;
+
+import com.example.api.entity.Phase;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+// Phaseエンティティの主キーの型に合わせて、Longを指定します
+public interface PhaseRepository extends JpaRepository<Phase, Long> {
+>>>>>>> origin/hideaki.hattori
 }

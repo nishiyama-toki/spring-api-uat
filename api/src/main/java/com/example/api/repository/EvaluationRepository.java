@@ -26,4 +26,19 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     // フロント初期表示で既存スコア取得用
     Optional<Evaluation> findByEvaluatorIdAndTargetId(Integer evaluatorId, Integer targetId);
+import java.util.List;
+import java.util.Optional;
+
+// ★ 主キーの型をLongに変更
+public interface EvaluationRepository extends JpaRepository<Evaluation, Long> { 
+    
+    /**
+     * 自己評価の取得・更新用メソッド (IDはすべてLong)
+     */
+    Optional<Evaluation> findByEvaluator_IdAndTarget_IdAndPhase_Id(Long evaluatorId, Long targetId, Long phaseId);
+
+    /**
+     * 過去の評価履歴取得用メソッド (IDはすべてLong)
+     */
+    List<Evaluation> findByTarget_IdAndPhase_Id(Long targetId, Long phaseId);
 }
