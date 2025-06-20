@@ -75,7 +75,7 @@ const EvaluationSummaryPage: React.FC = () => {
         <h1>全社員評価一覧（ダミー）</h1>
       </div>
       <div className="pe-descriptionBox">
-        <p>✖:評価対象項目外　-:未提出<br />期・Qを選択してください。</p>
+        <p>✖:評価対象項目外 -:未提出<br />期・Qを選択してください。</p>
       </div>
       <div style={{ margin: "16px 0" }}>
         <select
