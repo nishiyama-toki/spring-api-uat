@@ -44,6 +44,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+<!-- 以下書き換え -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version> <!-- 最新版があればそれを -->
+			<scope>provided</scope>
+		</dependency>
+<!-- 以上書き換え -->
 
 		<!-- Lombok -->
 		<dependency>

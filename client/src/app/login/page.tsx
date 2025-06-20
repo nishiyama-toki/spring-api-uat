@@ -47,11 +47,11 @@ export default function LoginPage() {
 
     try {
       // 1. ログインリクエスト
-      const res = await axios.post('/api/login', { email, password })
+      const res = await axios.post('http://localhost:8080/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
       if (res.data.permission === 'admin') {
-        router.push('/admin')
+        router.push('/all-evaluation')
       } else {
         router.push('/home')
       }

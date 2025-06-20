@@ -7,7 +7,7 @@ const instance = axios.create({
 
 // リクエストごとにトークンをセット（localStorageから）
 instance.interceptors.request.use(config => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('jwt')
    // /api/login のときは Authorization ヘッダーを付けない
   if (token && config.url !== '/api/login') {
     config.headers.Authorization = `Bearer ${token}` // Bearer を付ける
@@ -19,7 +19,7 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(response => {
   const newToken = response.headers['authorization']
   if (newToken) {
-    localStorage.setItem('token', newToken)
+    localStorage.setItem('jwt', newToken)
   }
   return response
 })
