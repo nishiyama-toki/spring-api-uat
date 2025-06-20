@@ -1,6 +1,7 @@
 package com.example.api.config;
 
 import com.example.api.security.JwtAuthenticationFilter;
+import com.example.api.security.TokenRefreshFilter; // 追加
 import com.example.api.service.CustomUserDetailsService;
 
 import org.springframework.context.annotation.Bean;
@@ -25,52 +26,69 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 🔽 追加されたJwt用のフィルターをDI（JWT認証フィルター）
+    //追加されたJwt用のフィルターをDI（JWT認証フィルター）
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // 🔽 カスタムユーザー詳細サービスのDI（ログイン認証用）
+    //カスタムユーザー詳細サービスのDI（ログイン認証用）
+    private final TokenRefreshFilter tokenRefreshFilter; // 追加
     private final CustomUserDetailsService customUserDetailsService;
 
     // 🔧 コンストラクタでDI
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          TokenRefreshFilter tokenRefreshFilter,
                           CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.tokenRefreshFilter = tokenRefreshFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    // 🔐 セキュリティ設定（フィルタチェイン定義）
+    //セキュリティ設定（フィルタチェイン定義）
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors().and()
-            .csrf().disable() // 🟡 警告出るが削除予定API。将来は「.csrf(csrf -> csrf.disable())」形式へ
+            .csrf().disable() //警告出るが削除予定API。将来は「.csrf(csrf -> csrf.disable())」形式へ
+            .cors()
+            .and()
+            .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/login",               // ログインAPI
                     "/api/reset-mail",          // パスワードリセットメール送信
                     "/api/reset-password/**"    // パスワード変更
                 ).permitAll()
+
+                 //管理者のみアクセス可能なエンドポイント
+            .requestMatchers(
+                "/api/admin-only",
+                "/api/user_management_register",
+                "/api/user_management_edit",
+                "/api/user_management_delete",
+                "/api/user_management_DB"
+            ).hasAuthority("ROLE_ADMIN")
+
                 .anyRequest().authenticated()  // それ以外はすべて認証必要
             )
-            // 🔽 JWTフィルターをログイン処理の前に挿入
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            //JWTフィルターをログイン処理の前に挿入し、トークンリフレッシュフィルターをその後に
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class); // ★追加（認証後にトークン再発行）
 
         return http.build();
     }
 
-    // 🔑 認証マネージャのBean定義
+    //認証マネージャのBean定義
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 🔐 パスワードエンコーダー（ハッシュ化）
+    //パスワードエンコーダー（ハッシュ化）
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🧩 カスタムユーザー詳細サービス + パスワードエンコーダーを組み合わせる
+    //カスタムユーザー詳細サービス + パスワードエンコーダーを組み合わせる
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -79,7 +97,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // 🌐 CORS（クロスオリジン）設定
+    //CORS（クロスオリジン）設定
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

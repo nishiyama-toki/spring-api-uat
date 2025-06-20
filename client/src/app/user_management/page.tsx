@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import axios from 'axios'
+import axios from '@/utils/axiosInstance' //トークン自動付与のaxiosインスタンス
 
 // ------------------------
 // ユーザ定義
@@ -40,16 +40,10 @@ export default function UserManagementPage() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
 // ------------------------
-// ユーザー一覧取得
+// ユーザー一覧取得（axiosInstanceによりトークン自動付与）
 // ------------------------
 useEffect(() => {
-  const token = localStorage.getItem("token") //トークン取得
-
-  axios.get<User[]>('http://localhost:8080/api/user_management_DB', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
+  axios.get<User[]>('/api/user_management_DB')
     .then(res => setUsers(res.data)) //表示のためのstate格納
     .catch(err => {
       console.error('取得失敗:' , err)
@@ -60,21 +54,13 @@ useEffect(() => {
 }, [])
 
 // ------------------------
-// 新規ユーザー登録処理
+// 新規ユーザー登録処理（axiosInstance使用）
 // ------------------------
 const handleRegister = async () => {
   try {
-    const token = localStorage.getItem("token");
-
     const res = await axios.post<User>(
-      'http://localhost:8080/api/user_management_register',
-      newUser,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      } //CORS許可設定
+      '/api/user_management_register',
+      newUser
     );
     setUsers(prev => [...prev, res.data]) // prev（前のstate）を使って一覧に追加
     setNewUser({                         // newUser を初期状態に戻す
@@ -111,21 +97,13 @@ const handleRegister = async () => {
 // ------------------------
 const handleSave = async (user: User) => {
   try {
-    const token = localStorage.getItem("token");
-
-    await axios.put('http://localhost:8080/api/user_management_edit',
+    await axios.put('/api/user_management_edit',
       {
         id: user.id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,  // ← 明示的に1個ずつ渡す
         role: user.role
-      },
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
       }
     );
     alert('変更を保存しました');
@@ -146,14 +124,8 @@ const handleSave = async (user: User) => {
 const handleDeleteConfirmed = async () => {
   if (!userToDelete) return
   try {
-    const token = localStorage.getItem("token");
-
-    await axios.delete('http://localhost:8080/api/user_management_delete', {
-      data: { id: userToDelete.id },
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    await axios.delete('/api/user_management_delete', {
+      data: { id: userToDelete.id }
     });
     setUsers(users.filter(u => u.id !== userToDelete.id))
     setIsModalOpen(false) //モーダルを閉じる
@@ -166,6 +138,14 @@ const handleDeleteConfirmed = async () => {
     }
   }
 }
+
+// ------------------------
+// HTML（略）
+// ------------------------
+
+// 以下はHTML部分が続くため、省略していますが処理には変更を加えていません。
+// axiosの差し替えと不要なトークン取得・ヘッダー設定を削除したのが主な変更点です。
+
 
 
 // ------------------------

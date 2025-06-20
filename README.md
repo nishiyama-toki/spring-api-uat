@@ -62,5 +62,10 @@ Hello, World!と出力されること
 
 仮ユーザー
 
+管理者
 Secure!2024
 dummy2@example.com
+
+一般
+Kabuki1!!!!1
+kabuki@example.com

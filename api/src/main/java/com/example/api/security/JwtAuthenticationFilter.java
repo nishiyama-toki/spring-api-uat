@@ -1,6 +1,8 @@
 package com.example.api.security;
 
 import com.example.api.service.JwtService;
+import com.example.api.entity.JwtToken;
+import com.example.api.repository.JwtTokenRepository;
 import com.example.api.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
@@ -8,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +22,17 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtTokenRepository jwtTokenRepository;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
+                                   CustomUserDetailsService userDetailsService,
+                                   JwtTokenRepository jwtTokenRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenRepository = jwtTokenRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -33,9 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        /* --- 1. Authorization ヘッダーからトークン抽出 --- */
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
+        String token = null;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("🟡 トークンなし（Authorizationヘッダーなし or Bearer形式でない）");
@@ -43,35 +50,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+        token = authHeader.substring(7); // "Bearer " を除去
+        System.out.println("🔍 受信したトークン: " + token);
 
-        System.out.println("🟢 トークンから抽出したemail: " + userEmail);
+        /* --- 2. トークン検証 & SecurityContext 未設定の場合のみ処理 --- */
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            System.out.println("👤 ユーザー詳細取得成功: " + userDetails.getUsername());
+            // 2-1. 署名 & 期限チェック
+            if (jwtTokenProvider.isValid(token)) {
+                System.out.println("✅ トークン署名・期限OK");
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                System.out.println("✅ トークン有効、認証セットします");
+                // 2-2. DB上で失効していないかチェック
+                boolean revoked = jwtTokenRepository.findByToken(token)
+                        .map(JwtToken::getIsRevoked)
+                        .orElse(true); // トークン未登録 → 無効扱い
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                if (!revoked) {
+                    System.out.println("✅ トークンは未失効");
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
+                    // 2-3. ユーザー情報を取得して認証設定
+                    String userId = jwtTokenProvider.extractUserId(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                    System.out.println("👤 ユーザー情報取得: " + userDetails.getUsername());
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    System.out.println("❌ トークンは失効済み");
+                }
             } else {
-                System.out.println("❌ トークン検証失敗！");
+                System.out.println("❌ トークン署名 or 有効期限エラー");
             }
         } else {
-            System.out.println("⚠️ SecurityContext すでに設定済み、またはユーザー取得失敗");
+            System.out.println("⚠️ SecurityContext すでに設定済み、またはトークンなし");
         }
 
+        /* --- 3. 後続フィルターへ --- */
         filterChain.doFilter(request, response);
+    }
+
+    /* --- ログインAPIのみ除外 --- */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "/api/login".equals(request.getRequestURI());
     }
 }

@@ -3,6 +3,8 @@ package com.example.api.security;
 import com.example.api.entity.Employee;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
 
 import java.util.Collection;
 
@@ -30,7 +32,11 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // 権限が必要ならここに追加
+        if (admin) {
+        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    } else {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
     }
 
     @Override

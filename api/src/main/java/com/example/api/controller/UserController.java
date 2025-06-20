@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // 認証ユーザーを引数に受け取る
+import com.example.api.security.UserDetailsImpl;                             // カスタム認証情報
+
+
 
 import java.util.List;
 import java.util.Map;
@@ -84,7 +88,6 @@ public class UserController {
     // -------------------------------
     //トークン認証 
     // -------------------------------
-    /*
     @GetMapping("/api/admin-only")
     public ResponseEntity<?> adminCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (!userDetails.isAdmin()) {
@@ -92,7 +95,7 @@ public class UserController {
         }
     return ResponseEntity.ok("管理者アクセスOK");
     }
-    */
+    
 
 
 

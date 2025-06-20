@@ -1,6 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import axiosInstance from '../../utils/axiosInstance'
+
+
 
 // -------------------------
 // 型定義
@@ -39,17 +42,13 @@ export default function MultiEvaluations() {
   // 画面初期表示時：評価対象者一覧を取得
   // -------------------------
   useEffect(() => {
-    const token = localStorage.getItem("token")//トークン取得
-
-    fetch('http://localhost:8080/api/multi-evaluations/targets', {
-      headers: {
-      Authorization: `Bearer ${token}`,
-    },
-      credentials: 'include',
-    })
-      .then((res) => res.json())
-      .then((data: Target[]) => {
+    // 🔁 axiosInstance（utils/axiosInstance.ts）を使って対象者一覧を取得
+    axiosInstance
+      .get('/api/multi-evaluations/targets')
+      .then((res) => {
+        const data: Target[] = res.data
         console.log('targets:', data)
+
         const initialEvaluations = data.map((t) => ({
           target_id: t.id,
           skill_score: t.evaluation?.skill_score ?? null,
@@ -58,14 +57,14 @@ export default function MultiEvaluations() {
           comment: t.evaluation?.comment ?? '',
         }))
         console.log('evaluations:', initialEvaluations)
+
         setTargets(data)
         setEvaluations(initialEvaluations)
       })
-
       .catch((err) => {
-      console.error(err)
-      alert('⛔ 認証エラー：再ログインしてください')
-    })
+        console.error(err)
+        alert('⛔ 認証エラー：再ログインしてください')
+      })
   }, [])
 
   // -------------------------
@@ -96,44 +95,31 @@ export default function MultiEvaluations() {
   // 送信ボタンクリック時：POST送信処理
   // -------------------------
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token"); 
+  try {
+    // 🔽 axiosInstance を使えば、トークンや credentials は内部で自動的に付与される
+    const res = await axiosInstance.post('/api/multi-evaluations', {
+      phase_id: 1,
+      evaluations,
+    })
 
+    // 🔍 ステータスコードチェック（axios は自動で 4xx/5xx を throw する）
+    if (!res || res.status >= 400) {
+      alert('送信に失敗しました')
+      return
+    }
 
-      const res = await fetch('http://localhost:8080/api/multi-evaluations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' ,
-          'Authorization': `Bearer ${token}`
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          phase_id: 1,
-          evaluations,
-        }),
-      })
-
-      // -------------------------
-      // バリデーションエラー or その他エラーをキャッチ
-      // -------------------------
-      if (!res.ok) {
-        let errorMessage = '送信に失敗しました'
-        try {
-          const error = await res.json()
-          errorMessage = error.message || errorMessage
-        } catch {
-          // JSON以外のレスポンスだったとき用
-        }
-        alert(errorMessage)
-        return
-      }
-
-      const json = await res.json()
-      alert(json.message || '送信完了')
-    } catch (err) {
+    // ✅ 正常に送信された場合
+    alert(res.data?.message || '送信完了')
+  } catch (err: any) {
+    // ❌ サーバーエラー or ネットワークエラーなど
+    if (err.response?.data?.message) {
+      alert(err.response.data.message)
+    } else {
       alert('サーバーに接続できませんでした')
     }
   }
-
+}
+  
   // -------------------------
   // HTML
   // -------------------------

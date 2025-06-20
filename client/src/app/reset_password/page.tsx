@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '@/utils/axiosInstance'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function ResetPasswordPage() {
@@ -43,3 +43,4 @@ export default function ResetPasswordPage() {
     </div>
   )
 }
+

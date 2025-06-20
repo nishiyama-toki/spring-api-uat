@@ -1,7 +1,7 @@
-// JWTの発行処理
 package com.example.api.security;
 
 import com.example.api.entity.Employee;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,12 +27,42 @@ public class JwtTokenProvider {
         Instant now = Instant.now();
 
         return Jwts.builder()
-                .setSubject(employee.getEmail())                      // トークンのsubjectにemailを入れる（←前はID）
-                .claim("id", employee.getId())                        // ★ IDも別途claimとして埋め込む（←追加）
-                .claim("role", employee.getPermission())              // 権限（admin等）をクレームに追加
-                .setIssuedAt(Date.from(now))                          // 発行日時
-                .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS))) // 有効期限：1日後
-                .signWith(SignatureAlgorithm.HS256, secretKey)       // HMAC SHA256で署名
-                .compact();                                           // トークン文字列を完成
+                .setSubject(employee.getEmail())                         // トークンのsubjectにemailを入れる
+                .claim("id", employee.getId())                           // IDをclaimとして埋め込む
+                .claim("role", employee.getPermission())                 // 権限をclaimに追加
+                .setIssuedAt(Date.from(now))                             // 発行日時
+                .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))  // 有効期限：1日
+                .signWith(SignatureAlgorithm.HS256, secretKey)          // HMAC SHA256で署名
+                .compact();
+    }
+
+    /* =====  追加メソッド ===== */
+
+    /** トークンの署名・期限を検証 */
+    public boolean isValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false; // 署名不正・期限切れなど
+        }
+    }
+
+    /** トークンからユーザーID（Subject）を取得 */
+    public String extractUserId(String token) {
+        Claims claims = Jwts.parser()
+                            .setSigningKey(secretKey)
+                            .parseClaimsJws(token)
+                            .getBody();
+        return claims.getSubject(); // setSubject に入れた値（email）
+    }
+
+    /** トークンから権限(role) を取り出す */
+    public String extractRole(String token) {
+        Claims claims = Jwts.parser()
+                            .setSigningKey(secretKey)
+                            .parseClaimsJws(token)
+                            .getBody();
+        return claims.get("role", String.class);
     }
 }
