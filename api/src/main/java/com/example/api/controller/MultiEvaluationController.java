@@ -53,6 +53,6 @@ public class MultiEvaluationController {
     @GetMapping("/targets")
     public List<TargetResponseDto> getTargetsWithEvaluations(HttpServletRequest request) {
         Integer evaluatorId = jwtService.extractUserId(request);
-        return userService.getTargetsWithEvaluation(evaluatorId);
+        return userService.getTargetsWithEvaluation(evaluatorId.longValue()); // ← Longに変換！
     }
 } 
