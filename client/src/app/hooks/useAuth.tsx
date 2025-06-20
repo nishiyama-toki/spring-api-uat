@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // トークンに含まれるデータの型を定義
 interface TokenPayload {
@@ -51,21 +51,23 @@ export const withAdminAuth = (Page: React.ComponentType) => {
     return (props: any) => {
         const auth = useAuth();
         const router = useRouter();
+        const [isVerified, setIsVerified] = useState(false);
 
         useEffect(() => {
 
             // 認証情報を取得中、または既にリダイレクト処理が走っている場合は何もしない
             if (auth === undefined) return;
 
-            if (auth?.role !== 'admin') {
-
+            if (auth?.role == 'admin') {
+                setIsVerified(true);
+            } else {
                 // 管理者でなければログインページへ
                 router.replace('/login');
             }
         }, [auth,router]);
 
         // 管理者であればページをレンダリング
-        if (auth?.role === 'admin') {
+        if (isVerified) {
             return <Page {...props} />;
         }
 
