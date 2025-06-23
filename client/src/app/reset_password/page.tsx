@@ -3,6 +3,8 @@ import { useState } from 'react'
 import axios from '@/utils/axiosInstance'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 export default function ResetPasswordPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
