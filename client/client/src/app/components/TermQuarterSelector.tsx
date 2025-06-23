@@ -33,10 +33,10 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
 
                 // ✅ 修正：anyを使わずにPartial<Phase>経由でPhaseに変換
-                const mapped = phasesArray.map((p: Partial<Phase>): Phase => ({
-                    phaseId: Number(p.phaseId),
-                    phaseNumber: Number(p.phaseNumber),
-                    name: String(p.name ?? ''),
+                const mapped = phasesArray.map((p: any): Phase => ({
+                phaseId: Number(p.phaseId),
+                phaseNumber: Number(p.phaseNumber),
+                name: String(p.name ?? ''),
                 }));
 
                 setAllPhases(mapped);
