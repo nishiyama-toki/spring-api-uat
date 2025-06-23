@@ -15,7 +15,7 @@ public class Phase {
     private Integer phaseNumber;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String periodName;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -40,8 +40,10 @@ public class Phase {
     public void setId(Long id){this.id=id;}
     public Integer getPhaseNumber(){return phaseNumber;}
     public void setPhaseNumber(Integer p){this.phaseNumber=p;}
-    public String getName(){return name;}
-    public void setName(String n){this.name=n;}
+    public String getPeriodName(){return periodName;}
+    public void setPeriodName(String n){this.periodName=n;}
+    public String getName(){return periodName;}
+    public void setName(String n){this.periodName=n;}
     public LocalDate getStartDate(){return startDate;}
     public void setStartDate(LocalDate d){this.startDate=d;}
     public LocalDate getEndDate(){return endDate;}

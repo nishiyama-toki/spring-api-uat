@@ -38,6 +38,7 @@ public class UserService {
         user.setPassword(hashed);
 
         user.setAdmin(dto.isAdmin());
+        user.setPermission(dto.getPermission());
         return userRepository.save(user);
     }
 

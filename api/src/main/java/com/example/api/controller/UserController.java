@@ -58,6 +58,7 @@ public class UserController {
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
         user.setAdmin(dto.isAdmin());
+        user.setPermission(dto.getPermission());
 
         // パスワードは変更しない（setPassword は呼ばない）
         return userRepository.save(user);
