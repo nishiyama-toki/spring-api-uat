@@ -12,3 +12,5 @@ public class PhaseResponse {
     private LocalDate endDate;
     private boolean isClosed;
 }
+
+
