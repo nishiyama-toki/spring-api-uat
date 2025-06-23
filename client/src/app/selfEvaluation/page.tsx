@@ -7,7 +7,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'//追加
 
 
 // API ベース URL を環境変数で設定
