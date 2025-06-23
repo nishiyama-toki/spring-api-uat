@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import axios from '@/utils/axiosInstance'
+import { isAxiosError } from 'axios'
 
 interface PhaseData {
   id: string
@@ -96,10 +97,15 @@ export default function SubmissionPeriod() {
       // 初期化
       setForm({ id: '', name: '', period_name: '', start_date: '', end_date: '' })
       setIsEditMode(false)
-    } catch (err: any) {
-      console.error(err)
-      alert(err.response?.data?.message || 'エラーが発生しました')
-    }
+    } catch (err:   unknown) {
+    if (isAxiosError(err)) {
+    console.error(err)
+    alert(err.response?.data?.message || 'エラーが発生しました')
+  } else {
+    console.error('予期しないエラー:', err)
+    alert('不明なエラーが発生しました')
+  }
+  }
   }
 
   return (

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import axios from '@/utils/axiosInstance' //トークン自動付与のaxiosインスタンス
+import { isAxiosError } from 'axios'
+
 
 // ------------------------
 // ユーザ定義
@@ -110,13 +112,19 @@ const handleSave = async (user: User) => {
       }
     );
     alert('変更を保存しました');
-  } catch (e: any) {
+  } catch (e) {
+  if (isAxiosError(e)) {
     if (e.response?.status === 401 || e.response?.status === 403) {
-      alert('⛔ 認証エラー：再ログインしてください');
+      alert('⛔ 認証エラー：再ログインしてください')
     } else {
-      alert('保存失敗');
+      alert('登録失敗')
     }
+  } else {
+    alert('予期しないエラーが発生しました')
   }
+}
+
+
 };
 
 
