@@ -1,0 +1,43 @@
+.alertWrapper {
+  background-color: #fefcbf; /* bg-yellow-100 */
+  padding: 1rem; /* p-4 */
+  border-radius: 0.5rem; /* rounded */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.alertTitle {
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.alertItem {
+  color: #b91c1c; /* text-red-700 */
+}
+
+.alertType {
+  margin-left: 0.5rem; /* ml-2 */
+  font-size: 0.75rem; /* text-xs */
+  color: #4b5563; /* text-gray-600 */
+}
+
+.notSubmittedBox {
+  background-color: #dbeafe; /* bg-blue-100 */
+  padding: 0.75rem; /* p-3 */
+  border-radius: 0.5rem; /* rounded */
+  margin-top: 0.75rem; /* mt-3 */
+}
+
+.notSubmittedTitle {
+  font-weight: 600; /* font-semibold */
+  color: #1d4ed8; /* text-blue-700 */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.notSubmittedItem {
+  color: #1e3a8a; /* text-blue-800 */
+}
+
+.list {
+  list-style-type: disc;
+  padding-left: 1rem;
+}

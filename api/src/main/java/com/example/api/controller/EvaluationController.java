@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
 public class EvaluationController {
 
     private final EvaluationService evaluationService;
@@ -19,7 +18,6 @@ public class EvaluationController {
         this.evaluationService = evaluationService;
     }
 
-    /** 一覧 */
     @GetMapping("/all_evaluations")
     public ResponseEntity<?> getAllEvaluations(@RequestParam("phase_id") Long phaseId) {
         if (phaseId == null) {
@@ -29,7 +27,6 @@ public class EvaluationController {
         return ResponseEntity.ok(Map.of("employees", evaluations));
     }
 
-    /** コメント一覧 */
     @GetMapping("/employees/{targetId}/comments")
     public ResponseEntity<List<EvaluationResponse>> getComments(
             @PathVariable Long targetId,

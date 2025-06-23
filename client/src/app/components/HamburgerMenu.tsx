@@ -1,54 +1,73 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
+import styles from './HamburgerMenu.module.css'
+interface JwtPayload {
+  role?: string   // ← role を使って判定（例: "admin"）
+}
 
 export default function HamburgerMenu() {
   const [isAdmin, setIsAdmin] = useState(false)
+  const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    const isAdminStr = typeof window !== "undefined" ? localStorage.getItem('is_admin') : null
-    setIsAdmin(isAdminStr === 'true')
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+
+    if (token) {
+      try {
+        const decoded = jwtDecode<JwtPayload>(token)
+
+        // ここで admin 判定（role を使う）
+        if (decoded.role === 'admin') {
+          setIsAdmin(true)
+        } else {
+          setIsAdmin(false)
+        }
+      } catch (error) {
+        console.error('トークン解析に失敗しました:', error)
+        setIsAdmin(false)
+      }
+    } else {
+      setIsAdmin(false)
+    }
   }, [pathname])
 
-  const [open, setOpen] = useState(false)
-
-  // 除外したいパス
   const hiddenPaths = [
     '/login',
     '/reset_password',
     '/reset_password/success',
     '/reset_mail',
-    '/reset_mail/sent'
-  ]
+    '/reset_mail/sent',
+  ];
 
-  if (hiddenPaths.some(p => pathname === p)) {
-    return null
+  if (hiddenPaths.includes(pathname)) {
+    return null;
   }
 
-  // 「ホーム」だけ isAdmin でリンク先を切り替え
   const menuItems = [
     { name: 'ホーム', href: isAdmin ? '/admin' : '/home' },
-    { name: '評価提出依頼', href: '/selfEvaluation' },
-    { name: '過去評価履歴', href: '/past-evaluations' },
+    { name: '評価提出依頼', href: '/evaluation_requests' },
+    { name: '過去評価履歴', href: '/evaluation' },
     { name: '等級基準書', href: '/grade-guidelines.pdf', target: '_blank' },
     { name: '人事評価', href: '/personnel-evaluation.pdf', target: '_blank' },
     { name: '社員等級', href: '/employee-grades.pdf', target: '_blank' },
-  ]
+  ];
 
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
-    { name: 'ユーザー管理', href: '/user-management' },
+    { name: 'ユーザー管理', href: '/user_management' },
     { name: '全社員評価確認', href: '/all-evaluations' },
-    { name: '未提出者確認', href: '/pending-submissions' },
+    { name: '未提出者確認', href: '/unsubmitted-list' },
   ]
 
   return (
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="hamburger-btn"
+        className={styles.hamburgerBtn}
         aria-label="Toggle Menu"
       >
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
@@ -60,15 +79,15 @@ export default function HamburgerMenu() {
 
       {open && (
         <div
-          className="menu-overlay"
+          className={styles.menuOverlay}
           onClick={() => setOpen(false)}
           aria-label="Close Menu Overlay"
         />
       )}
 
-      <nav className={`menu-panel${open ? " open" : ""}`}>
+      <nav className={`menu-panel${open ? ' open' : ''}`}>
         <ul>
-          {menuItems.map(item => (
+          {menuItems.map((item) => (
             <li key={item.href}>
               <a
                 href={item.href}
@@ -81,12 +100,9 @@ export default function HamburgerMenu() {
             </li>
           ))}
           {isAdmin &&
-            adminItems.map(item => (
-              <li key={item.href} className="admin">
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                >
+            adminItems.map((item) => (
+              <li key={item.href} className={styles.admin}>
+                <a href={item.href} onClick={() => setOpen(false)}>
                   {item.name}
                 </a>
               </li>
@@ -94,5 +110,5 @@ export default function HamburgerMenu() {
         </ul>
       </nav>
     </>
-  )
+  );
 }
