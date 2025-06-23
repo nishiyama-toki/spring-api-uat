@@ -41,15 +41,28 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                     'phaseNumber' in p &&
                     'name' in p
                 ) {
-                    const phase = p as { phaseId: number | string; phaseNumber: number | string; name: string };
+                    const phase = p as {
+                        phaseId: number | string;
+                        phaseNumber: number | string;
+                        name: string;
+                    };
                     return {
-                    phaseId: Number(phase.phaseId),
-                    phaseNumber: Number(phase.phaseNumber),
-                    name: String(phase.name),
+                        phaseId: Number(phase.phaseId),
+                        phaseNumber: Number(phase.phaseNumber),
+                        name: String(phase.name),
                     };
                 }
                 throw new Error('Invalid phase object received from API');
-                });
+            });
+
+            setAllPhases(mapped); // ← ✅ 最後にちゃんとデータを反映
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    fetchPhases(); // ← ✅ ここで呼び出す
+}, []);
 
                 
     

@@ -75,13 +75,17 @@ const handleRegister = async () => {
       isAdmin: false,
       role: 'スペシャリスト'
     }) 
-  } catch (e: any) {
-    if (e.response?.status === 401 || e.response?.status === 403) {
-      alert('⛔ 認証エラー：再ログインしてください')
+    } catch (e: unknown) {
+    if (isAxiosError(e)) {
+      if (e.response?.status === 401 || e.response?.status === 403) {
+        alert('⛔ 認証エラー：再ログインしてください')
+      } else {
+        alert('登録失敗')
+      }
     } else {
-      alert('登録失敗')
+      alert('予期しないエラーが発生しました')
     }
-  }
+}
 }
 
 // ------------------------
@@ -141,13 +145,18 @@ const handleDeleteConfirmed = async () => {
     setUsers(users.filter(u => u.id !== userToDelete.id))
     setIsModalOpen(false) //モーダルを閉じる
     setUserToDelete(null)
-  } catch (e: any) {
+  } catch (e: unknown) {
+  if (isAxiosError(e)) {
     if (e.response?.status === 401 || e.response?.status === 403) {
       alert('⛔ 認証エラー：再ログインしてください')
     } else {
       alert('削除失敗')
     }
+  } else {
+    alert('予期しないエラーが発生しました')
   }
+}
+
 }
 
 // ------------------------
