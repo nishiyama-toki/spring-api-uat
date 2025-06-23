@@ -7,6 +7,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
 
+export const dynamic = 'force-dynamic'
+
+
 // API ベース URL を環境変数で設定
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
