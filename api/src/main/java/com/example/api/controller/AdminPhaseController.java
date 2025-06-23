@@ -15,7 +15,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-// Reactアプリ（http://localhost:3000）からの全メソッドのアクセスを許可
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminPhaseController {
 
@@ -36,8 +35,10 @@ public class AdminPhaseController {
             );
         }
 
-        // バリデーション：既に同じフェーズ・期間名のデータがある場合
-        if (phaseRepository.existsByPhaseNumberAndPeriodName(dto.getPhaseNumber(), dto.getPeriodName())) {
+        // 修正前:
+        // if (phaseRepository.existsByPhaseNumberAndPeriodName(dto.getPhaseNumber(), dto.getPeriodName())) {
+        // 修正後:
+        if (phaseRepository.existsByPhaseNumberAndName(dto.getPhaseNumber(), dto.getPeriodName())) {
             return ResponseEntity.badRequest().body(
                 Map.of("duplicate_error", "既に同じ評価期とクォーターが存在します")
             );
@@ -49,7 +50,7 @@ public class AdminPhaseController {
 
         return ResponseEntity.ok(Map.of(
             "message", "登録成功",
-            "id", phase.getId() // 自動採番IDを返す
+            "id", phase.getId()
         ));
     }
 
@@ -60,7 +61,6 @@ public class AdminPhaseController {
     @PutMapping("/submission_period_edit")
     public ResponseEntity<?> editPhase(@RequestBody PhaseEditDto dto) {
 
-        // ID存在チェック
         Phase target = phaseRepository.findById(dto.getId()).orElse(null);
         if (target == null) {
             return ResponseEntity.status(404).body(
@@ -68,22 +68,21 @@ public class AdminPhaseController {
             );
         }
 
-        // 日付バリデーション
         if (dto.getStartDate().isAfter(dto.getEndDate())) {
             return ResponseEntity.badRequest().body(
                 Map.of("date_error", "開始日は終了日よりも前にしてください")
             );
         }
 
-        // 自分以外に同一フェーズ・期間が存在するか
-        if (phaseRepository.existsByPhaseNumberAndPeriodNameAndIdNot(
-                dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
+        // 修正前:
+        // if (phaseRepository.existsByPhaseNumberAndPeriodNameAndIdNot(dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
+        // 修正後:
+        if (phaseRepository.existsByPhaseNumberAndNameAndIdNot(dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
             return ResponseEntity.badRequest().body(
                 Map.of("duplicate_error", "既に同じ評価期とクォーターが存在します")
             );
         }
 
-        // 更新処理
         target.setStartDate(dto.getStartDate());
         target.setEndDate(dto.getEndDate());
         target.setPeriodName(dto.getPeriodName());
@@ -100,7 +99,7 @@ public class AdminPhaseController {
     // -------------------------------
     @GetMapping("/submission_periods")
     public ResponseEntity<?> getAllPhases(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("認証情報: " + userDetails); // ←ログ出力
+        System.out.println("認証情報: " + userDetails);
 
         if (userDetails == null || !userDetails.isAdmin()) {
             return ResponseEntity.status(403).body("管理者権限が必要です");
@@ -108,7 +107,7 @@ public class AdminPhaseController {
 
         return ResponseEntity.ok(phaseRepository.findAll());
     }
-    
+
     // -------------------------------
     // トークン認証 
     // -------------------------------

@@ -1,6 +1,6 @@
 package com.example.api.controller; // コントローラーのパッケージ定義
 
-import com.example.api.dto.EvaluationResponseDTO; // レスポンス用DTO
+import com.example.api.dto.EvaluationResponse;// レスポンス用DTO
 import com.example.api.service.EvaluationService; // 評価取得サービス
 import com.example.api.entity.Employee; // DBから評価者を取得するためのエンティティ
 import com.example.api.repository.EmployeeRepository; // DBから評価者を取得するためのリポジトリ
@@ -13,13 +13,13 @@ import java.util.List;
 
 @RestController // このクラスはREST APIのコントローラーであることを示す
 @RequestMapping("/api/evaluations") // このクラスのAPIパスのプレフィックスを定義
-public class EvaluationController {
+public class EvaluationsController {
 
     private final EvaluationService evaluationService;
     private final EmployeeRepository employeeRepository;
 
     @Autowired // コンストラクタインジェクション
-    public EvaluationController(EvaluationService evaluationService,
+    public EvaluationsController(EvaluationService evaluationService,
                                 EmployeeRepository employeeRepository) {
         this.evaluationService = evaluationService;
         this.employeeRepository = employeeRepository;
@@ -33,7 +33,7 @@ public class EvaluationController {
      * @return フェーズ内の評価依頼一覧（提出済み・未済問わず）
      */
     @GetMapping
-    public List<EvaluationResponseDTO> getEvaluations(@AuthenticationPrincipal UserDetails loginUser) {
+    public List<EvaluationResponse> getEvaluations(@AuthenticationPrincipal UserDetails loginUser) {
         String email = loginUser.getUsername(); // ← 通常、username = email として扱われている
         Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("社員が見つかりません"));
