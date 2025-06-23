@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
-// 本番用APIインスタンス
 import axios from '../../utils/axiosInstance';
-// import { withAdminAuth } from '../hooks/useAuth';
 
 type EmployeeEvaluation = {
     targetId: number;
@@ -25,6 +23,8 @@ type Comment = {
 const EvaluationSummaryPage: React.FC = () => {
     const [periodId, setPeriodId] = useState<string>('');
     const [evaluations, setEvaluations] = useState<EmployeeEvaluation[]>([]);
+    
+    // モーダルとコメント管理用
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [comments, setComments] = useState<Comment[]>([]);
     const [selectedEmployeeName, setSelectedEmployeeName] = useState<string>('');
@@ -32,57 +32,34 @@ const EvaluationSummaryPage: React.FC = () => {
 
     useEffect(() => {
         if (!periodId) {
-            setEvaluations([]);
+            console.warn("評価期(periodId)が未選択のためAPI呼び出しスキップ");
+            setEvaluations([]); // 選択がクリアされたらリストもクリアする
             return;
         }
 
-        // === ★【ここを切り替え】====================
-        // --- 本番API使用時はこちらを有効化 ---
-        /*
         const fetchEvaluations = async () => {
             try {
                 const response = await axios.get('/api/all_evaluations', {
                     params: { phase_id: periodId }
                 });
+            
+                // APIからのデータが配列であることを確認
                 if (response.data && Array.isArray(response.data.employees)) {
                     setEvaluations(response.data.employees);
                 } else {
+                    console.error('API did not return a valid employees array:', response.data);
                     setEvaluations([]);
                 }
             } catch (error) {
+                console.error('評価データの取得に失敗しました:', error);
                 setEvaluations([]);
             }
         };
+
         fetchEvaluations();
-        */
-
-        // --- フロント単体で確認したい場合はこちらを有効化 ---
-        const dummyEvaluations: EmployeeEvaluation[] = [
-            {
-                targetId: 1,
-                targetName: '山田 太郎',
-                averageSkillScore: 4.2,
-                averageBusinessScore: 3.8,
-                averageTeamScore: 4.0,
-                overallAverageScore: 4.0,
-                hasComment: true,
-            },
-            {
-                targetId: 2,
-                targetName: '田中 花子',
-                averageSkillScore: null,
-                averageBusinessScore: null,
-                averageTeamScore: null,
-                overallAverageScore: 0,
-                hasComment: false,
-            },
-        ];
-        setEvaluations(dummyEvaluations);
-        // === ★ここまで =======================
-
     }, [periodId]);
 
-    // コメント取得（ダミー対応）
+    // コメント取得ボタンが押された時の関数
     const handleViewComments = async (targetId: number, targetName: string) => {
         if (!periodId) return;
 
@@ -90,34 +67,17 @@ const EvaluationSummaryPage: React.FC = () => {
         setIsModalOpen(true);
         setIsLoadingComments(true);
 
-        // === ★【ここを切り替え】====================
-        // --- 本番API使用時はこちらを有効化 ---
-        /*
         try {
             const response = await axios.get(`/api/employees/${targetId}/comments`, {
                 params: { phase_id: periodId }
             });
             setComments(response.data);
         } catch (error) {
+            console.error('コメントの取得に失敗しました', error);
             setComments([]);
         } finally {
             setIsLoadingComments(false);
         }
-        */
-
-        // --- フロント単体で確認したい場合はこちらを有効化 ---
-        setTimeout(() => {
-            if (targetId === 1) {
-                setComments([
-                    { evaluatorName: "佐藤", comment: "よく頑張っていました！" },
-                    { evaluatorName: "鈴木", comment: "積極的に取り組めていました。" }
-                ]);
-            } else {
-                setComments([]);
-            }
-            setIsLoadingComments(false);
-        }, 700);
-        // === ★ここまで =======================
     };
 
     return (
@@ -127,12 +87,14 @@ const EvaluationSummaryPage: React.FC = () => {
                 <h2>全社員評価一覧</h2>
                 <p>✖:評価対象項目外 -:未提出</p>
             </div>
+
             {/* 期・Q選択 */}
             <div className={styles.selectorContainer}>
-                <TermQuarterSelector
+                <TermQuarterSelector 
                     value={periodId}
                     onChange={(newId: string) => setPeriodId(newId)} />
             </div>
+
             {/* 評価一覧 */}
             <table className={styles.table}>
                 <thead>
@@ -155,9 +117,9 @@ const EvaluationSummaryPage: React.FC = () => {
                             <td>{e.overallAverageScore.toFixed(2)}</td>
                             <td>
                                 {e.hasComment ? (
-                                    <button
+                                    <button 
                                         className={styles.button}
-                                        onClick={() =>
+                                        onClick={() => 
                                             handleViewComments(e.targetId, e.targetName)
                                         }
                                     >
@@ -203,4 +165,3 @@ const EvaluationSummaryPage: React.FC = () => {
     );
 };
 
-export default withAdminAuth(EvaluationSummaryPage);
