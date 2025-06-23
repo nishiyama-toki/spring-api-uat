@@ -34,28 +34,21 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 // 👇 unknown[] にキャストして any 推論を完全排除
                 const phasesArray = Array.isArray(raw) ? raw : [];
 
-                // ✅ 最終手段：ESLintルールを無効化してanyを明示的に使用
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const mapped = (phasesArray as any[]).map((p): Phase => {
-                    if (
-                        typeof p === 'object' &&
-                        p !== null &&
-                        'phaseId' in p &&
-                        'phaseNumber' in p &&
-                        'name' in p
-                    ) {
-                        const phase = p as {
-                            phaseId: number | string;
-                            phaseNumber: number | string;
-                            name: string;
-                        };
-                        return {
-                            phaseId: Number(phase.phaseId),
-                            phaseNumber: Number(phase.phaseNumber),
-                            name: String(phase.name),
-                        };
+                // ✅ any を完全排除し、プロパティに安全にアクセス
+                const mapped = (phasesArray as Record<string, unknown>[]).map((p): Phase => {
+                    const phaseId = Number(p['phaseId']);
+                    const phaseNumber = Number(p['phaseNumber']);
+                    const name = String(p['name']);
+
+                    if (Number.isNaN(phaseId) || Number.isNaN(phaseNumber) || !name) {
+                        throw new Error('Invalid phase object received from API');
                     }
-                    throw new Error('Invalid phase object received from API');
+
+                    return {
+                        phaseId,
+                        phaseNumber,
+                        name,
+                    };
                 });
 
                 setAllPhases(mapped);
