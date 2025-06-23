@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axios from '@/utils/axiosInstance'
-import { isAxiosError } from 'axios' // ← axios本体から isAxiosError をインポート
+import { isAxiosError } from 'axios'
 
 // ------------------------
 // ユーザ定義
@@ -18,14 +18,7 @@ type User = {
 }
 
 export default function UserManagementPage() {
-// ------------------------
-// 登録ユーザー一覧
-// ------------------------
   const [users, setUsers ] = useState<User[]>([])
-
-// ------------------------
-// 新規登録フォーム用state(idは自動採番なので不要)
-// ------------------------
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     name: '',
     email: '',
@@ -33,127 +26,104 @@ export default function UserManagementPage() {
     isAdmin: false,
     role: 'スペシャリスト'
   })
-
-// ------------------------
-// モーダル表示制御用 
-// ------------------------
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
-// ------------------------
-// ユーザー一覧取得（axiosInstanceによりトークン自動付与）
-// ------------------------
-useEffect(() => {
-  axios.get<User[]>('/api/user_management_DB')
-    .then(res => setUsers(res.data)) //表示のためのstate格納
-    .catch(err => {
-      console.error('取得失敗:' , err)
-      if (isAxiosError(err)) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          alert('⛔ 認証エラー：再ログインしてください')
+  useEffect(() => {
+    axios.get<User[]>('/api/user_management_DB')
+      .then(res => setUsers(res.data))
+      .catch(err => {
+        console.error('取得失敗:' , err)
+        if (isAxiosError(err)) {
+          if (err.response?.status === 401 || err.response?.status === 403) {
+            alert('⛔ 認証エラー：再ログインしてください')
+          }
         }
-      }
-    })
-}, [])
+      })
+  }, [])
 
-// ------------------------
-// 新規ユーザー登録処理（axiosInstance使用）
-// ------------------------
-const handleRegister = async () => {
-  try {
-    const res = await axios.post<User>(
-      '/api/user_management_register',
-      {
+  const handleRegister = async () => {
+    try {
+      const res = await axios.post<User>('/api/user_management_register', {
         ...newUser,
-        permission: newUser.isAdmin ? 'ADMIN' : 'USER' // ✅ 追加！
-      }
-    );
-    setUsers(prev => [...prev, res.data]) // prev（前のstate）を使って一覧に追加
-    setNewUser({                         // newUser を初期状態に戻す
-      name: '',
-      email: '',
-      password: '',
-      isAdmin: false,
-      role: 'スペシャリスト'
-    }) 
-  } catch (e: unknown) {
-    if (isAxiosError(e)) {
-      if (e.response?.status === 401 || e.response?.status === 403) {
-        alert('⛔ 認証エラー：再ログインしてください')
+        permission: newUser.isAdmin ? 'ADMIN' : 'USER'
+      });
+      setUsers(prev => [...prev, res.data])
+      setNewUser({
+        name: '',
+        email: '',
+        password: '',
+        isAdmin: false,
+        role: 'スペシャリスト'
+      }) 
+    } catch (e: unknown) {
+      if (isAxiosError(e)) {
+        if (e.response?.status === 401 || e.response?.status === 403) {
+          alert('⛔ 認証エラー：再ログインしてください')
+        } else {
+          alert('登録失敗')
+        }
       } else {
-        alert('登録失敗')
+        alert('予期しないエラーが発生しました')
       }
-    } else {
-      alert('予期しないエラーが発生しました')
     }
   }
-}
 
-// ------------------------
-// 編集
-// ------------------------
   const handleChange = <K extends keyof User>(index: number, key: K, value: User[K]) => {
-    const copy = [...users]                      //users をコピー（直接変更NGのため）
-    copy[index] = {                              //編集対象のユーザーだけ変更
-      ...copy[index],                            //既存のプロパティを展開
-      [key]: value                               //指定されたキーだけ上書き
+    const copy = [...users]
+    copy[index] = {
+      ...copy[index],
+      [key]: value
     }
-    setUsers(copy)                               // state を更新 → 画面が再描画される
+    setUsers(copy)
   }
 
-// ------------------------
-// 編集を保存(PUT)
-// ------------------------
-const handleSave = async (user: User) => {
-  try {
-    await axios.put('/api/user_management_edit',
-      {
+  const handleSave = async (user: User) => {
+    try {
+      await axios.put('/api/user_management_edit', {
         id: user.id,
         name: user.name,
         email: user.email,
-        isAdmin: user.isAdmin,  // ← 明示的に1個ずつ渡す
+        isAdmin: user.isAdmin,
         role: user.role,
-        permission: user.isAdmin ? 'ADMIN' : 'USER' // ✅ 追加！
-      }
-    );
-    alert('変更を保存しました');
-  } catch (e: unknown) {
-    if (isAxiosError(e)) {
-      if (e.response?.status === 401 || e.response?.status === 403) {
-        alert('⛔ 認証エラー：再ログインしてください');
+        permission: user.isAdmin ? 'ADMIN' : 'USER'
+      });
+      alert('変更を保存しました');
+    } catch (e: unknown) {
+      if (isAxiosError(e)) {
+        if (e.response?.status === 401 || e.response?.status === 403) {
+          alert('⛔ 認証エラー：再ログインしてください');
+        } else {
+          alert('保存失敗');
+        }
       } else {
-        alert('保存失敗');
+        alert('予期しないエラーが発生しました');
       }
-    } else {
-      alert('予期しないエラーが発生しました');
     }
   }
-};
 
-// ------------------------
-// 削除処理（モーダルから実行） 
-// ------------------------
-const handleDeleteConfirmed = async () => {
-  if (!userToDelete) return
-  try {
-    await axios.delete('/api/user_management_delete', {
-      data: { id: userToDelete.id }
-    });
-    setUsers(users.filter(u => u.id !== userToDelete.id))
-    setIsModalOpen(false) //モーダルを閉じる
-    setUserToDelete(null)
-  } catch (e: unknown) {
-    if (isAxiosError(e)) {
-      if (e.response?.status === 401 || e.response?.status === 403) {
-        alert('⛔ 認証エラー：再ログインしてください')
+  const handleDeleteConfirmed = async () => {
+    if (!userToDelete) return
+    try {
+      await axios.delete('/api/user_management_delete', {
+        data: { id: userToDelete.id }
+      });
+      setUsers(users.filter(u => u.id !== userToDelete.id))
+      setIsModalOpen(false)
+      setUserToDelete(null)
+    } catch (e: unknown) {
+      if (isAxiosError(e)) {
+        if (e.response?.status === 401 || e.response?.status === 403) {
+          alert('⛔ 認証エラー：再ログインしてください')
+        } else {
+          alert('削除失敗')
+        }
       } else {
-        alert('削除失敗')
+        alert('予期しないエラーが発生しました')
       }
-    } else {
-      alert('予期しないエラーが発生しました')
     }
   }
-}
+
 
   return(
    <div className="p-6">
