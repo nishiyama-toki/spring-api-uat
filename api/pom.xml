@@ -57,11 +57,23 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JWT -->
+        <!-- 新 jjwt 構成（0.11.5） -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- Jacksonを使う場合 -->
+            <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Validation（Hibernate Validator は Boot が自動取込） -->

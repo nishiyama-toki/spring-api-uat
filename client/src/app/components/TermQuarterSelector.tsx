@@ -28,7 +28,7 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
     useEffect(() => {
         const fetchPhases = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/phases');
+                const response = await fetch('/api/phases');
                 const apiResponse = await response.json();
                 const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
                 setAllPhases(phasesArray.map((p: any) => ({

@@ -29,7 +29,7 @@ export default function ResetMailPage() {
     if (!validate()) return
 
     try {
-      await axios.post('http://localhost:8080/api/reset-mail', { email })
+      await axios.post('/api/reset-mail', { email })
       router.push('/reset_mail/sent')
     } catch (err: any) {
       if (err.response?.status === 404) {

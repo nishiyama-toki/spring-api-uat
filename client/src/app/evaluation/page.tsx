@@ -99,10 +99,9 @@ const PastEvaluationPage: React.FC = () => {
 
     try {
       // 本来は JWT などから動的に取得
-      const targetUserId = 1;
-      const res = await axios.get<PastEvaluationResponse>(
-        "http://localhost:8080/api/record",
-        { params: { phase_id: q, target_id: targetUserId } }
+        const res = await axios.get<PastEvaluationResponse>(
+        "http://localhost:8080/api/past-evaluations", // 1. URLを修正
+        { params: { phase_id: q } }                   // 2. target_idを削除
       );
 
       // フェーズ情報をセット
@@ -187,10 +186,6 @@ const PastEvaluationPage: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* ヘッダー */}
-      <header className={styles.header}>
-        <div className={styles.hamburger}>☰</div>
-        <div className={styles.appTitle}>アプリケーションタイトル</div>
-      </header>
 
       {/* 見出し */}
       <div className={styles.titleBar}>

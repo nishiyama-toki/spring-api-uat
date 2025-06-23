@@ -15,24 +15,6 @@ const instance = axios.create({
 // リクエスト前にJWTをAuthorizationヘッダーに付与
 // 未認証API（ログイン/パスワードリセット関連）は除外
 instance.interceptors.request.use(config => {
-<<<<<<< HEAD
-  const token = localStorage.getItem('jwt')
-   // /api/login のときは Authorization ヘッダーを付けない
-  if (token && config.url !== '/api/login') {
-    config.headers.Authorization = `Bearer ${token}` // Bearer を付ける
-  }
-  return config
-})
-
-// レスポンスで新トークンがあれば保存（TokenRefreshFilter対応）
-instance.interceptors.response.use(response => {
-  const newToken = response.headers['authorization']
-  if (newToken) {
-    localStorage.setItem('jwt', newToken)
-  }
-  return response
-})
-=======
   const token = localStorage.getItem('token');
 
   // 認証不要なAPI一覧（トークンを送らない）
@@ -40,7 +22,6 @@ instance.interceptors.response.use(response => {
     config.url?.endsWith('/api/login') ||
     config.url?.endsWith('/api/reset-mail') ||
     config.url?.endsWith('/api/reset-password');
->>>>>>> origin/yukihiro
 
   // 認証が必要なAPIにはトークンを付与
   if (!isPublicApi && token) {
