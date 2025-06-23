@@ -27,13 +27,15 @@ export default function SubmissionPeriod() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/api/submission_periods')
-        const formatted = res.data.map((item: any) => ({
+        // any → 明示的な型に変更
+        const res = await axios.get<PhaseData[]>('/api/submission_periods')
+
+        const formatted = res.data.map((item) => ({
           id: String(item.id),
-          name: String(item.phaseNumber),
-          period_name: item.periodName,
-          start_date: item.startDate,
-          end_date: item.endDate,
+          name: String(item.name),
+          period_name: item.period_name,
+          start_date: item.start_date,
+          end_date: item.end_date,
         }))
         setDateList(formatted)
       } catch (err) {
@@ -42,6 +44,7 @@ export default function SubmissionPeriod() {
     }
     fetchData()
   }, [])
+
 
   // 入力変更
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

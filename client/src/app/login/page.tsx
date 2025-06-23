@@ -55,7 +55,7 @@ export default function LoginPage() {
       } else {
         router.push('/home')
       }
-    } catch (err) {
+    } catch (_err) {
       setAuthError('メールアドレスまたはパスワードが正しくありません。')
     }
   }

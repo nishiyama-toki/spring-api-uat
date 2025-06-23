@@ -85,14 +85,14 @@ const handleRegister = async () => {
 // ------------------------
 // 編集
 // ------------------------
-  const handleChange = (index: number, key: keyof User, value: any) => {
-    const copy = [...users]                      //users をコピー（直接変更NGのため）
-    copy[index] = {                              //編集対象のユーザーだけ変更
-      ...copy[index],                            //既存のプロパティを展開
-      [key]: value                               //指定されたキーだけ上書き
-    }
-    setUsers(copy)                               // state を更新 → 画面が再描画される
+  const handleChange = <K extends keyof User>(index: number, key: K, value: User[K]) => {
+  const copy = [...users]                      //users をコピー（直接変更NGのため）
+  copy[index] = {                              //編集対象のユーザーだけ変更
+    ...copy[index],                            //既存のプロパティを展開
+    [key]: value                               //指定されたキーだけ上書き
   }
+  setUsers(copy)                               // state を更新 → 画面が再描画される
+}
 
 // ------------------------
 // 編集を保存(PUT)

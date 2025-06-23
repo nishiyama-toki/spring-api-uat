@@ -4,6 +4,7 @@ import { useState } from 'react'
 import axios from 'utils/axiosInstance'
 import { useRouter } from 'next/navigation'
 import styles from './resetMail.module.css'
+import axiosOrigin from 'axios'
 
 export default function ResetMailPage() {
   const router = useRouter()
@@ -28,16 +29,16 @@ export default function ResetMailPage() {
     setNotFoundError('')
     if (!validate()) return
 
-    try {
-      await axios.post('/api/reset-mail', { email })
-      router.push('/reset_mail/sent')
-    } catch (err: any) {
-      if (err.response?.status === 404) {
-        setNotFoundError('未登録のメールアドレスです')
-      } else {
-        setNotFoundError('エラーが発生しました')
-      }
+  try {
+    await axios.post('/api/reset-mail', { email })
+    router.push('/reset_mail/sent')
+  } catch (err: unknown) {
+    if (axiosOrigin.isAxiosError(err) && err.response?.status === 404) {
+      setNotFoundError('未登録のメールアドレスです')
+    } else {
+      setNotFoundError('エラーが発生しました')
     }
+  }
   }
 
   return (

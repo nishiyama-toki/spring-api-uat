@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import axios from 'axios';
 import axiosInstance from '../../utils/axiosInstance'
 
 
@@ -109,15 +110,13 @@ export default function MultiEvaluations() {
     }
 
     // ✅ 正常に送信された場合
-    alert(res.data?.message || '送信完了')
-  } catch (err: any) {
-    // ❌ サーバーエラー or ネットワークエラーなど
-    if (err.response?.data?.message) {
-      alert(err.response.data.message)
-    } else {
-      alert('サーバーに接続できませんでした')
-    }
+    } catch (err: unknown) {
+  if (axios.isAxiosError(err) && err.response?.data?.message) {
+    alert(err.response.data.message);
+  } else {
+    alert('サーバーに接続できませんでした');
   }
+}
 }
   
   // -------------------------

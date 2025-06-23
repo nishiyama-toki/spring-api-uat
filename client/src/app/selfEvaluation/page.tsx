@@ -125,7 +125,7 @@ export default function SelfEvaluationPage() {
             setComment(data.comment || '');
             setMessage('以前の評価を読み込みました。');
           }
-        } catch (error) {
+        } catch (error: unknown) {
           // 404エラーの場合は、まだ評価が存在しないだけなので正常な動作
           if (axios.isAxiosError(error) && error.response?.status === 404) {
             console.log('まだ評価データはありません。新規作成します。');

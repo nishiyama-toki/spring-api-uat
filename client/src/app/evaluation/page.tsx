@@ -115,16 +115,21 @@ const PastEvaluationPage: React.FC = () => {
       setBusinessScore(calculateAverage("businessScore"));
       setTeamScore(calculateAverage("teamScore"));
 
-      setComments(res.data.comments);
-    } catch (e: any) {
-      const data = e.response?.data;
-      const msg =
-        data && typeof data === "object" && data.message
-          ? data.message
-          : data ?? "サーバー接続に失敗しました。";
-      setErrorMessage(msg);
-    }
-  };
+    setComments(res.data.comments);
+    } catch (e: unknown) {
+    let msg = "サーバー接続に失敗しました。";
+
+  if (axios.isAxiosError(e)) {
+    const data = e.response?.data;
+    msg =
+      data && typeof data === "object" && "message" in data
+        ? (data.message as string)
+        : msg;
+  }
+
+  setErrorMessage(msg);
+  }
+}
 
   const openCommentModal = (name: string, full: string) => {
     setModalName(name);
@@ -265,5 +270,6 @@ const PastEvaluationPage: React.FC = () => {
     </div>
   );
 };
+
 
 export default PastEvaluationPage;
