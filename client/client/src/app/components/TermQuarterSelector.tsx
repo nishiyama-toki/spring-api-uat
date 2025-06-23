@@ -29,13 +29,13 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
         const fetchPhases = async () => {
             try {
                 const response = await fetch('/api/phases');
-                const raw = await response.json();
+                const raw: unknown = await response.json();
 
                 // 👇 unknown[] にキャストして any 推論を完全排除
-                const phasesArray = Array.isArray(raw) ? (raw as unknown[]) : [];
+                const phasesArray = Array.isArray(raw) ? raw : [];
 
                 // ✅ 修正：anyを使わずに型チェック＆変換
-                const mapped = phasesArray.map((p): Phase => {
+                const mapped = (phasesArray as unknown[]).map((p): Phase => {
                     if (
                         typeof p === 'object' &&
                         p !== null &&
