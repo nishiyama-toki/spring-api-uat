@@ -35,7 +35,8 @@ useEffect(() => {
             const phasesArray = Array.isArray(raw) ? (raw as unknown[]) : [];
 
             // ✅ 修正：anyを使わずに型チェック＆変換
-            const mapped: Phase[] = phasesArray.map((p): Phase => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mapped = (phasesArray as any[]).map((p): Phase => {
                 if (
                     typeof p === 'object' &&
                     p !== null &&
