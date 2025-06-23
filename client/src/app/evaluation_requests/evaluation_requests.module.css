@@ -1,0 +1,47 @@
+.evaluation-list-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.evaluation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.evaluation-item {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.evaluation-item:hover {
+  background-color: #f0f0f0;
+}
+
+.period-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.evaluation-link {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #0070f3;
+  cursor: pointer;
+  text-decoration: underline;
+}

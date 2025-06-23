@@ -1,0 +1,56 @@
+.hamburgerBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #333;
+}
+
+.menuOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.menuPanel {
+  position: fixed;
+  top: 0;
+  right: -280px; /* 初期位置（非表示） */
+  width: 280px;
+  height: 100%;
+  background-color: #fff;
+  padding: 1.5rem;
+  transition: right 0.3s ease-in-out;
+  z-index: 20;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.menuPanel.open {
+  right: 0; /* メニューオープン時にスライドイン */
+}
+
+.menuPanel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuPanel li {
+  margin-bottom: 1rem;
+}
+
+.menuPanel li.admin {
+  font-weight: bold;
+  color: #1d4ed8; /* 青系に強調 */
+}
+
+.menuPanel a {
+  text-decoration: none;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.menuPanel a:hover {
+  color: #007bff;
+}

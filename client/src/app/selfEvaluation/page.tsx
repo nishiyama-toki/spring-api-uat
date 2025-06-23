@@ -17,7 +17,10 @@ interface EvaluationRequest {
   comment: string;
 }
 
+<<<<<<< Updated upstream
 // 完全モジュールCSS化済みのモーダル
+=======
+>>>>>>> Stashed changes
 const ConfirmationModal = ({
   onConfirm,
   onCancel,
@@ -30,6 +33,7 @@ const ConfirmationModal = ({
   data: { skill: string; business: string; team: string; comment: string };
 }) => (
   <div className={styles.modalOverlay}>
+<<<<<<< Updated upstream
     <div className={styles.modalBox}>
       <h2 className={styles.modalTitle}>登録内容の確認</h2>
       <div>
@@ -58,13 +62,43 @@ const ConfirmationModal = ({
           onClick={onCancel}
           disabled={isLoading}
           className={`${styles.modalButton} ${styles.cancel}`}
+=======
+    <div className={styles.modalContent}>
+      <h2 className={styles.modalTitle}>登録内容の確認</h2>
+      <div>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>スキル:</span>
+          <span className={styles.modalValue}>{data.skill || 'ー'}</span>
+        </div>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>ビジネス:</span>
+          <span className={styles.modalValue}>{data.business || 'ー'}</span>
+        </div>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>チーム:</span>
+          <span className={styles.modalValue}>{data.team || 'ー'}</span>
+        </div>
+        {data.comment.trim() && (
+          <div className={styles.modalComment}>{data.comment}</div>
+        )}
+      </div>
+      <div className={styles.modalActions}>
+        <button
+          onClick={onCancel}
+          disabled={isLoading}
+          className={`${styles.modalButton} ${styles.modalCancel} ${isLoading ? styles.modalDisabled : ''}`}
+>>>>>>> Stashed changes
         >
           戻る
         </button>
         <button
           onClick={onConfirm}
           disabled={isLoading}
+<<<<<<< Updated upstream
           className={`${styles.modalButton} ${styles.submit}`}
+=======
+          className={`${styles.modalButton} ${styles.modalConfirm} ${isLoading ? styles.modalDisabled : ''}`}
+>>>>>>> Stashed changes
         >
           {isLoading ? '送信中...' : '送信'}
         </button>
@@ -79,7 +113,6 @@ export default function SelfEvaluationPage() {
   const quarter = parseInt(searchParams.get('quarter') || '0', 10);
 
   const [heading, setHeading] = useState('自己評価');
-
   const [skill, setSkill] = useState('');
   const [business, setBusiness] = useState('');
   const [team, setTeam] = useState('');
@@ -88,7 +121,11 @@ export default function SelfEvaluationPage() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+<<<<<<< Updated upstream
   const userId = 1; // TODO: ユーザーID取得処理に置換
+=======
+  const userId = 1;
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const storedHeading = localStorage.getItem('heading');
@@ -107,6 +144,10 @@ export default function SelfEvaluationPage() {
               user_id: userId,
             },
           });
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
           if (response.data) {
             const data = response.data;
             setSkill(data.skillScore?.toString() || '');
@@ -117,8 +158,15 @@ export default function SelfEvaluationPage() {
           }
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 404) {
+<<<<<<< Updated upstream
             setMessage(null);
           } else {
+=======
+            console.log('まだ評価データはありません。新規作成します。');
+            setMessage(null);
+          } else {
+            console.error('評価データの取得に失敗しました:', error);
+>>>>>>> Stashed changes
             setMessage('評価データの読み込みに失敗しました。');
           }
         }
@@ -180,9 +228,7 @@ export default function SelfEvaluationPage() {
     <div className={styles.container}>
       <div className={styles.mainWrapper}>
         <header className={styles.header}>
-          <h1 className={styles.headerTitle}>
-            {heading}
-          </h1>
+          <h1 className={styles.headerTitle}>{heading}</h1>
         </header>
 
         <main className={styles.mainContent}>
@@ -245,8 +291,7 @@ export default function SelfEvaluationPage() {
             {message && (
               <div className={`${styles.message} ${
                 message.includes('失敗') ? styles.errorMessage : styles.successMessage
-              }`}
-              >
+              }`}>
                 {message}
               </div>
             )}

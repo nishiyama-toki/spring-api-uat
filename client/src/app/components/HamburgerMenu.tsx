@@ -1,5 +1,6 @@
-'use client'
+'use client';
 
+<<<<<<< Updated upstream
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
@@ -35,16 +36,33 @@ export default function HamburgerMenu() {
     }
   }, [pathname])
 
+=======
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import styles from './HamburgerMenu.module.css'; // ← 追加
+
+export default function HamburgerMenu() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const isAdminStr = typeof window !== 'undefined' ? localStorage.getItem('is_admin') : null;
+    setIsAdmin(isAdminStr === 'true');
+  }, [pathname]);
+
+  const [open, setOpen] = useState(false);
+
+>>>>>>> Stashed changes
   const hiddenPaths = [
     '/login',
     '/reset_password',
     '/reset_password/success',
     '/reset_mail',
-    '/reset_mail/sent'
-  ]
+    '/reset_mail/sent',
+  ];
 
-  if (hiddenPaths.some(p => pathname === p)) {
-    return null
+  if (hiddenPaths.includes(pathname)) {
+    return null;
   }
 
   const menuItems = [
@@ -54,20 +72,25 @@ export default function HamburgerMenu() {
     { name: '等級基準書', href: '/grade-guidelines.pdf', target: '_blank' },
     { name: '人事評価', href: '/personnel-evaluation.pdf', target: '_blank' },
     { name: '社員等級', href: '/employee-grades.pdf', target: '_blank' },
-  ]
+  ];
 
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
     { name: 'ユーザー管理', href: '/user_management' },
     { name: '全社員評価確認', href: '/all-evaluations' },
+<<<<<<< Updated upstream
     { name: '未提出者確認', href: '/unsubmitted-list' },
   ]
+=======
+    { name: '未提出者確認', href: '/pending-submissions' },
+  ];
+>>>>>>> Stashed changes
 
   return (
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="hamburger-btn"
+        className={styles.hamburgerBtn}
         aria-label="Toggle Menu"
       >
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
@@ -79,15 +102,19 @@ export default function HamburgerMenu() {
 
       {open && (
         <div
-          className="menu-overlay"
+          className={styles.menuOverlay}
           onClick={() => setOpen(false)}
           aria-label="Close Menu Overlay"
         />
       )}
 
+<<<<<<< Updated upstream
       <nav className={`menu-panel${open ? ' open' : ''}`}>
+=======
+      <nav className={`${styles.menuPanel} ${open ? styles.open : ''}`}>
+>>>>>>> Stashed changes
         <ul>
-          {menuItems.map(item => (
+          {menuItems.map((item) => (
             <li key={item.href}>
               <a
                 href={item.href}
@@ -100,12 +127,9 @@ export default function HamburgerMenu() {
             </li>
           ))}
           {isAdmin &&
-            adminItems.map(item => (
-              <li key={item.href} className="admin">
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                >
+            adminItems.map((item) => (
+              <li key={item.href} className={styles.admin}>
+                <a href={item.href} onClick={() => setOpen(false)}>
                   {item.name}
                 </a>
               </li>
@@ -113,5 +137,5 @@ export default function HamburgerMenu() {
         </ul>
       </nav>
     </>
-  )
+  );
 }
