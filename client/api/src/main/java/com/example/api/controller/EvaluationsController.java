@@ -6,6 +6,13 @@ import com.example.api.entity.Evaluation;
 import com.example.api.repository.EmployeeRepository;
 import com.example.api.service.EvaluationService;
 
+<<<<<<< HEAD
+import com.example.api.dto.EvaluationResponse;// レスポンス用DTO
+import com.example.api.service.EvaluationService; // 評価取得サービス
+import com.example.api.entity.Employee; // DBから評価者を取得するためのエンティティ
+import com.example.api.repository.EmployeeRepository; // DBから評価者を取得するためのリポジトリ
+=======
+>>>>>>> 6634e2304391224719a3562ddc9c001bb39668a5
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

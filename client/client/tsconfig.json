@@ -1,0 +1,76 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2017",
+//     "lib": ["dom", "dom.iterable", "esnext"],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "noEmit": true,
+//     "esModuleInterop": true,
+//     "module": "esnext",
+//     "moduleResolution": "bundler",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "incremental": true,
+//     "baseUrl": ".",                        // ← ここを "src" → "." に修正
+//     "plugins": [
+//       {
+//         "name": "next"
+//       }
+//     ],
+//     "paths": {
+//       "@/*": ["src/*"]                    // ← そのままでOK
+//     }
+//   },
+//   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+//   "exclude": ["node_modules"]
+// }
+
+
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+
+    // 修正前:
+    // "baseUrl": ".",                        // ❌ プロジェクトルートを基準にしていた（NG）
+
+    // 修正後:
+    "baseUrl": "src",                         // ✅ "src" ディレクトリを基準にする
+
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+
+    // 修正前:
+    // "paths": {
+    //   "@/*": ["src/*"]                     // ❌ baseUrl と不一致
+    // }
+
+    // 修正後:
+    "paths": {
+      "@/*": ["*"]                            // ✅ baseUrl: "src" に合わせて調整
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

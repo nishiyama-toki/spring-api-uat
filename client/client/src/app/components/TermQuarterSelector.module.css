@@ -1,0 +1,98 @@
+/* 全体を囲むラッパー。Flexboxで横並びにする */
+.termQuarterWrapper {
+    display: flex;
+    align-items: flex-start; /* 上端揃え */
+    gap: 24px; /* 期とQの間のスペース */
+    padding: 10px;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    width: 100%;
+    box-sizing: border-box; /* paddingとborderを幅に含める */
+    font-family: sans-serif;
+}
+
+/* 「期」選択ドロップダウンのコンテナ */
+.dropdown {
+    width: 150px; /* ドロップダウンの幅を固定 */
+    flex-shrink: 0; /* コンテナが縮まないようにする */
+    position: relative;
+}
+
+/* 「期」選択ボタン */
+.dropdownButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 「期」選択のドロップダウンメニュー */
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdownMenu li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdownMenu li:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* 「Q」ボタンリスト。Flexboxで横並びにする */
+.quarterList {
+    display: flex;
+    flex-wrap: wrap; /* ボタンが多すぎたら折り返す */
+    gap: 10px; /* ボタン間のスペース */
+    align-items: center;
+}
+
+/* 「Q」ボタンのスタイル */
+.quarterItem {
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    user-select: none; /* テキスト選択を防ぐ */
+    cursor: pointer;   /* ★ カーソルをポインター（指の形）に変更 */
+}
+
+.quarterItem:hover {
+    background-color: #e9e9e9;
+    border-color: #adadad;
+}
+
+/* 選択されているQボタンのスタイル */
+.quarterSelected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+    transform: scale(1.05); /* 少し大きくして選択を強調 */
+}

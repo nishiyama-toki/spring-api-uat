@@ -30,8 +30,15 @@ public class AdminPhaseController {
                     Map.of("date_error", "開始日は終了日より前にしてください"));
         }
 
+<<<<<<< HEAD
+        // 修正前:
+        // if (phaseRepository.existsByPhaseNumberAndPeriodName(dto.getPhaseNumber(), dto.getPeriodName())) {
+        // 修正後:
+        if (phaseRepository.existsByPhaseNumberAndName(dto.getPhaseNumber(), dto.getPeriodName())) {
+=======
         /* 重複チェック */
         if (phaseRepository.existsByPhaseNumberAndPeriodName(dto.getPhaseNumber(), dto.getPeriodName())) {
+>>>>>>> 6634e2304391224719a3562ddc9c001bb39668a5
             return ResponseEntity.badRequest().body(
                     Map.of("duplicate_error", "既に同じ評価期とクォーターが存在します"));
         }
@@ -41,8 +48,14 @@ public class AdminPhaseController {
         phaseRepository.save(phase);
 
         return ResponseEntity.ok(Map.of(
+<<<<<<< HEAD
+            "message", "登録成功",
+            "id", phase.getId()
+        ));
+=======
                 "message", "登録成功",
                 "id", phase.getId()));
+>>>>>>> 6634e2304391224719a3562ddc9c001bb39668a5
     }
 
     /* ---------- 編集 ---------- */
@@ -60,13 +73,23 @@ public class AdminPhaseController {
                     Map.of("date_error", "開始日は終了日より前にしてください"));
         }
 
+<<<<<<< HEAD
+        // 修正前:
+        // if (phaseRepository.existsByPhaseNumberAndPeriodNameAndIdNot(dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
+        // 修正後:
+        if (phaseRepository.existsByPhaseNumberAndNameAndIdNot(dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
+=======
         if (phaseRepository.existsByPhaseNumberAndPeriodNameAndIdNot(
                 dto.getPhaseNumber(), dto.getPeriodName(), dto.getId())) {
+>>>>>>> 6634e2304391224719a3562ddc9c001bb39668a5
             return ResponseEntity.badRequest().body(
                     Map.of("duplicate_error", "既に同じ評価期とクォーターが存在します"));
         }
 
+<<<<<<< HEAD
+=======
         /* 更新処理 */
+>>>>>>> 6634e2304391224719a3562ddc9c001bb39668a5
         target.setStartDate(dto.getStartDate());
         target.setEndDate(dto.getEndDate());
         target.setPeriodName(dto.getPeriodName());

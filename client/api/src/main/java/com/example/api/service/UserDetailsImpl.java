@@ -15,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
     private final boolean admin;
 
     public UserDetailsImpl(Employee employee) {
-        this.id = employee.getId().longValue();
+        this.id = employee.getId();
         this.email = employee.getEmail();
         this.password = employee.getPassword();
         this.admin = employee.isAdmin(); // ← ここ重要
