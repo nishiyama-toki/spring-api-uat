@@ -12,15 +12,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class UnsubmittedController {
 
     private final UnsubmittedService unsubmittedService;
 
     @GetMapping("/unsubmitted")
     public ResponseEntity<Map<String, List<UnsubmittedResponse>>> getUnsubmitted(
-        @RequestParam("phase_id") Long phaseId) {
-            List<UnsubmittedResponse> list = unsubmittedService.findUnsubmittedByPhase(phaseId);
-            return ResponseEntity.ok(Map.of("unsubmitted_list", list));
-        }
+            @RequestParam("phase_id") Long phaseId) {
+        List<UnsubmittedResponse> list = unsubmittedService.findUnsubmittedByPhase(phaseId);
+        return ResponseEntity.ok(Map.of("unsubmitted_list", list));
+    }
 }

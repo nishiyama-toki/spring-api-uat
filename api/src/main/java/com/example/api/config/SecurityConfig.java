@@ -20,12 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-/**
- * アプリ全体の Spring Security 設定クラス。
- * - CORS をここに集約
- * - JWT 認証フィルターとリフレッシュトークンフィルターを挿入
- * - DaoAuthenticationProvider で CustomUserDetailsService を使用
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -38,35 +32,34 @@ public class SecurityConfig {
                           TokenRefreshFilter tokenRefreshFilter,
                           CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.tokenRefreshFilter     = tokenRefreshFilter;
+        this.tokenRefreshFilter = tokenRefreshFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    /** 認可・フィルターチェイン定義 */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // ★ 認証不要エンドポイント
                 .requestMatchers(
                     "/api/login",
-                    "/api/phases",
                     "/api/reset-mail",
-                    "/api/reset-password/**"
+                    "/api/reset-password/**",
+                    "/api/phases"
                 ).permitAll()
-
-                // ★ 管理者のみ
                 .requestMatchers(
                     "/api/admin-only",
+                    "/api/admin-only/**",
                     "/api/user_management_register",
                     "/api/user_management_edit",
                     "/api/user_management_delete",
-                    "/api/user_management_DB"
-                ).hasAuthority("ROLE_ADMIN")
-
-                // ★ それ以外は要認証
+                    "/api/user_management_DB",
+                    "/api/submission_period",
+                    "/api/submission_period_edit",
+                    "/api/unsubmitted",
+                    "/api/reminder/batch"
+                ).hasRole("ADMIN")          // ★ ROLE_ 接頭辞を前提に変更
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
@@ -76,19 +69,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /** 認証マネージャ */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /** パスワードハッシュ用エンコーダー */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /** DaoAuthenticationProvider で CustomUserDetailsService を利用 */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -97,16 +87,13 @@ public class SecurityConfig {
         return provider;
     }
 
-    /** CORS 設定を Security 直下に集約 */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Spring 6 以降はパターン指定に setAllowedOriginPatterns を推奨
         config.setAllowedOriginPatterns(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

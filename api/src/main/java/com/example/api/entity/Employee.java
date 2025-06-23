@@ -2,14 +2,17 @@ package com.example.api.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 // employeesテーブルに対応するEntity
 @Entity
@@ -21,44 +24,45 @@ public class Employee implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Longに変更
+    private Long id;
 
     @Column(nullable = false)
-    private String name; // 氏名
+    private String name;
 
     @Column(nullable = false, unique = true)
-    private String email; // メールアドレス（ユニーク制約）
+    private String email;
 
     @Column(nullable = false)
-    private String password; // ハッシュ化パスワード
+    private String password;
 
     @Column(name = "is_admin")
-    private Boolean isAdmin; // 管理者フラグ
+    private Boolean isAdmin;
 
     @Column(nullable = false)
-    private String permission; // 権限文字列
+    private String permission;          // 例: "ADMIN" / "USER"
 
     @Column(name = "failed_count")
-    private Integer failedCount; // ログイン失敗回数
+    private Integer failedCount;
 
     @Column(name = "is_locked")
-    private Boolean isLocked; // ロック中か
+    private Boolean isLocked;
 
     @Column(name = "locked_at")
-    private LocalDateTime lockedAt; // ロック時刻
+    private LocalDateTime lockedAt;
 
-    private String role;           // 役職
+    private String role;
 
-    // --- 補足メソッド（booleanとしてのisAdmin判定） ---
+    // 補助メソッド
     public boolean isAdmin() {
         return Boolean.TRUE.equals(isAdmin);
     }
 
-    // ==== UserDetails の実装部分 ====
+    // ==== UserDetails の実装 ====
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // 必要に応じてロールを返す実装も可
+        // "ADMIN" → "ROLE_ADMIN" に変換して返す
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.permission.toUpperCase()));
     }
 
     @Override
@@ -68,21 +72,21 @@ public class Employee implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // 有効期限切れの概念を使わないなら true 固定
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !Boolean.TRUE.equals(this.isLocked); // ロックされていないとき true
+        return !Boolean.TRUE.equals(this.isLocked);
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // パスワード有効期限も使わないなら true 固定
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // アカウント無効フラグなどを使うならここで制御
+        return true;
     }
 }

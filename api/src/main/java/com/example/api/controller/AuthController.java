@@ -1,4 +1,3 @@
-// login処理のcontroller
 package com.example.api.controller;
 
 import com.example.api.dto.LoginRequest;
@@ -7,7 +6,6 @@ import com.example.api.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -24,6 +22,3 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 }
-
-
-

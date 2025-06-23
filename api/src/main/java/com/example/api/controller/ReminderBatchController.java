@@ -8,14 +8,14 @@ import com.example.api.repository.PhaseRepository;
 import com.example.api.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
+@RequestMapping("/api")
 public class ReminderBatchController {
 
     @Autowired
@@ -27,30 +27,26 @@ public class ReminderBatchController {
     @Autowired
     private MailService mailService;
 
-    @PostMapping("/api/reminder/batch")
+    @PostMapping("/reminder/batch")
     public ResponseEntity<?> sendReminderBatch() {
-        // 現在の評価フェーズ取得（Listから先頭要素を取り出す方式に変更）
         List<Phase> phases = phaseRepository
-            .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now());
-
+                .findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now());
         Phase currentPhase = phases.isEmpty() ? null : phases.get(0);
 
         if (currentPhase == null) {
             return ResponseEntity.badRequest().body(Map.of("結果", "failure", "エラーメッセージ", "現在有効な評価フェーズがありません"));
         }
 
-        // 未提出者一覧取得
         List<Employee> unsubmitted = evaluationRepository.findEmployeesNotSubmitted(currentPhase.getId());
 
-        // メール送信
         int sendCount = 0;
         List<Map<String, String>> sentList = new ArrayList<>();
         for (Employee e : unsubmitted) {
             boolean result = mailService.sendReminder(
-                e.getEmail(),
-                e.getName(),
-                currentPhase.getName(),
-                currentPhase.getSelfEvalDue().toString()
+                    e.getEmail(),
+                    e.getName(),
+                    currentPhase.getName(),
+                    currentPhase.getSelfEvalDue().toString()
             );
             if (result) {
                 sendCount++;
@@ -58,12 +54,11 @@ public class ReminderBatchController {
             }
         }
 
-        // レスポンス
         Map<String, Object> response = Map.of(
-            "送信件数", sendCount,
-            "実行日", LocalDateTime.now().toString(),
-            "送信先リスト", sentList,
-            "結果", "success"
+                "送信件数", sendCount,
+                "実行日", LocalDateTime.now().toString(),
+                "送信先リスト", sentList,
+                "結果", "success"
         );
         return ResponseEntity.ok(response);
     }
