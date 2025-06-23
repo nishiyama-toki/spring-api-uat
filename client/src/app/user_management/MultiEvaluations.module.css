@@ -1,0 +1,110 @@
+/* MultiEvaluations.module.css */
+
+.container {
+  max-width: 600px;
+  margin: 32px auto;
+  padding: 32px 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #254183;
+  text-align: center;
+}
+
+.targetCard {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.nameRole {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.inputBlock {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  gap: 4px;
+}
+
+.inputNum {
+  width: 100px;
+  padding: 6px 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+.inputNum:focus {
+  border-color: #254183;
+  outline: none;
+}
+
+.textarea {
+  min-height: 60px;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+.textarea:focus {
+  border-color: #254183;
+  outline: none;
+}
+
+.counter {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 2px;
+  align-self: flex-end;
+}
+
+.submitButton {
+  display: block;
+  margin: 0 auto;
+  background: #254183;
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: bold;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.18s;
+}
+.submitButton:hover {
+  background: #12244d;
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+  .container {
+    padding: 12px 4px;
+  }
+  .inputNum {
+    width: 100%;
+  }
+}

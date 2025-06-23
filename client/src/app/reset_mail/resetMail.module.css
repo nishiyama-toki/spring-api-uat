@@ -1,85 +1,90 @@
+/* resetMail.module.css */
+
 .container {
+  min-height: 100vh;
+  background: #f4f7fb;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-  padding: 2rem;
+  padding: 22px 8px;
 }
 
 .card {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
-  min-width: 280px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  background: #fff;
+  border-radius: 13px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.10);
+  padding: 38px 32px 32px 32px;
+  min-width: 330px;
+  max-width: 98vw;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .title {
-  background-color: #d9d9d9;
-  padding: 1rem;
-  font-size: 1.6rem;
-  font-weight: bold;
-  border-radius: 1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #253b6a;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.subtitle {
+  color: #556380;
+  font-size: 0.98rem;
+  text-align: center;
+  margin-bottom: 18px;
 }
 
 .input {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 1.5rem;
-  background-color: #d9d9d9;
-  border: none;
+  border: 1.5px solid #a7b7d8;
+  border-radius: 7px;
+  padding: 12px 16px;
+  margin-bottom: 9px;
   font-size: 1rem;
+  background: #f8faff;
+  outline: none;
+  transition: border 0.15s;
 }
-
-.button {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  background-color: #d9d9d9;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
+.input:focus {
+  border: 1.5px solid #2855b6;
+  background: #fff;
 }
 
 .error {
-  color: red;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  color: #db2e3a;
+  font-size: 0.97rem;
+  margin-bottom: 7px;
+  font-weight: 600;
   text-align: left;
+  min-height: 20px;
 }
 
-.authError {
-  color: red;
-  font-size: 1rem;
-  margin-top: 1rem;
+.button {
+  background: #2855b6;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 1.09rem;
+  font-weight: 700;
+  padding: 13px 0;
+  margin-top: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(40,85,182,0.09);
+  transition: background 0.17s;
+}
+.button:hover, .button:focus {
+  background: #193c78;
+  outline: none;
 }
 
-.link {
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  text-align: right;
-  color: #444;
-}
-
-/* レスポンシブ微調整 */
-@media screen and (min-width: 768px) {
+@media (max-width: 520px) {
   .card {
-    max-width: 560px;
+    min-width: 90vw;
+    padding: 18px 3vw 18px 3vw;
   }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .input,
-  .button {
-    font-size: 1.1rem;
+  .button, .input {
+    font-size: 1rem;
   }
 }

@@ -30,8 +30,8 @@ export default function HamburgerMenu() {
   // 「ホーム」だけ isAdmin でリンク先を切り替え
   const menuItems = [
     { name: 'ホーム', href: isAdmin ? '/admin' : '/home' },
-    { name: '評価提出依頼', href: '/selfEvaluation' },
-    { name: '過去評価履歴', href: '/past-evaluations' },
+    { name: '評価提出依頼', href: '/evaluation_requests' },
+    { name: '過去評価履歴', href: '/evaluation' },
     { name: '等級基準書', href: '/grade-guidelines.pdf', target: '_blank' },
     { name: '人事評価', href: '/personnel-evaluation.pdf', target: '_blank' },
     { name: '社員等級', href: '/employee-grades.pdf', target: '_blank' },
@@ -39,7 +39,7 @@ export default function HamburgerMenu() {
 
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
-    { name: 'ユーザー管理', href: '/user-management' },
+    { name: 'ユーザー管理', href: '/user_management' },
     { name: '全社員評価確認', href: '/all-evaluations' },
     { name: '未提出者確認', href: '/pending-submissions' },
   ]
