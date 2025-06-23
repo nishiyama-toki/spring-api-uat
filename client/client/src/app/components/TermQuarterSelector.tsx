@@ -24,48 +24,47 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
     // 選択されている「期」（18, 19など）
     const [selectedTerm, setSelectedTerm] = useState<number | null>(null);
 
-        // 初回マウント時にAPIからデータを取得
-    useEffect(() => {
-        const fetchPhases = async () => {
-            try {
-                const response = await fetch('/api/phases');
-                // const apiResponse = await response.json();一旦コメント
-                const apiResponse: unknown = await response.json();
-                // const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
-                const phasesArray: unknown[] = Array.isArray(apiResponse) ? apiResponse : [];
+    // 初回マウント時にAPIからデータを取得
+useEffect(() => {
+    const fetchPhases = async () => {
+        try {
+            const response = await fetch('/api/phases');
+            const raw = await response.json();
 
+            // 👇 unknown[] にキャストして any 推論を完全排除
+            const phasesArray = Array.isArray(raw) ? (raw as unknown[]) : [];
 
-                // ✅ 修正：anyを使わずにPartial<Phase>経由でPhaseに変換
-                const mapped = phasesArray.map((p: unknown): Phase => {
-                    if (
-                        typeof p === 'object' &&
-                        p !== null &&
-                        'phaseId' in p &&
-                        'phaseNumber' in p &&
-                        'name' in p
-                    ) {
-                        const phase = p as {
-                            phaseId: number | string;
-                            phaseNumber: number | string;
-                            name: string;
-                        };
-                        return {
-                            phaseId: Number(phase.phaseId),
-                            phaseNumber: Number(phase.phaseNumber),
-                            name: String(phase.name),
-                        };
-                    }
-                    throw new Error('Invalid phase object received from API');
-                });
+            // ✅ 修正：anyを使わずに型チェック＆変換
+            const mapped: Phase[] = phasesArray.map((p): Phase => {
+                if (
+                    typeof p === 'object' &&
+                    p !== null &&
+                    'phaseId' in p &&
+                    'phaseNumber' in p &&
+                    'name' in p
+                ) {
+                    const phase = p as {
+                        phaseId: number | string;
+                        phaseNumber: number | string;
+                        name: string;
+                    };
+                    return {
+                        phaseId: Number(phase.phaseId),
+                        phaseNumber: Number(phase.phaseNumber),
+                        name: String(phase.name),
+                    };
+                }
+                throw new Error('Invalid phase object received from API');
+            });
 
-                setAllPhases(mapped); // ← ✅ 最後にちゃんとデータを反映
-            } catch (err) {
-                console.error(err);
-            }
-        };
+            setAllPhases(mapped);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-        fetchPhases(); // ← ✅ ここで呼び出す
-    }, []);
+    fetchPhases();
+}, []);
 
                 
     
