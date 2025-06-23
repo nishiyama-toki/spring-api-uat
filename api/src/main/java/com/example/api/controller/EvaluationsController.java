@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController // このクラスはREST APIのコントローラーであることを示す
 @RequestMapping("/api/evaluations") // このクラスのAPIパスのプレフィックスを定義
-public class EvaluationController {
+public class EvaluationControllers {
 
     private final EvaluationService evaluationService;
     private final EmployeeRepository employeeRepository;
