@@ -80,7 +80,7 @@ const ConfirmationModal = ({
 export default function SelfEvaluationPage() {
   const searchParams = useSearchParams();
   const phase = parseInt(searchParams.get('phase') || '0', 10);
-  // const quarter = parseInt(searchParams.get('quarter') || '0', 10);どこにも使用されていなかったのでコメントアウトしてます
+  const quarter = parseInt(searchParams.get('quarter') || '0', 10);
 
   const [heading, setHeading] = useState('自己評価');
 
@@ -125,7 +125,7 @@ export default function SelfEvaluationPage() {
             setComment(data.comment || '');
             setMessage('以前の評価を読み込みました。');
           }
-        } catch (error: unknown) {
+        } catch (error) {
           // 404エラーの場合は、まだ評価が存在しないだけなので正常な動作
           if (axios.isAxiosError(error) && error.response?.status === 404) {
             console.log('まだ評価データはありません。新規作成します。');

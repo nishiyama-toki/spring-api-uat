@@ -10,11 +10,10 @@ import { useRouter } from 'next/navigation'; // ページ遷移用のフック
 function parseJwt(token: string) {
   try {
     return JSON.parse(atob(token.split('.')[1]));
-  } catch {
+  } catch (e) {
     return null;
   }
 }
-
 
 // --- サーバーから受け取る評価依頼情報の型定義（Spring Bootのレスポンスに対応） ---
 interface EvaluationResponse {
