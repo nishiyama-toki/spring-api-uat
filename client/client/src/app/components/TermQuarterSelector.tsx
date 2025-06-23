@@ -33,19 +33,25 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
 
                 // ✅ 修正：anyを使わずにPartial<Phase>経由でPhaseに変換
-                const mapped = phasesArray.map((p: any): Phase => ({
-                phaseId: Number(p.phaseId),
-                phaseNumber: Number(p.phaseNumber),
-                name: String(p.name ?? ''),
-                }));
+                const mapped = phasesArray.map((p: unknown): Phase => {
+                if (
+                    typeof p === 'object' &&
+                    p !== null &&
+                    'phaseId' in p &&
+                    'phaseNumber' in p &&
+                    'name' in p
+                ) {
+                    const phase = p as { phaseId: number | string; phaseNumber: number | string; name: string };
+                    return {
+                    phaseId: Number(phase.phaseId),
+                    phaseNumber: Number(phase.phaseNumber),
+                    name: String(phase.name),
+                    };
+                }
+                throw new Error('Invalid phase object received from API');
+                });
 
-                setAllPhases(mapped);
-            } catch (error) {
-                console.error('期・Q情報の取得に失敗しました', error);
-            }
-        };
-        fetchPhases();
-    }, []);
+                
     
     // 親コンポーネントの value (選択中のphaseId) が変わった時に、
     // こちらのコンポーネントの selectedTerm も連動して更新する
