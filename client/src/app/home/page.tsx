@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
-import axios from 'utils/axiosInstance'; // ← 追加
+import axios from 'utils/axiosInstance';
+import styles from './userHome.module.css'; // 追加
 
 interface Alert {
   message: string;
@@ -36,14 +37,14 @@ export default function UserHome() {
   }, []);
 
   return (
-    <div className="pe-container">
-      <div className="pe-titleBar">
-        <h1>{overview}</h1>
+    <div className={styles.container}>
+      <div className={styles.titleBar}>
+        <h1 className={styles.title}>{overview}</h1>
       </div>
-      <div className="pe-descriptionBox">
-        <div>ユーザー名：{userName}（一般ユーザー）</div>
-        <div>現在の評価フェーズ: {currentPhase?.name}</div>
-        <div className="text-sm text-gray-500">
+      <div className={styles.descriptionBox}>
+        <div className={styles.userName}>ユーザー名：{userName}（一般ユーザー）</div>
+        <div className={styles.phaseName}>現在の評価フェーズ: {currentPhase?.name}</div>
+        <div className={styles.phasePeriod}>
           フェーズ期間: {currentPhase?.start_date} ～ {currentPhase?.end_date}<br />
           自己評価期限: {currentPhase?.self_eval_due} / 多面評価期限: {currentPhase?.peer_eval_due}
         </div>

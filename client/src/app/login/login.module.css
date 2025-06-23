@@ -1,85 +1,116 @@
+/* login.module.css */
+
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: #f4f4f4;
-  padding: 2rem;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 10px;
 }
 
 .card {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
-  min-width: 280px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  background: #fff;
+  border-radius: 13px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.08);
+  padding: 40px 32px 28px 32px;
+  min-width: 330px;
+  max-width: 98vw;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .title {
-  background-color: #d9d9d9;
-  padding: 1rem;
-  font-size: 1.6rem;
-  font-weight: bold;
-  border-radius: 1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #253b6a;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.subtitle {
+  color: #556380;
+  font-size: 0.99rem;
+  text-align: center;
+  margin-bottom: 19px;
 }
 
 .input {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 1.5rem;
-  background-color: #d9d9d9;
-  border: none;
+  border: 1.5px solid #a7b7d8;
+  border-radius: 7px;
+  padding: 12px 16px;
+  margin-bottom: 9px;
   font-size: 1rem;
+  background: #f8faff;
+  outline: none;
+  transition: border 0.15s;
+}
+.input:focus {
+  border: 1.5px solid #2855b6;
+  background: #fff;
 }
 
 .button {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  background-color: #d9d9d9;
+  background: #2855b6;
+  color: #fff;
   border: none;
-  font-size: 1rem;
+  border-radius: 7px;
+  font-size: 1.09rem;
+  font-weight: 700;
+  padding: 13px 0;
+  margin-top: 9px;
   cursor: pointer;
-  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(40,85,182,0.09);
+  transition: background 0.17s;
+}
+.button:hover, .button:focus {
+  background: #193c78;
+  outline: none;
 }
 
 .error {
-  color: red;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  color: #db2e3a;
+  font-size: 0.98rem;
+  margin-bottom: 6px;
+  font-weight: 600;
   text-align: left;
+  min-height: 20px;
 }
 
 .authError {
-  color: red;
+  color: #e45532;
+  background: #fff4ee;
   font-size: 1rem;
-  margin-top: 1rem;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 8px 0 6px 0;
+  text-align: center;
+  margin: 8px 0 4px 0;
 }
 
 .link {
-  margin-top: 1rem;
-  font-size: 0.85rem;
   text-align: right;
-  color: #444;
+  margin-top: 14px;
+}
+.link a {
+  color: #3974e4;
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 0.99rem;
+  transition: color 0.14s;
+}
+.link a:hover {
+  color: #1b407e;
 }
 
-/* レスポンシブ微調整 */
-@media screen and (min-width: 768px) {
+@media (max-width: 520px) {
   .card {
-    max-width: 560px;
+    min-width: 90vw;
+    padding: 19px 3vw 14px 3vw;
   }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .input,
-  .button {
-    font-size: 1.1rem;
+  .button, .input {
+    font-size: 1rem;
   }
 }
