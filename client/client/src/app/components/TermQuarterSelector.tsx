@@ -32,14 +32,18 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const raw: unknown = await response.json();
 
                 // ✅ 型断言で any 推論を完全排除
-                const phasesArray = Array.isArray(raw) ? (raw as Record<string, unknown>[]) : [];
+                const phasesArray = Array.isArray(raw) ? (raw as { [key: string]: unknown }[]) : [];
 
                 const mapped = phasesArray.map((p): Phase => {
                     const phaseId = Number(p['phaseId']);
                     const phaseNumber = Number(p['phaseNumber']);
                     const name = String(p['name']);
 
-                    if (Number.isNaN(phaseId) || Number.isNaN(phaseNumber) || !name) {
+                    if (
+                        typeof phaseId !== 'number' ||
+                        typeof phaseNumber !== 'number' ||
+                        typeof name !== 'string'
+                    ) {
                         throw new Error('Invalid phase object received from API');
                     }
 
