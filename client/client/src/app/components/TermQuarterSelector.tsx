@@ -31,11 +31,15 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const response = await fetch('/api/phases');
                 const apiResponse = await response.json();
                 const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
-                setAllPhases(phasesArray.map((p: any) => ({
+
+                // ✅ 修正：anyを使わずにPartial<Phase>経由でPhaseに変換
+                const mapped = phasesArray.map((p: Partial<Phase>): Phase => ({
                     phaseId: Number(p.phaseId),
                     phaseNumber: Number(p.phaseNumber),
-                    name: String(p.name || ''),
-                })));
+                    name: String(p.name ?? ''),
+                }));
+
+                setAllPhases(mapped);
             } catch (error) {
                 console.error('期・Q情報の取得に失敗しました', error);
             }

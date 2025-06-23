@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import axios from '@/utils/axiosInstance' //トークン自動付与のaxiosインスタンス
+import axios from '@/utils/axiosInstance'
+import { isAxiosError } from 'axios' // ← axios本体から isAxiosError をインポート
+
 
 // ------------------------
 // ユーザ定義
@@ -47,8 +49,10 @@ useEffect(() => {
     .then(res => setUsers(res.data)) //表示のためのstate格納
     .catch(err => {
       console.error('取得失敗:' , err)
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        alert('⛔ 認証エラー：再ログインしてください')
+      if (isAxiosError(err)) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          alert('⛔ 認証エラー：再ログインしてください')
+        }
       }
     })
 }, [])
@@ -73,11 +77,15 @@ const handleRegister = async () => {
       isAdmin: false,
       role: 'スペシャリスト'
     }) 
-  } catch (e: any) {
-    if (e.response?.status === 401 || e.response?.status === 403) {
-      alert('⛔ 認証エラー：再ログインしてください')
+  } catch (e: unknown) {
+    if (isAxiosError(e)) {
+      if (e.response?.status === 401 || e.response?.status === 403) {
+        alert('⛔ 認証エラー：再ログインしてください')
+      } else {
+        alert('登録失敗')
+      }
     } else {
-      alert('登録失敗')
+      alert('予期しないエラーが発生しました')
     }
   }
 }
@@ -85,7 +93,7 @@ const handleRegister = async () => {
 // ------------------------
 // 編集
 // ------------------------
-  const handleChange = (index: number, key: keyof User, value: any) => {
+  const handleChange = <K extends keyof User>(index: number, key: K, value: User[K]) => {
     const copy = [...users]                      //users をコピー（直接変更NGのため）
     copy[index] = {                              //編集対象のユーザーだけ変更
       ...copy[index],                            //既存のプロパティを展開
@@ -110,16 +118,18 @@ const handleSave = async (user: User) => {
       }
     );
     alert('変更を保存しました');
-  } catch (e: any) {
-    if (e.response?.status === 401 || e.response?.status === 403) {
-      alert('⛔ 認証エラー：再ログインしてください');
+  } catch (e: unknown) {
+    if (isAxiosError(e)) {
+      if (e.response?.status === 401 || e.response?.status === 403) {
+        alert('⛔ 認証エラー：再ログインしてください');
+      } else {
+        alert('保存失敗');
+      }
     } else {
-      alert('保存失敗');
+      alert('予期しないエラーが発生しました');
     }
   }
 };
-
-
 
 // ------------------------
 // 削除処理（モーダルから実行） 
@@ -133,14 +143,22 @@ const handleDeleteConfirmed = async () => {
     setUsers(users.filter(u => u.id !== userToDelete.id))
     setIsModalOpen(false) //モーダルを閉じる
     setUserToDelete(null)
-  } catch (e: any) {
-    if (e.response?.status === 401 || e.response?.status === 403) {
-      alert('⛔ 認証エラー：再ログインしてください')
+  } catch (e: unknown) {
+    if (isAxiosError(e)) {
+      if (e.response?.status === 401 || e.response?.status === 403) {
+        alert('⛔ 認証エラー：再ログインしてください')
+      } else {
+        alert('削除失敗')
+      }
     } else {
-      alert('削除失敗')
+      alert('予期しないエラーが発生しました')
     }
   }
 }
+
+  // HTML部分は前と同じでOKなので省略（必要なら送る！）
+
+
 
 // ------------------------
 // HTML（略）
