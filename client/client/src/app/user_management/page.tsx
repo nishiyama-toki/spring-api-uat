@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import axios from '@/utils/axiosInstance'
 import { isAxiosError } from 'axios' // ← axios本体から isAxiosError をインポート
 
-
 // ------------------------
 // ユーザ定義
 // ------------------------
@@ -156,23 +155,6 @@ const handleDeleteConfirmed = async () => {
   }
 }
 
-  // HTML部分は前と同じでOKなので省略（必要なら送る！）
-
-
-
-// ------------------------
-// HTML（略）
-// ------------------------
-
-// 以下はHTML部分が続くため、省略していますが処理には変更を加えていません。
-// axiosの差し替えと不要なトークン取得・ヘッダー設定を削除したのが主な変更点です。
-
-
-
-// ------------------------
-// HTML 
-// ------------------------  
-
   return(
    <div className="p-6">
       {/* モーダル部分  */}
@@ -201,34 +183,34 @@ const handleDeleteConfirmed = async () => {
           type="text"
           placeholder="名前"
           value={newUser.name}
-          onChange={e => setNewUser({ ...newUser, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, name: e.target.value })}
           className="border px-2 py-1"
         />
         <input
           type="email"
           placeholder="メール"
           value={newUser.email}
-          onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, email: e.target.value })}
           className="border px-2 py-1"
         />
         <input
           type="password"
           placeholder="パスワード"
           value={newUser.password}
-          onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, password: e.target.value })}
           className="border px-2 py-1"
         />
         <label className="flex items-center gap-1">
           <input
             type="checkbox"
-            checked={Boolean(newUser.isAdmin)} //undefined対策を追加
-            onChange={e => setNewUser({ ...newUser, isAdmin: e.target.checked })}
+            checked={Boolean(newUser.isAdmin)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewUser({ ...newUser, isAdmin: e.target.checked })}
           />
           管理者
         </label>
         <select
           value={newUser.role}
-          onChange={e => setNewUser({ ...newUser, role: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewUser({ ...newUser, role: e.target.value })}
           className="border px-2 py-1"
         >
           <option value="スペシャリスト">スペシャリスト</option>
@@ -255,29 +237,29 @@ const handleDeleteConfirmed = async () => {
             <tr key={user.id}>
               <td className="border px-2 py-1">
                 <input
-                  value={user.name ?? ''} //undefined対策
-                  onChange={e => handleChange(idx, 'name', e.target.value)}
+                  value={user.name ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(idx, 'name', e.target.value)}
                   className="w-full"
                 />
               </td>
               <td className="border px-2 py-1">
                 <input
-                  value={user.email ?? ''} //undefined対策
-                  onChange={e => handleChange(idx, 'email', e.target.value)}
+                  value={user.email ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(idx, 'email', e.target.value)}
                   className="w-full"
                 />
               </td>
               <td className="border px-2 py-1 text-center">
                 <input
                   type="checkbox"
-                  checked={Boolean(user.isAdmin)} //undefined対策追加
-                  onChange={e => handleChange(idx, 'isAdmin', e.target.checked)}
+                  checked={Boolean(user.isAdmin)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(idx, 'isAdmin', e.target.checked)}
                 />
               </td>
               <td className="border px-2 py-1">
                 <select
-                  value={user.role ?? ''} // undefined対策
-                  onChange={e => handleChange(idx, 'role', e.target.value)}
+                  value={user.role ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChange(idx, 'role', e.target.value)}
                   className="w-full"
                 >
                   <option value="スペシャリスト">スペシャリスト</option>
@@ -287,13 +269,13 @@ const handleDeleteConfirmed = async () => {
               </td>
               <td className="border px-2 py-1 flex gap-2">
                 <button
-                  onClick={() => handleSave(user)} //編集保存処理を呼び出すように修正
+                  onClick={() => handleSave(user)}
                   className="bg-blue-200 px-2 py-1 rounded"
                 >変更を保存</button>
                 <button
                   onClick={() => {
-                    setUserToDelete(user)     //モーダル表示用に対象ユーザーをセット
-                    setIsModalOpen(true)     //モーダルを表示
+                    setUserToDelete(user)
+                    setIsModalOpen(true)
                   }}
                   className="bg-red-200 px-2 py-1 rounded"
                 >ユーザーを削除</button>
