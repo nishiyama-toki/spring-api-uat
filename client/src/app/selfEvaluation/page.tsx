@@ -1,16 +1,12 @@
-// app/selfEvaluation/page.tsx
 'use client';
 
-// useEffect をインポートに追加します
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
 
-// API ベース URL を環境変数で設定
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
-// 登録用リクエスト型
 interface EvaluationRequest {
   phase_id: number;
   evaluator_id: number;
@@ -21,7 +17,7 @@ interface EvaluationRequest {
   comment: string;
 }
 
-// 確認モーダルコンポーネント (変更なし)
+// 完全モジュールCSS化済みのモーダル
 const ConfirmationModal = ({
   onConfirm,
   onCancel,
@@ -31,46 +27,46 @@ const ConfirmationModal = ({
   onConfirm: () => void;
   onCancel: () => void;
   isLoading: boolean;
-  data: { skill: string; business: string; team: string; comment:string };
+  data: { skill: string; business: string; team: string; comment: string };
 }) => (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-      <h2 className="text-xl font-bold mb-4">登録内容の確認</h2>
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <span className="text-gray-600">スキル:</span><span className="font-medium">{data.skill || 'ー'}</span>
+  <div className={styles.modalOverlay}>
+    <div className={styles.modalBox}>
+      <h2 className={styles.modalTitle}>登録内容の確認</h2>
+      <div>
+        <div className={styles.modalRow}>
+          <span className={styles.modalRowLabel}>スキル:</span>
+          <span className={styles.modalRowValue}>{data.skill || 'ー'}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">ビジネス:</span><span className="font-medium">{data.business || 'ー'}</span>
+        <div className={styles.modalRow}>
+          <span className={styles.modalRowLabel}>ビジネス:</span>
+          <span className={styles.modalRowValue}>{data.business || 'ー'}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">チーム:</span><span className="font-medium">{data.team || 'ー'}</span>
+        <div className={styles.modalRow}>
+          <span className={styles.modalRowLabel}>チーム:</span>
+          <span className={styles.modalRowValue}>{data.team || 'ー'}</span>
         </div>
         {data.comment.trim() && (
-          <div className="mt-2">
-            <span className="text-gray-600">コメント:</span>
-            <p className="mt-1 p-2 bg-gray-100 rounded whitespace-pre-wrap break-words max-h-32 overflow-auto text-sm">
-              {data.comment}
-            </p>
+          <div className={styles.modalComment}>
+            <span className={styles.modalRowLabel}>コメント:</span>
+            <br />
+            {data.comment}
           </div>
         )}
       </div>
-      <div className="mt-6 flex justify-end space-x-3">
+      <div className={styles.modalButtonRow}>
         <button
           onClick={onCancel}
           disabled={isLoading}
-          className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50"
-        >戻る</button>
+          className={`${styles.modalButton} ${styles.cancel}`}
+        >
+          戻る
+        </button>
         <button
           onClick={onConfirm}
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center hover:bg-blue-700 disabled:bg-blue-400"
+          className={`${styles.modalButton} ${styles.submit}`}
         >
-          {isLoading ? (
-            <span>送信中...</span>
-          ) : (
-            '送信'
-          )}
+          {isLoading ? '送信中...' : '送信'}
         </button>
       </div>
     </div>
@@ -91,10 +87,9 @@ export default function SelfEvaluationPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
-  const userId = 1; // TODO: 実際のユーザーIDを取得する処理に置き換えてください
 
-  // localStorageから見出しを取得する処理
+  const userId = 1; // TODO: ユーザーID取得処理に置換
+
   useEffect(() => {
     const storedHeading = localStorage.getItem('heading');
     if (storedHeading) {
@@ -102,21 +97,16 @@ export default function SelfEvaluationPage() {
     }
   }, []);
 
-  // ページ読み込み時に、既存の評価データを取得する
   useEffect(() => {
-    // phaseとuserIdが有効な値の場合のみ実行
     if (phase > 0 && userId > 0) {
       const fetchEvaluation = async () => {
         try {
-          // バックエンドのGETエンドポイントを呼び出す
           const response = await axios.get(`${BASE}/api/self-evaluations`, {
             params: {
               phase_id: phase,
               user_id: userId,
             },
           });
-
-          // レスポンスデータでフォームの初期値を設定
           if (response.data) {
             const data = response.data;
             setSkill(data.skillScore?.toString() || '');
@@ -126,21 +116,16 @@ export default function SelfEvaluationPage() {
             setMessage('以前の評価を読み込みました。');
           }
         } catch (error) {
-          // 404エラーの場合は、まだ評価が存在しないだけなので正常な動作
           if (axios.isAxiosError(error) && error.response?.status === 404) {
-            console.log('まだ評価データはありません。新規作成します。');
-            setMessage(null); // メッセージをクリア
+            setMessage(null);
           } else {
-            // その他のエラーはコンソールに出力
-            console.error('評価データの取得に失敗しました:', error);
             setMessage('評価データの読み込みに失敗しました。');
           }
         }
       };
-
       fetchEvaluation();
     }
-  }, [phase, userId]); // phaseかuserIdが変わったときに再実行される
+  }, [phase, userId]);
 
   const isSubmittable = useMemo(
     () =>
@@ -161,7 +146,6 @@ export default function SelfEvaluationPage() {
     setIsConfirmOpen(true);
   };
 
-  // 本送信の処理は変更ありません
   const handleConfirm = async () => {
     setIsLoading(true);
     const payload: EvaluationRequest = {
@@ -204,7 +188,6 @@ export default function SelfEvaluationPage() {
         <main className={styles.mainContent}>
           <form onSubmit={handleSubmit} className={styles.formSections}>
             <div className={styles.scoreGrid}>
-              {/* スキル */}
               <div className={styles.inputGroup}>
                 <label htmlFor="skill-input" className={styles.label}>スキル</label>
                 <input
@@ -217,7 +200,6 @@ export default function SelfEvaluationPage() {
                   step={0.1} min={1} max={5}
                 />
               </div>
-              {/* ビジネス */}
               <div className={styles.inputGroup}>
                 <label htmlFor="business-input" className={styles.label}>ビジネス</label>
                 <input
@@ -230,7 +212,6 @@ export default function SelfEvaluationPage() {
                   step={0.1} min={1} max={5}
                 />
               </div>
-              {/* チーム */}
               <div className={styles.inputGroup}>
                 <label htmlFor="team-input" className={styles.label}>チームマネジメント</label>
                 <input
@@ -245,7 +226,6 @@ export default function SelfEvaluationPage() {
               </div>
             </div>
 
-            {/* コメント */}
             <div className={styles.inputGroup}>
               <label htmlFor="comment-input" className={styles.label}>コメント</label>
               <textarea
@@ -257,14 +237,11 @@ export default function SelfEvaluationPage() {
                 maxLength={1000}
                 rows={5}
               />
-              {/* ▼▼▼ この部分を追加しました ▼▼▼ */}
               <div className={styles.commentCounter}>
                 {comment.length} / 1000
               </div>
-              {/* ▲▲▲ ここまで ▲▲▲ */}
             </div>
 
-            {/* メッセージ */}
             {message && (
               <div className={`${styles.message} ${
                 message.includes('失敗') ? styles.errorMessage : styles.successMessage
@@ -287,7 +264,6 @@ export default function SelfEvaluationPage() {
         </main>
       </div>
 
-      {/* 確認モーダル */}
       {isConfirmOpen && (
         <ConfirmationModal
           onConfirm={handleConfirm}
