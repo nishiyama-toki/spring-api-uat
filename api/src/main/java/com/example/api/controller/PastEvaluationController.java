@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PastEvaluationController {
 
     private final PastEvaluationService pastEvaluationService;
@@ -17,21 +16,13 @@ public class PastEvaluationController {
         this.pastEvaluationService = pastEvaluationService;
     }
 
-    /**
-     * 過去の評価履歴を取得します。
-     * phaseIdと、JWTから取得した安全なuserIdを使用します。
-     */
     @GetMapping("/past-evaluations")
     public ResponseEntity<PastEvaluationResponse> getPastEvaluations(
-            @RequestParam("phase_id") Long phaseId, // ★ intからLongに変更
+            @RequestParam("phase_id") Long phaseId,
             Authentication authentication
     ) {
-        // JWTから安全に本人IDを取得
         Long targetId = Long.parseLong(authentication.getName());
-        
-        // Serviceを呼び出す
         PastEvaluationResponse response = pastEvaluationService.getPastEvaluation(targetId, phaseId);
-        
         return ResponseEntity.ok(response);
     }
 }
