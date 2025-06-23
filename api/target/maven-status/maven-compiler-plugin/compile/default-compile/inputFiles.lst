@@ -1,10 +1,16 @@
 /var/www/html/api/src/main/java/com/example/api/config/SecurityConfig.java
+<<<<<<< HEAD
 /var/www/html/api/src/main/java/com/example/api/controller/AdminPhaseController.java
 /var/www/html/api/src/main/java/com/example/api/controller/AuthController.java
+=======
+/var/www/html/api/src/main/java/com/example/api/controller/AdminCheckController.java
+/var/www/html/api/src/main/java/com/example/api/controller/AdminPhaseController.java
+>>>>>>> tmp-css-fix
 /var/www/html/api/src/main/java/com/example/api/controller/EvaluationController.java
 /var/www/html/api/src/main/java/com/example/api/controller/EvaluationsController.java
 /var/www/html/api/src/main/java/com/example/api/controller/HomeApiController.java
 /var/www/html/api/src/main/java/com/example/api/controller/MultiEvaluationController.java
+<<<<<<< HEAD
 /var/www/html/api/src/main/java/com/example/api/controller/PasswordResetController.java
 /var/www/html/api/src/main/java/com/example/api/controller/PastEvaluationController.java
 /var/www/html/api/src/main/java/com/example/api/controller/PhaseController.java
@@ -19,6 +25,14 @@
 /var/www/html/api/src/main/java/com/example/api/dto/EvaluationResponseDTO.java
 /var/www/html/api/src/main/java/com/example/api/dto/PhaseDto.java
 /var/www/html/api/src/main/java/com/example/api/entity/Employee.java
+=======
+/var/www/html/api/src/main/java/com/example/api/controller/PhaseController.java
+/var/www/html/api/src/main/java/com/example/api/controller/ReminderBatchController.java
+/var/www/html/api/src/main/java/com/example/api/controller/UserController.java
+/var/www/html/api/src/main/java/com/example/api/dto/BaseUserDto.java
+/var/www/html/api/src/main/java/com/example/api/dto/EvaluationResponse.java
+/var/www/html/api/src/main/java/com/example/api/dto/PhaseDto.java
+>>>>>>> tmp-css-fix
 /var/www/html/api/src/main/java/com/example/api/entity/Evaluation.java
 /var/www/html/api/src/main/java/com/example/api/entity/PasswordResetToken.java
 /var/www/html/api/src/main/java/com/example/api/entity/Phase.java
