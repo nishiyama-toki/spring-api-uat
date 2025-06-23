@@ -29,7 +29,8 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
         const fetchPhases = async () => {
             try {
                 const response = await fetch('/api/phases');
-                const apiResponse = await response.json();
+                // const apiResponse = await response.json();一旦コメント
+                const apiResponse: unknown = await response.json();
                 const phasesArray = Array.isArray(apiResponse) ? apiResponse : [];
 
                 // ✅ 修正：anyを使わずにPartial<Phase>経由でPhaseに変換
