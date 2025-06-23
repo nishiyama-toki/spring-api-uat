@@ -45,7 +45,7 @@ export default function LoginPage() {
     setAuthError('')
     if (!validate()) return
 
-    try {
+      try {
       // 1. ログインリクエスト
       const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
@@ -55,9 +55,11 @@ export default function LoginPage() {
       } else {
         router.push('/home')
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
       setAuthError('メールアドレスまたはパスワードが正しくありません。')
     }
+
   }
 
   return (

@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     router.replace('/login') // 自動で /login に遷移
-  }, [])
+  }, [router]) // ← router を依存配列に追加
 
   return null // 画面表示なしでリダイレクト
 }

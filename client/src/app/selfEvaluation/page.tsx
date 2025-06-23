@@ -80,7 +80,7 @@ const ConfirmationModal = ({
 export default function SelfEvaluationPage() {
   const searchParams = useSearchParams();
   const phase = parseInt(searchParams.get('phase') || '0', 10);
-  const quarter = parseInt(searchParams.get('quarter') || '0', 10);
+  // const quarter = parseInt(searchParams.get('quarter') || '0', 10);どこにも使用されていなかったのでコメントアウトしてます
 
   const [heading, setHeading] = useState('自己評価');
 
