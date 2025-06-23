@@ -7,15 +7,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "phases")
 public class Phase {
+
+    /* ---------- カラム ---------- */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "phase_number", nullable = false)
-    private Integer phaseNumber;
+    private Integer phaseNumber;       // 期（1,2,3…）
 
     @Column(name = "name", nullable = false)
-    private String periodName;
+    private String periodName;         // クォーター名（Q1 / Q2 …）
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -35,25 +37,36 @@ public class Phase {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // getters/setters (省略)
-    public Long getId() {return id;}
-    public void setId(Long id){this.id=id;}
-    public Integer getPhaseNumber(){return phaseNumber;}
-    public void setPhaseNumber(Integer p){this.phaseNumber=p;}
-    public String getPeriodName(){return periodName;}
-    public void setPeriodName(String n){this.periodName=n;}
-    public String getName(){return periodName;}
-    public void setName(String n){this.periodName=n;}
-    public LocalDate getStartDate(){return startDate;}
-    public void setStartDate(LocalDate d){this.startDate=d;}
-    public LocalDate getEndDate(){return endDate;}
-    public void setEndDate(LocalDate d){this.endDate=d;}
-    public LocalDateTime getSelfEvalDue(){return selfEvalDue;}
-    public void setSelfEvalDue(LocalDateTime t){this.selfEvalDue=t;}
-    public LocalDateTime getPeerEvalDue(){return peerEvalDue;}
-    public void setPeerEvalDue(LocalDateTime t){this.peerEvalDue=t;}
-    public LocalDateTime getCreatedAt(){return createdAt;}
-    public void setCreatedAt(LocalDateTime t){this.createdAt=t;}
-    public LocalDateTime getUpdatedAt(){return updatedAt;}
-    public void setUpdatedAt(LocalDateTime t){this.updatedAt=t;}
+    /* ---------- Getter / Setter ---------- */
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Integer getPhaseNumber() { return phaseNumber; }
+    public void setPhaseNumber(Integer phaseNumber) { this.phaseNumber = phaseNumber; }
+
+    public String getPeriodName() { return periodName; }
+    public void setPeriodName(String periodName) { this.periodName = periodName; }
+
+    // ── もし “名前” を汎用的に呼び出したい場合は ↓ をシンタックスシュガーとして残す
+    @Transient
+    public String getName() { return periodName; }
+    public void setName(String name) { this.periodName = name; }
+
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+
+    public LocalDateTime getSelfEvalDue() { return selfEvalDue; }
+    public void setSelfEvalDue(LocalDateTime selfEvalDue) { this.selfEvalDue = selfEvalDue; }
+
+    public LocalDateTime getPeerEvalDue() { return peerEvalDue; }
+    public void setPeerEvalDue(LocalDateTime peerEvalDue) { this.peerEvalDue = peerEvalDue; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
