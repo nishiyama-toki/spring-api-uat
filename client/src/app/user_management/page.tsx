@@ -60,7 +60,10 @@ const handleRegister = async () => {
   try {
     const res = await axios.post<User>(
       '/api/user_management_register',
-      newUser
+      {
+        ...newUser,
+        permission: newUser.isAdmin ? 'ADMIN' : 'USER' // ✅ 追加！
+      }
     );
     setUsers(prev => [...prev, res.data]) // prev（前のstate）を使って一覧に追加
     setNewUser({                         // newUser を初期状態に戻す
@@ -78,7 +81,6 @@ const handleRegister = async () => {
     }
   }
 }
-
 
 // ------------------------
 // 編集
@@ -103,7 +105,8 @@ const handleSave = async (user: User) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,  // ← 明示的に1個ずつ渡す
-        role: user.role
+        role: user.role,
+        permission: user.isAdmin ? 'ADMIN' : 'USER' // ✅ 追加！
       }
     );
     alert('変更を保存しました');

@@ -11,12 +11,15 @@ public class BaseUserDto {
     private boolean isAdmin;
     private String role;
 
+    private String permission;
+
     // --- Getter ---
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public boolean isAdmin() { return isAdmin; }
     public String getRole() { return role; }
+    public String getPermission() { return permission; }
 
     // --- Setter ---
     public void setName(String name) { this.name = name; }
@@ -26,4 +29,5 @@ public class BaseUserDto {
     @JsonProperty("isAdmin")
     public void setAdmin(boolean isAdmin) { this.isAdmin = isAdmin; }
     public void setRole(String role) { this.role = role; }
+    public void setPermission(String permission) { this.permission = permission; }
 }

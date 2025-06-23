@@ -4,9 +4,11 @@ import com.example.api.entity.Employee;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -14,65 +16,66 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // application.properties の jwt.secret を読み込む
-    @Value("${jwt.secret}")
-    private String secretKey;
+    // application.properties に設定した secret を読み込む
+    private final Key key;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
     /**
      * JWTトークンを生成する
-     * @param employee ユーザー情報
+     * @param employee ログインユーザー情報
      * @return JWT文字列
      */
     public String generateToken(Employee employee) {
         Instant now = Instant.now();
+        Instant expiry = now.plus(30, ChronoUnit.MINUTES); // 有効期限30分（スライディング）
 
         return Jwts.builder()
-                .setSubject(employee.getEmail())                         // トークンのsubjectにemailを入れる
-                .claim("id", employee.getId())                           // IDをclaimとして埋め込む
-                .claim("role", employee.getPermission())                 // 権限をclaimに追加
-                .setIssuedAt(Date.from(now))                             // 発行日時
-                .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))  // 有効期限：1日
-                .signWith(SignatureAlgorithm.HS256, secretKey)          // HMAC SHA256で署名
+                .setSubject(String.valueOf(employee.getId()))                // 主体（ユーザーID）
+                .claim("email", employee.getEmail())                         // 任意の情報
+                .claim("role", employee.getPermission())                     // 権限（admin, employeeなど）
+                .setIssuedAt(Date.from(now))                                 // 発行時間
+                .setExpiration(Date.from(expiry))                            // 有効期限
+                .signWith(key, SignatureAlgorithm.HS256)                          // 署名アルゴリズム
                 .compact();
     }
 
-    /* =====  追加メソッド ===== */
-
-    /** トークンの署名・期限を検証 */
+    /** トークンの署名と有効期限を検証する */
     public boolean isValid(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            return false; // 署名不正・期限切れなど
+            return false;
         }
     }
 
-    // トークンからユーザーID(Sub) を取り出す
+    /** トークンからユーザーIDを取得（subに埋め込んだ値） */
     public String extractUserId(String token) {
-        Claims claims = Jwts.parser()
-                            .setSigningKey(secretKey)
-                            .parseClaimsJws(token)
-                            .getBody();
-        return claims.getSubject(); // setSubject に入れた値（email）
+        return parseClaims(token).getSubject();
     }
 
-    // トークンから権限(role) を取り出す（必要なら）
+    /** トークンからロールを取得（claim） */
     public String extractRole(String token) {
-        Claims claims = Jwts.parser()
-                            .setSigningKey(secretKey)
-                            .parseClaimsJws(token)
-                            .getBody();
-        return claims.get("role", String.class);
+        return parseClaims(token).get("role", String.class);
     }
 
-    // トークンから有効期限（exp クレーム）を取り出す
+    /** トークンの有効期限（exp）を取得 */
     public Instant extractExpiration(String token) {
-    return Jwts.parser()
-               .setSigningKey(secretKey)
-               .parseClaimsJws(token)
-               .getBody()
-               .getExpiration()
-               .toInstant();
+        return parseClaims(token).getExpiration().toInstant();
+    }
+
+    /** 内部で使う共通のClaims抽出処理 */
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                   .setSigningKey(key)
+                   .build()
+                   .parseClaimsJws(token)
+                   .getBody();
     }
 }

@@ -1,3 +1,4 @@
+// JwtAuthenticationFilter.java
 package com.example.api.security;
 
 import com.example.api.entity.JwtToken;
@@ -36,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtTokenRepository = jwtTokenRepository;
     }
 
-    /** ログイン関係の API はフィルター対象外 */
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getRequestURI();
@@ -52,25 +52,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
-            // ----- 1. Authorization ヘッダーからトークンを抽出 -----
             String authHeader = request.getHeader("Authorization");
             String token = (authHeader != null && authHeader.startsWith("Bearer "))
                     ? authHeader.substring(7)
                     : null;
 
-            // ----- 2. トークンがあり、まだ認証済みでない場合 -----
             if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                // 2-1. 署名・期限チェック
                 if (jwtTokenProvider.isValid(token)) {
-
-                    // 2-2. 失効フラグ確認
                     boolean revoked = jwtTokenRepository.findByToken(token)
                             .map(JwtToken::getIsRevoked)
-                            .orElse(true);   // 無いものは無効扱い
-
+                            .orElse(true);
                     if (!revoked) {
-                        // 2-3. ユーザー情報をロードして認証コンテキストに設定
                         String userId = jwtTokenProvider.extractUserId(token);
                         UserDetails userDetails = userDetailsService.loadUserById(Long.parseLong(userId));
 
@@ -86,12 +78,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     log.warn("JWT 認証エラー: トークンが無効です");
                 }
             }
-
         } catch (Exception ex) {
             log.error("JWT 認証中に例外が発生しました: {}", ex.getMessage(), ex);
         }
 
-        // 後続フィルターへ
         filterChain.doFilter(request, response);
     }
 }

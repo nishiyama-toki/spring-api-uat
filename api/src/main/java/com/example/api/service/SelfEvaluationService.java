@@ -22,57 +22,54 @@ public class SelfEvaluationService {
     private final EmployeeRepository employeeRepository;
     private final PhaseRepository phaseRepository;
 
-    public SelfEvaluationService(EvaluationRepository er, EmployeeRepository empRepo, PhaseRepository pr) {
+    public SelfEvaluationService(EvaluationRepository er,
+                                 EmployeeRepository empRepo,
+                                 PhaseRepository pr) {
         this.evaluationRepository = er;
         this.employeeRepository = empRepo;
         this.phaseRepository = pr;
     }
 
+    // ────────────── 取得 ──────────────
     @Transactional(readOnly = true)
     public Optional<SelfEvaluationResponseDTO> getSelfEvaluation(Long phaseId, Long userId) {
         return evaluationRepository
-                .findByEvaluator_IdAndTarget_IdAndPhase_Id(userId, userId, phaseId)
-                .stream()
-                .findFirst()
+                .findByEvaluatorIdAndTargetIdAndPhaseId(userId, userId, phaseId)   // Optional<Evaluation>
                 .map(SelfEvaluationResponseDTO::new);
     }
 
+    // ────────────── 登録／更新 ──────────────
     @Transactional
-    public Evaluation saveOrUpdateSelfEvaluation(SelfEvaluationRequest request) {
-        Optional<Evaluation> existingEvaluationOpt = evaluationRepository
-            .findByEvaluator_IdAndTarget_IdAndPhase_Id(
-                request.getEvaluatorId(),
-                request.getTargetId(),
-                request.getPhaseId()
-            );
+    public Evaluation saveOrUpdateSelfEvaluation(SelfEvaluationRequest req) {
 
-        Evaluation evaluation;
-        if (existingEvaluationOpt.isPresent()) {
-            evaluation = existingEvaluationOpt.get();
-        } else {
-            evaluation = new Evaluation();
+        Optional<Evaluation> opt = evaluationRepository
+                .findByEvaluatorIdAndTargetIdAndPhaseId(
+                        req.getEvaluatorId(),
+                        req.getTargetId(),
+                        req.getPhaseId());
 
-            Employee evaluator = employeeRepository.findById(request.getEvaluatorId())
-                .orElseThrow(() -> new EntityNotFoundException("評価者が見つかりません: " + request.getEvaluatorId()));
+        Evaluation ev = opt.orElseGet(Evaluation::new);
 
-            Employee target = employeeRepository.findById(request.getTargetId())
-                .orElseThrow(() -> new EntityNotFoundException("対象者が見つかりません: " + request.getTargetId()));
+        if (opt.isEmpty()) {
+            Employee evaluator = employeeRepository.findById(req.getEvaluatorId())
+                    .orElseThrow(() -> new EntityNotFoundException("評価者が見つかりません"));
+            Employee target = employeeRepository.findById(req.getTargetId())
+                    .orElseThrow(() -> new EntityNotFoundException("対象者が見つかりません"));
+            Phase phase = phaseRepository.findById(req.getPhaseId())
+                    .orElseThrow(() -> new EntityNotFoundException("フェーズが見つかりません"));
 
-            Phase phase = phaseRepository.findById(request.getPhaseId())
-                .orElseThrow(() -> new EntityNotFoundException("フェーズが見つかりません: " + request.getPhaseId()));
-
-            evaluation.setEvaluator(evaluator);
-            evaluation.setTarget(target);
-            evaluation.setPhase(phase);
-            evaluation.setCreatedAt(LocalDateTime.now());
+            ev.setEvaluator(evaluator);
+            ev.setTarget(target);
+            ev.setPhase(phase);
+            ev.setCreatedAt(LocalDateTime.now());
         }
 
-        evaluation.setSkillScore(request.getSkillScore());
-        evaluation.setBusinessScore(request.getBusinessScore());
-        evaluation.setTeamScore(request.getTeamScore());
-        evaluation.setComment(request.getComment());
-        evaluation.setUpdatedAt(LocalDateTime.now());
+        ev.setSkillScore(req.getSkillScore());
+        ev.setBusinessScore(req.getBusinessScore());
+        ev.setTeamScore(req.getTeamScore());
+        ev.setComment(req.getComment());
+        ev.setUpdatedAt(LocalDateTime.now());
 
-        return evaluationRepository.save(evaluation);
+        return evaluationRepository.save(ev);
     }
 }

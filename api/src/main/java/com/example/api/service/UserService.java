@@ -38,13 +38,14 @@ public class UserService {
         user.setPassword(hashed);
 
         user.setAdmin(dto.isAdmin());
+        user.setPermission(dto.getPermission());
         return userRepository.save(user);
     }
 
     // ----------------------------
     // 多面評価対象者＋評価済みデータを取得
     // ----------------------------
-    public List<TargetResponseDto> getTargetsWithEvaluation(Integer evaluatorId) {
+    public List<TargetResponseDto> getTargetsWithEvaluation(Long evaluatorId) {
         List<User> targets = userRepository.findAll(); // 実際は対象者の精精り込みも可能
         List<TargetResponseDto> result = new ArrayList<>();
 
@@ -57,12 +58,13 @@ public class UserService {
             dto.setRole(target.getRole());
 
             evaluationRepository
-                .findByEvaluatorIdAndTargetId(evaluatorId, target.getId())
+                .findByEvaluatorIdAndTargetId(evaluatorId, target.getId().longValue())
                 .ifPresent(evaluation -> {
                     GetEvaluationDto evalDto = new GetEvaluationDto();
-                    evalDto.setSkill_score(evaluation.getSkill_score());
-                    evalDto.setBusiness_score(evaluation.getBusiness_score());
-                    evalDto.setTeam_score(evaluation.getTeam_score());
+                    evalDto.setSkill_score(evaluation.getSkillScore().floatValue());
+                    evalDto.setBusiness_score(evaluation.getBusinessScore().floatValue());
+                    evalDto.setTeam_score(evaluation.getTeamScore().floatValue());
+
                     evalDto.setComment(evaluation.getComment());
 
                     dto.setEvaluation(evalDto); // ← ここでセット！
