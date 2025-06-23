@@ -7,8 +7,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
 
-export const dynamic = 'force-dynamic'//追加
-
+export const dynamic = 'force-dynamic' //追加
 
 // API ベース URL を環境変数で設定
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
@@ -82,8 +81,8 @@ const ConfirmationModal = ({
 
 export default function SelfEvaluationPage() {
   const searchParams = useSearchParams();
-  const phase = parseInt(searchParams.get('phase') || '0', 10);
-  const quarter = parseInt(searchParams.get('quarter') || '0', 10);
+  const [phase, setPhase] = useState(0);
+  const [quarter, setQuarter] = useState(0);
 
   const [heading, setHeading] = useState('自己評価');
 
@@ -104,6 +103,14 @@ export default function SelfEvaluationPage() {
       setHeading(storedHeading);
     }
   }, []);
+
+  // searchParams から phase / quarter を取得
+  useEffect(() => {
+    const parsedPhase = parseInt(searchParams.get('phase') || '0', 10);
+    const parsedQuarter = parseInt(searchParams.get('quarter') || '0', 10);
+    setPhase(parsedPhase);
+    setQuarter(parsedQuarter);
+  }, [searchParams]);
 
   // ページ読み込み時に、既存の評価データを取得する
   useEffect(() => {
