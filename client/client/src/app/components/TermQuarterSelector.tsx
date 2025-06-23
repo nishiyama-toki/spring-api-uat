@@ -35,7 +35,7 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const phasesArray = Array.isArray(raw) ? raw : [];
 
                 // ✅ 修正：anyを使わずに型チェック＆変換
-                const mapped = (phasesArray as unknown[]).map((p): Phase => {
+                const mapped = (phasesArray as Array<Record<string, unknown>>).map((p): Phase => {
                     if (
                         typeof p === 'object' &&
                         p !== null &&
