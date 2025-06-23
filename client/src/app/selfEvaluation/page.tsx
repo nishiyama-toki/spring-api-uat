@@ -533,11 +533,18 @@
 // }
 
 
-// app/selfEvaluation/page.tsx
-import React from 'react';
+
+import React, { Suspense } from 'react';
 import SelfEvaluationClient from './SelfEvaluationClient';
 
-export default function SelfEvaluationPage() {
-  return <SelfEvaluationClient />;
+export const dynamic = 'force-dynamic';
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>読み込み中...</div>}>
+      <SelfEvaluationClient />
+    </Suspense>
+  );
 }
+
 
