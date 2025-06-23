@@ -31,11 +31,10 @@ export const TermQuarterSelector: React.FC<Props> = ({ value, onChange }) => {
                 const response = await fetch('/api/phases');
                 const raw: unknown = await response.json();
 
-                // 👇 unknown[] にキャストして any 推論を完全排除
-                const phasesArray = Array.isArray(raw) ? raw : [];
+                // ✅ 型断言で any 推論を完全排除
+                const phasesArray = Array.isArray(raw) ? (raw as Record<string, unknown>[]) : [];
 
-                // ✅ any を完全排除し、プロパティに安全にアクセス
-                const mapped = (phasesArray as Record<string, unknown>[]).map((p): Phase => {
+                const mapped = phasesArray.map((p): Phase => {
                     const phaseId = Number(p['phaseId']);
                     const phaseNumber = Number(p['phaseNumber']);
                     const name = String(p['name']);
