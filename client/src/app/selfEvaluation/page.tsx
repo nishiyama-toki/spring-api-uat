@@ -311,224 +311,233 @@
 // }
 
 
-'use client'
+// 'use client'
 
-import React, { useEffect, useState, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
-import axios from 'axios'
-import styles from './SelfEvaluation.module.css'
+// import React, { useEffect, useState, useMemo } from 'react'
+// import { useSearchParams } from 'next/navigation'
+// import axios from 'axios'
+// import styles from './SelfEvaluation.module.css'
 
-export const dynamic = 'force-dynamic'
+// export const dynamic = 'force-dynamic'
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
+// const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
 
-interface EvaluationRequest {
-  phase_id: number;
-  evaluator_id: number;
-  target_id: number;
-  skill_score: number | null;
-  business_score: number | null;
-  team_score: number | null;
-  comment: string;
-}
+// interface EvaluationRequest {
+//   phase_id: number;
+//   evaluator_id: number;
+//   target_id: number;
+//   skill_score: number | null;
+//   business_score: number | null;
+//   team_score: number | null;
+//   comment: string;
+// }
 
-const ConfirmationModal = ({
-  onConfirm,
-  onCancel,
-  isLoading,
-  data,
-}: {
-  onConfirm: () => void;
-  onCancel: () => void;
-  isLoading: boolean;
-  data: { skill: string; business: string; team: string; comment:string };
-}) => (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-      <h2 className="text-xl font-bold mb-4">登録内容の確認</h2>
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <span className="text-gray-600">スキル:</span><span className="font-medium">{data.skill || 'ー'}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">ビジネス:</span><span className="font-medium">{data.business || 'ー'}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">チーム:</span><span className="font-medium">{data.team || 'ー'}</span>
-        </div>
-        {data.comment.trim() && (
-          <div className="mt-2">
-            <span className="text-gray-600">コメント:</span>
-            <p className="mt-1 p-2 bg-gray-100 rounded whitespace-pre-wrap break-words max-h-32 overflow-auto text-sm">
-              {data.comment}
-            </p>
-          </div>
-        )}
-      </div>
-      <div className="mt-6 flex justify-end space-x-3">
-        <button
-          onClick={onCancel}
-          disabled={isLoading}
-          className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50"
-        >戻る</button>
-        <button
-          onClick={onConfirm}
-          disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center hover:bg-blue-700 disabled:bg-blue-400"
-        >
-          {isLoading ? '送信中...' : '送信'}
-        </button>
-      </div>
-    </div>
-  </div>
-)
+// const ConfirmationModal = ({
+//   onConfirm,
+//   onCancel,
+//   isLoading,
+//   data,
+// }: {
+//   onConfirm: () => void;
+//   onCancel: () => void;
+//   isLoading: boolean;
+//   data: { skill: string; business: string; team: string; comment:string };
+// }) => (
+//   <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+//     <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+//       <h2 className="text-xl font-bold mb-4">登録内容の確認</h2>
+//       <div className="space-y-2">
+//         <div className="flex justify-between">
+//           <span className="text-gray-600">スキル:</span><span className="font-medium">{data.skill || 'ー'}</span>
+//         </div>
+//         <div className="flex justify-between">
+//           <span className="text-gray-600">ビジネス:</span><span className="font-medium">{data.business || 'ー'}</span>
+//         </div>
+//         <div className="flex justify-between">
+//           <span className="text-gray-600">チーム:</span><span className="font-medium">{data.team || 'ー'}</span>
+//         </div>
+//         {data.comment.trim() && (
+//           <div className="mt-2">
+//             <span className="text-gray-600">コメント:</span>
+//             <p className="mt-1 p-2 bg-gray-100 rounded whitespace-pre-wrap break-words max-h-32 overflow-auto text-sm">
+//               {data.comment}
+//             </p>
+//           </div>
+//         )}
+//       </div>
+//       <div className="mt-6 flex justify-end space-x-3">
+//         <button
+//           onClick={onCancel}
+//           disabled={isLoading}
+//           className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50"
+//         >戻る</button>
+//         <button
+//           onClick={onConfirm}
+//           disabled={isLoading}
+//           className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center hover:bg-blue-700 disabled:bg-blue-400"
+//         >
+//           {isLoading ? '送信中...' : '送信'}
+//         </button>
+//       </div>
+//     </div>
+//   </div>
+// )
+
+// export default function SelfEvaluationPage() {
+//   const searchParams = useSearchParams()
+
+//   const [phase, setPhase] = useState(0)
+//   const [quarter, setQuarter] = useState(0)
+//   const [heading, setHeading] = useState('自己評価')
+
+//   const [skill, setSkill] = useState('')
+//   const [business, setBusiness] = useState('')
+//   const [team, setTeam] = useState('')
+//   const [comment, setComment] = useState('')
+//   const [message, setMessage] = useState<string | null>(null)
+//   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+//   const [isLoading, setIsLoading] = useState(false)
+
+//   const userId = 1 // 仮のID
+
+//   useEffect(() => {
+//     const storedHeading = localStorage.getItem('heading')
+//     if (storedHeading) {
+//       setHeading(storedHeading)
+//     }
+//   }, [])
+
+//   // searchParams はクライアント側でしか扱わないように useEffect で処理
+//   useEffect(() => {
+//     const parsedPhase = parseInt(searchParams.get('phase') || '0', 10)
+//     const parsedQuarter = parseInt(searchParams.get('quarter') || '0', 10)
+//     setPhase(parsedPhase)
+//     setQuarter(parsedQuarter)
+//   }, [searchParams])
+
+//   useEffect(() => {
+//     if (phase > 0 && userId > 0) {
+//       const fetchEvaluation = async () => {
+//         try {
+//           const res = await axios.get(`${BASE}/api/self-evaluations`, {
+//             params: { phase_id: phase, user_id: userId }
+//           })
+//           const data = res.data
+//           setSkill(data.skillScore?.toString() || '')
+//           setBusiness(data.businessScore?.toString() || '')
+//           setTeam(data.teamScore?.toString() || '')
+//           setComment(data.comment || '')
+//           setMessage('以前の評価を読み込みました。')
+//         } catch (err: any) {
+//           if (axios.isAxiosError(err) && err.response?.status === 404) {
+//             setMessage(null)
+//           } else {
+//             setMessage('評価データの読み込みに失敗しました。')
+//             console.error(err)
+//           }
+//         }
+//       }
+//       fetchEvaluation()
+//     }
+//   }, [phase, userId])
+
+//   const isSubmittable = useMemo(() => {
+//     return skill.trim() !== '' || business.trim() !== '' || team.trim() !== '' || comment.trim() !== ''
+//   }, [skill, business, team, comment])
+
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault()
+//     if (!isSubmittable) {
+//       setMessage('いずれかの項目を入力してください')
+//       return
+//     }
+//     setIsConfirmOpen(true)
+//   }
+
+//   const handleConfirm = async () => {
+//     setIsLoading(true)
+//     const payload: EvaluationRequest = {
+//       phase_id: phase,
+//       evaluator_id: userId,
+//       target_id: userId,
+//       skill_score: skill ? parseFloat(skill) : null,
+//       business_score: business ? parseFloat(business) : null,
+//       team_score: team ? parseFloat(team) : null,
+//       comment,
+//     }
+//     try {
+//       const res = await axios.post(`${BASE}/api/self-evaluations`, payload)
+//       setMessage(res.data.message || '評価を登録・更新しました。')
+//     } catch (err: any) {
+//       if (axios.isAxiosError(err) && err.response) {
+//         setMessage(`登録に失敗しました: ${err.response.data.message || err.message}`)
+//       } else {
+//         setMessage('登録に失敗しました。')
+//       }
+//     } finally {
+//       setIsLoading(false)
+//       setIsConfirmOpen(false)
+//     }
+//   }
+
+//   return (
+//     <div className={styles.container}>
+//       <div className={styles.mainWrapper}>
+//         <header className={styles.header}>
+//           <h1 className={styles.headerTitle}>{heading}</h1>
+//         </header>
+
+//         <main className={styles.mainContent}>
+//           <form onSubmit={handleSubmit} className={styles.formSections}>
+//             <div className={styles.scoreGrid}>
+//               {/* 各スコア入力欄 */}
+//               <div className={styles.inputGroup}>
+//                 <label className={styles.label}>スキル</label>
+//                 <input type="number" value={skill} onChange={e => setSkill(e.target.value)} className={styles.input} />
+//               </div>
+//               <div className={styles.inputGroup}>
+//                 <label className={styles.label}>ビジネス</label>
+//                 <input type="number" value={business} onChange={e => setBusiness(e.target.value)} className={styles.input} />
+//               </div>
+//               <div className={styles.inputGroup}>
+//                 <label className={styles.label}>チームマネジメント</label>
+//                 <input type="number" value={team} onChange={e => setTeam(e.target.value)} className={styles.input} />
+//               </div>
+//             </div>
+
+//             <div className={styles.inputGroup}>
+//               <label className={styles.label}>コメント</label>
+//               <textarea value={comment} onChange={e => setComment(e.target.value)} className={styles.textarea} maxLength={1000} />
+//               <div className={styles.commentCounter}>{comment.length} / 1000</div>
+//             </div>
+
+//             {message && <div className={message.includes('失敗') ? styles.errorMessage : styles.successMessage}>{message}</div>}
+
+//             <div className={styles.submitSection}>
+//               <button type="submit" className={styles.submitButton} disabled={isLoading || !isSubmittable}>送信</button>
+//             </div>
+//           </form>
+//         </main>
+//       </div>
+
+//       {isConfirmOpen && (
+//         <ConfirmationModal
+//           onConfirm={handleConfirm}
+//           onCancel={() => setIsConfirmOpen(false)}
+//           isLoading={isLoading}
+//           data={{ skill, business, team, comment }}
+//         />
+//       )}
+//     </div>
+//   )
+// }
+
+
+// app/selfEvaluation/page.tsx
+import React from 'react';
+import SelfEvaluationClient from './SelfEvaluationClient';
 
 export default function SelfEvaluationPage() {
-  const searchParams = useSearchParams()
-
-  const [phase, setPhase] = useState(0)
-  const [quarter, setQuarter] = useState(0)
-  const [heading, setHeading] = useState('自己評価')
-
-  const [skill, setSkill] = useState('')
-  const [business, setBusiness] = useState('')
-  const [team, setTeam] = useState('')
-  const [comment, setComment] = useState('')
-  const [message, setMessage] = useState<string | null>(null)
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const userId = 1 // 仮のID
-
-  useEffect(() => {
-    const storedHeading = localStorage.getItem('heading')
-    if (storedHeading) {
-      setHeading(storedHeading)
-    }
-  }, [])
-
-  // searchParams はクライアント側でしか扱わないように useEffect で処理
-  useEffect(() => {
-    const parsedPhase = parseInt(searchParams.get('phase') || '0', 10)
-    const parsedQuarter = parseInt(searchParams.get('quarter') || '0', 10)
-    setPhase(parsedPhase)
-    setQuarter(parsedQuarter)
-  }, [searchParams])
-
-  useEffect(() => {
-    if (phase > 0 && userId > 0) {
-      const fetchEvaluation = async () => {
-        try {
-          const res = await axios.get(`${BASE}/api/self-evaluations`, {
-            params: { phase_id: phase, user_id: userId }
-          })
-          const data = res.data
-          setSkill(data.skillScore?.toString() || '')
-          setBusiness(data.businessScore?.toString() || '')
-          setTeam(data.teamScore?.toString() || '')
-          setComment(data.comment || '')
-          setMessage('以前の評価を読み込みました。')
-        } catch (err: any) {
-          if (axios.isAxiosError(err) && err.response?.status === 404) {
-            setMessage(null)
-          } else {
-            setMessage('評価データの読み込みに失敗しました。')
-            console.error(err)
-          }
-        }
-      }
-      fetchEvaluation()
-    }
-  }, [phase, userId])
-
-  const isSubmittable = useMemo(() => {
-    return skill.trim() !== '' || business.trim() !== '' || team.trim() !== '' || comment.trim() !== ''
-  }, [skill, business, team, comment])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!isSubmittable) {
-      setMessage('いずれかの項目を入力してください')
-      return
-    }
-    setIsConfirmOpen(true)
-  }
-
-  const handleConfirm = async () => {
-    setIsLoading(true)
-    const payload: EvaluationRequest = {
-      phase_id: phase,
-      evaluator_id: userId,
-      target_id: userId,
-      skill_score: skill ? parseFloat(skill) : null,
-      business_score: business ? parseFloat(business) : null,
-      team_score: team ? parseFloat(team) : null,
-      comment,
-    }
-    try {
-      const res = await axios.post(`${BASE}/api/self-evaluations`, payload)
-      setMessage(res.data.message || '評価を登録・更新しました。')
-    } catch (err: any) {
-      if (axios.isAxiosError(err) && err.response) {
-        setMessage(`登録に失敗しました: ${err.response.data.message || err.message}`)
-      } else {
-        setMessage('登録に失敗しました。')
-      }
-    } finally {
-      setIsLoading(false)
-      setIsConfirmOpen(false)
-    }
-  }
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.mainWrapper}>
-        <header className={styles.header}>
-          <h1 className={styles.headerTitle}>{heading}</h1>
-        </header>
-
-        <main className={styles.mainContent}>
-          <form onSubmit={handleSubmit} className={styles.formSections}>
-            <div className={styles.scoreGrid}>
-              {/* 各スコア入力欄 */}
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>スキル</label>
-                <input type="number" value={skill} onChange={e => setSkill(e.target.value)} className={styles.input} />
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>ビジネス</label>
-                <input type="number" value={business} onChange={e => setBusiness(e.target.value)} className={styles.input} />
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>チームマネジメント</label>
-                <input type="number" value={team} onChange={e => setTeam(e.target.value)} className={styles.input} />
-              </div>
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>コメント</label>
-              <textarea value={comment} onChange={e => setComment(e.target.value)} className={styles.textarea} maxLength={1000} />
-              <div className={styles.commentCounter}>{comment.length} / 1000</div>
-            </div>
-
-            {message && <div className={message.includes('失敗') ? styles.errorMessage : styles.successMessage}>{message}</div>}
-
-            <div className={styles.submitSection}>
-              <button type="submit" className={styles.submitButton} disabled={isLoading || !isSubmittable}>送信</button>
-            </div>
-          </form>
-        </main>
-      </div>
-
-      {isConfirmOpen && (
-        <ConfirmationModal
-          onConfirm={handleConfirm}
-          onCancel={() => setIsConfirmOpen(false)}
-          isLoading={isLoading}
-          data={{ skill, business, team, comment }}
-        />
-      )}
-    </div>
-  )
+  return <SelfEvaluationClient />;
 }
 
