@@ -26,19 +26,21 @@ public class TokenRefreshFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        filterChain.doFilter(request, response); // 認証後に実行されるようにする
+        filterChain.doFilter(request, response); // 認証済みなら後続フィルターへ
 
+        // 認証済みであれば、トークンを再発行（スライディングセッション）
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof Employee employee) {
             String newToken = jwtTokenProvider.generateToken(employee);
-            response.setHeader("Authorization", "Bearer " + newToken); // ヘッダーに新しいトークン
+            response.setHeader("Authorization", "Bearer " + newToken);
         }
     }
 
-    // ログインなど一部のAPIは除外
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.equals("/api/login");
+        return path.equals("/api/login")
+            || path.equals("/api/reset-mail")
+            || path.startsWith("/api/reset-password");
     }
 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import {TermQuarterSelector} from '../components/TermQuarterSelector';
 import { UnsubmittedTable } from './components/UnsubmittedTable';
 import styles from './UnsubmittedPage.module.css';
-import axios from '../../utils/axiosInstance'; 
+import axios from '@/utils/axiosInstance'; 
 import { withAdminAuth } from '../hooks/useAuth';
 
 type UnsubmittedResponse = {

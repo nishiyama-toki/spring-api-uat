@@ -49,7 +49,6 @@ public class ResetMailService {
         PasswordResetToken resetToken = new PasswordResetToken();
         resetToken.setToken(token);
         resetToken.setEmployee(employee);  //email は持たせない
-        resetToken.setEmail(employee.getEmail());
         resetToken.setExpiresAt(now.plusHours(EXPIRE_HOURS));
         resetToken.setUsed(false);
         resetToken.setCreatedAt(now);

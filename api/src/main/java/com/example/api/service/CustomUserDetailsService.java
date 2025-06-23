@@ -2,7 +2,6 @@ package com.example.api.service;
 
 import com.example.api.entity.Employee;
 import com.example.api.repository.EmployeeRepository;
-import com.example.api.security.UserDetailsImpl;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,10 +20,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Long userId = Long.parseLong(email);
-
-        Employee employee = employeeRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         if (Boolean.TRUE.equals(employee.getIsLocked())) {
             throw new UsernameNotFoundException("アカウントがロックされています");
@@ -32,6 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return employee;
     }
+
 
     // JwtAuthenticationFilterなどでID検索が必要な場合
     public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
