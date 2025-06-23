@@ -48,14 +48,14 @@
 
 'use client'
 
-import { useState, Suspense } from 'react'
+import { Suspense, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import axios from '@/utils/axiosInstance'
-import { useRouter, useSearchParams } from 'next/navigation'
 
 function Inner() {
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get('token') // メールから渡されるトークン
+  const router = useRouter()
+  const token = searchParams.get('token')
 
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -70,11 +70,7 @@ function Inner() {
     try {
       await axios.post('/api/reset-password', {
         token,
-        newPassword: password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        newPassword: password,
       })
       router.push('/reset_password/success')
     } catch {
