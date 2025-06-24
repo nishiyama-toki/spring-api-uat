@@ -16,7 +16,6 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // application.properties に設定した secret を読み込む
     private final Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -29,18 +28,22 @@ public class JwtTokenProvider {
      * @return JWT文字列
      */
     public String generateToken(Employee employee) {
-        Instant now = Instant.now();
-        Instant expiry = now.plus(30, ChronoUnit.MINUTES); // 有効期限30分（スライディング）
+    Instant now = Instant.now();
+    Instant expiry = now.plus(30, ChronoUnit.MINUTES); // 有効期限30分
 
-        return Jwts.builder()
-                .setSubject(String.valueOf(employee.getId()))                // 主体（ユーザーID）
-                .claim("email", employee.getEmail())                         // 任意の情報
-                .claim("role", employee.getPermission())                     // 権限（admin, employeeなど）
-                .setIssuedAt(Date.from(now))                                 // 発行時間
-                .setExpiration(Date.from(expiry))                            // 有効期限
-                .signWith(key, SignatureAlgorithm.HS256)                          // 署名アルゴリズム
-                .compact();
-    }
+    String role = "ROLE_" + employee.getPermission().toUpperCase();  // hasRole 用
+
+    return Jwts.builder()
+            .setSubject(String.valueOf(employee.getId()))                  // 主体（ユーザーID）
+            .claim("email", employee.getEmail())                           // 任意の情報
+            .claim("role", role)                                           // 権限（ROLE_ADMINなど）
+            .claim("permission", employee.getPermission().toLowerCase())   // 画面判別用
+            .setIssuedAt(Date.from(now))                                   // 発行時間
+            .setExpiration(Date.from(expiry))                              // 有効期限
+            .signWith(key, SignatureAlgorithm.HS256)                       // 署名アルゴリズム
+            .compact();
+}
+
 
     /** トークンの署名と有効期限を検証する */
     public boolean isValid(String token) {

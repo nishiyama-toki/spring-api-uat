@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
-import axios from 'utils/axiosInstance'; // ← 追加
+import axios from '@/utils/axiosInstance'; // ← 追加
 
 interface Alert {
   message: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
+import axios from '@/utils/axiosInstance';
 import styles from "./PastEvaluation.module.css";
 
 interface CommentData {
@@ -90,7 +90,7 @@ const PastEvaluationPage: React.FC = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get<PastEvaluationResponse>(
-        "http://localhost:8080/api/past-evaluations",
+        "/api/past-evaluations",
         {
           params: { phase_id: q },
           headers: {

@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
+import { jwtDecode } from 'jwt-decode'
 
 interface JwtPayload {
-  role?: string   // ← role を使って判定（例: "admin"）
+  permission?: string  // ← permission クレームを使って判定（"admin" or "user"）
 }
 
 export default function HamburgerMenu() {
@@ -20,8 +20,8 @@ export default function HamburgerMenu() {
       try {
         const decoded = jwtDecode<JwtPayload>(token)
 
-        // ここで admin 判定（role を使う）
-        if (decoded.role === 'admin') {
+        // 管理者判定（permission クレーム使用）
+        if (decoded.permission === 'admin') {
           setIsAdmin(true)
         } else {
           setIsAdmin(false)
@@ -59,7 +59,7 @@ export default function HamburgerMenu() {
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
     { name: 'ユーザー管理', href: '/user_management' },
-    { name: '全社員評価確認', href: '/all-evaluations' },
+    { name: '全社員評価確認', href: '/all-evaluation' },
     { name: '未提出者確認', href: '/unsubmitted-list' },
   ]
 
