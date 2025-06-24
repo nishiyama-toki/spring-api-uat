@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
 import axios from '@/utils/axiosInstance'; // ← 追加
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface Alert {
   message: string;
@@ -23,6 +24,9 @@ export default function UserHome() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [userName, setUserName] = useState('');
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
+
+   // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
 
   useEffect(() => {
     axios.get('/api/home')

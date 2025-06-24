@@ -4,11 +4,15 @@
 // React本体（JSX使用のため）と、Next.jsのルーティング機能をインポート
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 // このコンポーネントが「送信完了画面」の本体
 export default function SubmittedPage() {
   // Next.jsのuseRouterフックでルーターオブジェクトを取得
   const router = useRouter();
+
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
 
   // 「評価依頼一覧へ」ボタンが押されたときに実行される処理
   const handleBack = () => {

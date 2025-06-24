@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axios from '@/utils/axiosInstance' //トークン自動付与のaxiosインスタンス
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 // ------------------------
 // ユーザ定義

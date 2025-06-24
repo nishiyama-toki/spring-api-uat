@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from '@/utils/axiosInstance';
 import styles from "./PastEvaluation.module.css";
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface CommentData {
   name: string;
@@ -43,6 +44,9 @@ const CommentModal: React.FC<{
 );
 
 const PastEvaluationPage: React.FC = () => {
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+  
   const termList = ["18"];
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [termDropdownOpen, setTermDropdownOpen] = useState(false);
@@ -86,6 +90,7 @@ const PastEvaluationPage: React.FC = () => {
     setTeamScore(null);
     setComments([]);
     setErrorMessage(null);
+
 
     try {
       const token = localStorage.getItem("token");

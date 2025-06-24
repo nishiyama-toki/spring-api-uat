@@ -5,12 +5,15 @@ import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import { UnsubmittedTable } from './components/UnsubmittedTable';
 import styles from './UnsubmittedPage.module.css';
 import axios from '@/utils/axiosInstance';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 type UnsubmittedResponse = {
   name: string;
 };
 
 export default function UnsubmittedPage() {
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
   const [selectedPhaseId, setSelectedPhaseId] = useState<string>('');
   const [unsubmittedEmployees, setUnsubmittedEmployees] = useState<UnsubmittedResponse[]>([]);
 

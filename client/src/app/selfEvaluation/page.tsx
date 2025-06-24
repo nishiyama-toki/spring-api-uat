@@ -7,6 +7,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
 import { useRouter } from 'next/navigation';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 // API ベース URL を環境変数で設定
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
@@ -96,6 +97,8 @@ export default function SelfEvaluationPage() {
   const userId = 1; // TODO: 実際のユーザーIDを取得する処理に置き換えてください
   const router = useRouter(); // ← 追加
 
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
 
   // localStorageから見出しを取得する処理
   useEffect(() => {
