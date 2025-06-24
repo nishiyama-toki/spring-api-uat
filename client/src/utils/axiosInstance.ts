@@ -11,8 +11,9 @@ import axios from 'axios'
 //   baseURL: 'http://localhost:8080', // Spring Boot バックエンドのAPIベースURL
 // })
 const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL, // ← 環境変数を使用！
+  baseURL: 'https://toki-nishiyama-project-2.onrender.com', // ← バックエンドの本番URLを直書き！
 })
+
 
 
 // リクエストインターセプター
