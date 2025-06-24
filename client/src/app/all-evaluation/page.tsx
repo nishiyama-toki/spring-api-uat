@@ -44,12 +44,14 @@ const EvaluationSummaryPage: React.FC = () => {
                     setEvaluations([]);
                 }
             } catch (error) {
+                console.error('評価データの取得に失敗しました:', error);
                 setEvaluations([]);
             }
         };
         fetchEvaluations();
     }, [periodId]);
 
+    // コメント取得ボタンが押された時の関数
     const handleViewComments = async (targetId: number, targetName: string) => {
         if (!periodId) return;
         setSelectedEmployeeName(targetName);
@@ -61,7 +63,8 @@ const EvaluationSummaryPage: React.FC = () => {
                 params: { phase_id: periodId }
             });
             setComments(response.data);
-        } catch {
+        } catch (error) {
+            console.error('コメントの取得に失敗しました', error);
             setComments([]);
         } finally {
             setIsLoadingComments(false);

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
 import styles from './HamburgerMenu.module.css'
+
 interface JwtPayload {
   role?: string   // ← role を使って判定（例: "admin"）
 }
