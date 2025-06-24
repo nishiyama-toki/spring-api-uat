@@ -8,7 +8,7 @@
 # ===== build stage =====
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
-COPY ./api /app
+COPY . /app
 RUN mvn clean package -DskipTests
 
 # ===== runtime stage =====
