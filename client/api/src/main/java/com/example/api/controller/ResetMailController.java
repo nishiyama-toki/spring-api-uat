@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin; // ★これをインポート
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ★これを追加
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // ★これを追加
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

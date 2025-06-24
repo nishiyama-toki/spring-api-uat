@@ -99,7 +99,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         // ✅ 明示的にオリジンを指定！
-        config.setAllowedOriginPatterns(Arrays.asList(
+        // config.setAllowedOriginPatterns(Arrays.asList(
+        config.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",  // 開発用
             "https://toki-nishiyama-project-3.onrender.com"  // 本番フロントURL
         ));

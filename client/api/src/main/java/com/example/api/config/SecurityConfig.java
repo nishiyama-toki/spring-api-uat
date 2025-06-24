@@ -116,7 +116,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(Arrays.asList(
+        // config.setAllowedOriginPatterns(Arrays.asList(
+        config.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000", // ローカル開発
             "https://toki-nishiyama-project-3.onrender.com" // 本番フロント
         ));
