@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from '@/utils/axiosInstance';
+import axios from "@/utils/axiosInstance";
 import styles from "./PastEvaluation.module.css";
 
 interface CommentData {
@@ -18,8 +18,11 @@ interface EvaluationRawDTO {
 }
 
 interface PastEvaluationResponse {
-  phase_number: number;
+  phaseNumber: number;
   name: string;
+  averageSkillScore: number;
+  averageBusinessScore: number;
+  averageTeamScore: number;
   comments: CommentData[];
   rawEvaluations: EvaluationRawDTO[];
 }
@@ -99,22 +102,11 @@ const PastEvaluationPage: React.FC = () => {
         }
       );
 
-      setPhaseNumber(res.data.phase_number);
+      setPhaseNumber(res.data.phaseNumber);
       setPhaseName(res.data.name);
-
-      const raw = res.data.rawEvaluations;
-
-      const calculateAverage = (key: keyof EvaluationRawDTO) => {
-        const valid = raw.filter((v) => (v[key] as number) > 0);
-        if (valid.length === 0) return null;
-        const sum = valid.reduce((acc, v) => acc + (v[key] as number), 0);
-        return parseFloat((sum / valid.length).toFixed(1));
-      };
-
-      setSkillScore(calculateAverage("skillScore"));
-      setBusinessScore(calculateAverage("businessScore"));
-      setTeamScore(calculateAverage("teamScore"));
-
+      setSkillScore(res.data.averageSkillScore);
+      setBusinessScore(res.data.averageBusinessScore);
+      setTeamScore(res.data.averageTeamScore);
       setComments(res.data.comments);
     } catch (e: any) {
       const data = e.response?.data;
@@ -237,7 +229,7 @@ const PastEvaluationPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {comments.length > 0 ? (
+                {comments && comments.length > 0 ? (
                   comments.map((c, i) => (
                     <tr key={i}>
                       <td>{c.name} さん</td>

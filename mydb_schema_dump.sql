@@ -80,8 +80,6 @@ CREATE TABLE evaluation.evaluation_periods (
     name character varying(100) NOT NULL,
     start_date date NOT NULL,
     end_date date NOT NULL,
-    self_eval_due date,
-    peer_eval_due date,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
@@ -122,7 +120,7 @@ CREATE TABLE evaluation.evaluations (
     skill_score numeric(38,2),
     business_score numeric(38,2),
     team_score numeric(38,2),
-    comment character varying(255),
+    comment character varying(1000),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     phase_id integer NOT NULL,
