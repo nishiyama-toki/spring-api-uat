@@ -5,47 +5,58 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    private final Key key;
+    @Value("${jwt.secret}")
+    private String secret;
+
+    private final String secretKey;
+    private Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.secretKey = secretKey;
     }
 
-    /**
-     * JWTトークンを生成する
-     * @param employee ログインユーザー情報
-     * @return JWT文字列
-     */
+    @PostConstruct
+    public void init() {
+        try {
+            byte[] decodedKey = Base64.getDecoder().decode(secret);
+            this.key = Keys.hmacShaKeyFor(decodedKey);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("JWT秘密鍵の初期化に失敗しました", e);
+        }
+    }
+
     public String generateToken(Employee employee) {
-    Instant now = Instant.now();
-    Instant expiry = now.plus(30, ChronoUnit.MINUTES); // 有効期限30分
+        Instant now = Instant.now();
+        Instant expiry = now.plus(30, ChronoUnit.MINUTES);
 
-    String role = "ROLE_" + employee.getPermission().toUpperCase();  // hasRole 用
+        String role = "ROLE_" + employee.getPermission().toUpperCase();
 
-    return Jwts.builder()
-            .setSubject(String.valueOf(employee.getId()))                  // 主体（ユーザーID）
-            .claim("email", employee.getEmail())                           // 任意の情報
-            .claim("role", role)                                           // 権限（ROLE_ADMINなど）
-            .claim("permission", employee.getPermission().toLowerCase())   // 画面判別用
-            .setIssuedAt(Date.from(now))                                   // 発行時間
-            .setExpiration(Date.from(expiry))                              // 有効期限
-            .signWith(key, SignatureAlgorithm.HS256)                       // 署名アルゴリズム
-            .compact();
-}
+        return Jwts.builder()
+                .setSubject(String.valueOf(employee.getId()))
+                .claim("evaluator_id", employee.getId())  // ← ★ evaluator_id を明示的に追加
+                .claim("email", employee.getEmail())
+                .claim("role", role)
+                .claim("permission", employee.getPermission().toLowerCase())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(expiry))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
-
-    /** トークンの署名と有効期限を検証する */
     public boolean isValid(String token) {
         try {
             Jwts.parserBuilder()
@@ -58,22 +69,23 @@ public class JwtTokenProvider {
         }
     }
 
-    /** トークンからユーザーIDを取得（subに埋め込んだ値） */
     public String extractUserId(String token) {
         return parseClaims(token).getSubject();
     }
 
-    /** トークンからロールを取得（claim） */
     public String extractRole(String token) {
         return parseClaims(token).get("role", String.class);
     }
 
-    /** トークンの有効期限（exp）を取得 */
     public Instant extractExpiration(String token) {
         return parseClaims(token).getExpiration().toInstant();
     }
 
-    /** 内部で使う共通のClaims抽出処理 */
+    // evaluator_id を取得するメソッドを追加するとより便利
+    public Long extractEvaluatorId(String token) {
+        return parseClaims(token).get("evaluator_id", Long.class);
+    }
+
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                    .setSigningKey(key)
