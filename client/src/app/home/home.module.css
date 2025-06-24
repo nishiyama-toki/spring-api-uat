@@ -1,35 +1,65 @@
-/* コンテナ全体 */
+/* userHome.module.css */
+
 .container {
-  padding: 20px;
-  background-color: #f7f9fc;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  font-family: sans-serif;
+  max-width: 760px;
+  margin: 36px auto 0 auto;
+  padding: 0 15px 24px 15px;
+  font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
 }
 
-/* タイトルバー部分 */
 .titleBar {
-  margin-bottom: 16px;
+  background: #4765c6;
+  border-radius: 9px 9px 0 0;
+  padding: 24px 26px 16px 26px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 1px 8px rgba(80,100,160,0.07);
 }
 
-.titleBar h1 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.04em;
 }
 
-/* 説明ボックス */
 .descriptionBox {
-  padding: 12px 16px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 16px;
-  line-height: 1.6;
-  color: #444;
+  background: #fff;
+  border-radius: 0 0 11px 11px;
+  padding: 24px 28px 14px 28px;
+  border: 1.5px solid #e3e9f6;
+  border-top: none;
+  margin-bottom: 22px;
+  margin-top: 0;
+  box-shadow: 0 3px 12px rgba(30,45,70,0.04);
 }
 
-.descriptionBox .subText {
-  font-size: 14px;
-  color: #666;
+.userName {
+  font-size: 1.02rem;
+  color: #28539b;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.phaseName {
+  font-size: 1rem;
+  color: #26406e;
+  margin-bottom: 3px;
+}
+
+.phasePeriod {
+  color: #798bb4;
+  font-size: 0.98rem;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 2vw 18px 2vw;
+  }
+  .titleBar, .descriptionBox {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
