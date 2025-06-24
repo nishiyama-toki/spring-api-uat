@@ -26,6 +26,18 @@ export default function UserManagementPage() {
     isAdmin: false,
     role: 'スペシャリスト'
   })
+
+  // ▼▼▼ 追加 ▼▼▼
+  // ------------------------
+  // 新規登録フォームのバリデーションエラー用state
+  // ------------------------
+  const [passwordError, setPasswordError] = useState('');
+  // ▲▲▲ 追加 ▲▲▲
+
+
+// ------------------------
+// モーダル表示制御用 
+// ------------------------
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
@@ -42,9 +54,44 @@ export default function UserManagementPage() {
       })
   }, [])
 
-  const handleRegister = async () => {
-    try {
-      const res = await axios.post<User>('/api/user_management_register', {
+// ▼▼▼ 追加 ▼▼▼
+  // ------------------------
+  // 新規ユーザー登録時のバリデーション関数
+  // ------------------------
+  const validateNewUser = () => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
+    let isValid = true;
+
+    if (!newUser.password) {
+      setPasswordError('必須項目です。');
+      isValid = false;
+    } else if (!passwordRegex.test(newUser.password)) {
+      setPasswordError('大文字・小文字・数字・記号を含んだ8～20文字にしてください。');
+      isValid = false;
+    } else {
+      setPasswordError(''); // エラーがない場合はクリア
+    }
+
+    // TODO: 必要であれば名前やEmailのバリデーションもここに追加
+    
+    return isValid;
+  }
+  // ▲▲▲ 追加 ▲▲▲
+
+// ------------------------
+// 新規ユーザー登録処理（axiosInstance使用）
+// ------------------------
+const handleRegister = async () => {
+   // ▼▼▼ 変更 ▼▼▼：登録処理の前にバリデーションを実行
+    if (!validateNewUser()) {
+      return; // バリデーションが通らなければ処理を中断
+    }
+    // ▲▲▲ 変更 ▲▲▲
+
+  try {
+    const res = await axios.post<User>(
+      '/api/user_management_register',
+      {
         ...newUser,
         permission: newUser.isAdmin ? 'ADMIN' : 'USER'
       });

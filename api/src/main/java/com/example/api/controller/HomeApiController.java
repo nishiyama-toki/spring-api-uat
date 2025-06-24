@@ -74,8 +74,8 @@ public class HomeApiController {
                         "name", currentPhase.getName(),
                         "start_date", currentPhase.getStartDate().toString(),
                         "end_date", currentPhase.getEndDate().toString(),
-                        "self_eval_due", currentPhase.getSelfEvalDue() != null ? currentPhase.getSelfEvalDue().toString() : "",
-                        "peer_eval_due", currentPhase.getPeerEvalDue() != null ? currentPhase.getPeerEvalDue().toString() : ""
+                        "self_eval_due", "", // <-- ここを修正: null許容のメソッド呼び出しを削除
+                        "peer_eval_due", "" // <-- ここを修正: null許容のメソッド呼び出しを削除
                 )
         );
 

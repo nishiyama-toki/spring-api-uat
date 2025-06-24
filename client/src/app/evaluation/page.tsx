@@ -2,8 +2,8 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
-import styles from "./PastEvaluation.module.css"; 
+import axios from '@/utils/axiosInstance';
+import styles from "./PastEvaluation.module.css";
 
 // --- 型定義(interface) ---
 interface CommentData {
@@ -98,10 +98,15 @@ const PastEvaluationPage: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      // 本来は JWT などから動的に取得
-        const res = await axios.get<PastEvaluationResponse>(
-        "http://localhost:8080/api/past-evaluations", // 1. URLを修正
-        { params: { phase_id: q } }                   // 2. target_idを削除
+      const token = localStorage.getItem("token");
+      const res = await axios.get<PastEvaluationResponse>(
+        "/api/past-evaluations",
+        {
+          params: { phase_id: q },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       // フェーズ情報をセット
