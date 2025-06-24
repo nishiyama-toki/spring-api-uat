@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
 import axios from 'utils/axiosInstance';
-import styles from './UserHome.module.css'; // モジュールCSSを読み込む
+import styles from './home.module.css'; // モジュールCSSを読み込む
 
 // アラート情報の型
 interface Alert {

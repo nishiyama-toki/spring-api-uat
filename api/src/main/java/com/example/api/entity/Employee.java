@@ -24,7 +24,7 @@ public class Employee implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Longに変更
+    private Long id;
 
     @Column(nullable = false)
     private String name;

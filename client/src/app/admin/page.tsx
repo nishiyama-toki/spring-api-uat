@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
 import axios from 'utils/axiosInstance';
-import styles from './AdminHome.module.css';
+import styles from './admin.module.css';
 
 interface NotSubmittedUser {
   name: string;
