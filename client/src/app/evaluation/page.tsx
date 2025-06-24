@@ -112,57 +112,11 @@ const PastEvaluationPage: React.FC = () => {
         }
       );
 
-<<<<<<< HEAD
       setPhaseNumber(res.data.phaseNumber);
       setPhaseName(res.data.name);
       setSkillScore(res.data.averageSkillScore);
       setBusinessScore(res.data.averageBusinessScore);
       setTeamScore(res.data.averageTeamScore);
-=======
-      // フェーズ情報をセット
-      setPhaseNumber(res.data.phase_number);
-      setPhaseName(res.data.name);
-
-      // --- ここからがスコア平均値計算の修正箇所 ---
-
-      // 生データ一覧を取得
-      const raw = res.data.rawEvaluations;
-
-      if (raw && raw.length > 0) {
-        // スコアが0より大きい（＝有効な）評価のみを対象に平均を計算する関数
-        const calculateAverage = (key: keyof EvaluationRawDTO) => {
-          // スコアが0より大きいレコードだけを抽出
-          const validEvaluations = raw.filter(v => (v[key] as number) > 0);
-          const count = validEvaluations.length;
-
-          // 有効な評価が1件もなければ、nullを返す (画面には '─' が表示される)
-          if (count === 0) {
-            return null;
-          }
-
-          // 有効な評価の合計スコアを計算
-          const sum = validEvaluations.reduce((acc, v) => acc + (v[key] as number), 0);
-
-          // 平均値を小数点第1位まで計算して返す
-          return parseFloat((sum / count).toFixed(1));
-        };
-
-        // 各スコアの平均値を計算してstateを更新
-        setSkillScore(calculateAverage("skillScore"));
-        setBusinessScore(calculateAverage("businessScore"));
-        setTeamScore(calculateAverage("teamScore"));
-
-      } else {
-        // データがない場合はnullのまま
-        setSkillScore(null);
-        setBusinessScore(null);
-        setTeamScore(null);
-      }
-      
-      // --- ここまでがスコア平均値計算の修正箇所 ---
-
-      // コメント一覧はそのままセット
->>>>>>> e3aaa920fe19663324222b961ad79f525c15da00
       setComments(res.data.comments);
 
     } catch (e: any) {
