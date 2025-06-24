@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
-import axios from '@/utils/axiosInstance';
+import axios from '../../utils/axiosInstance';
+import { withAdminAuth } from '../hooks/useAuth';
 
 type EmployeeEvaluation = {
     targetId: number;
@@ -50,7 +51,7 @@ const EvaluationSummaryPage: React.FC = () => {
                     console.error('API did not return a valid employees array:', response.data);
                     setEvaluations([]);
                 }
-            } catch (error) {
+            }catch (error) {
                 console.error('評価データの取得に失敗しました:', error);
                 setEvaluations([]);
             }
@@ -59,7 +60,7 @@ const EvaluationSummaryPage: React.FC = () => {
         fetchEvaluations();
     }, [periodId]);
 
-    // コメント取得ボタンが押された時の関数
+    // コメント取得ボタンが押された時の関数を追加
     const handleViewComments = async (targetId: number, targetName: string) => {
         if (!periodId) return;
 
@@ -72,11 +73,11 @@ const EvaluationSummaryPage: React.FC = () => {
                 params: { phase_id: periodId }
             });
             setComments(response.data);
-        } catch (error) {
-            console.error('コメントの取得に失敗しました', error);
-            setComments([]);
-        } finally {
-            setIsLoadingComments(false);
+        }   catch (error) {
+                console.error('コメントの取得に失敗しました', error);
+                setComments([]);
+        }   finally {
+                setIsLoadingComments(false);
         }
     };
 
@@ -163,6 +164,7 @@ const EvaluationSummaryPage: React.FC = () => {
             )}
         </div>
     );
+
 };
 
-export default EvaluationSummaryPage;
+export default withAdminAuth(EvaluationSummaryPage);
