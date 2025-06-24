@@ -1,217 +1,213 @@
-/* コンテナ全体のラップ */
+/* コンテナ */
 .container {
   font-family: sans-serif;
   max-width: 960px;
   margin: 0 auto;
-  padding: 24px;
-}
-
-/* 中央寄せ用の外枠 */
-.mainWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ヘッダー部 */
-.header {
-  background-color: #999999;
-  width: 100%;
   padding: 16px;
-  text-align: center;
-  border-radius: 8px;
 }
 
-.headerTitle {
+/* (1) ヘッダー */
+.header {
+  background-color: #cccccc;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+}
+.hamburger {
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 16px;
+}
+.appTitle {
+  font-size: 18px;
+}
+
+/* (2) 見出し */
+.titleBar {
+  background-color: #999999;
+  margin-top: 16px;
+  padding: 12px;
+  text-align: center;
+}
+.titleBar h1 {
   margin: 0;
   color: white;
-  font-size: 24px;
-  font-weight: bold;
 }
 
-/* メインフォーム部分 */
+/* (3) 説明文 */
+.descriptionBox {
+  background-color: #f2f2f2;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.descriptionBox p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* (4)+(5) メイン */
 .mainContent {
+  display: flex;
+  margin-top: 24px;
+}
+
+/* サイドバー */
+.sidebar {
+  width: 180px;
+  margin-right: 24px;
+}
+.termDropdownButton {
   width: 100%;
-  margin-top: 32px;
+  background-color: #cccccc;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+}
+.dropdownMenu {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+.dropdownItem {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+.dropdownItemSelected {
+  background-color: #e6f4ff;
 }
 
-/* フォームのセクション全体 */
-.formSections {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+/* Qリンク一覧 */
+.quarterList {
+  margin-top: 16px;
+}
+.quarterItem {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+.quarterSelected {
+  background-color: #d0ebff;
 }
 
-/* 各スコアの横並び */
-.scoreGrid {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
+/* 17期グレーアウト */
+.disabledTerm {
+  margin-top: 24px;
+  padding: 8px;
+  color: #888;
+  border: 1px dashed #888;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: not-allowed;
+  font-style: italic;
+  text-align: center;
 }
 
-/* 入力欄のグループ */
-.inputGroup {
-  display: flex;
-  flex-direction: column;
+/* コンテンツ */
+.content {
   flex: 1;
-  min-width: 200px;
 }
 
-/* ラベルテキスト */
-.label {
-  font-weight: 600;
-  margin-bottom: 6px;
+/* 平均スコアテーブル */
+.scoreTableWrapper {
+  margin-bottom: 24px;
 }
-
-/* 数値入力欄 */
-.input {
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.table th,
+.table td {
   border: 1px solid #ccc;
-  border-radius: 6px;
   padding: 8px;
-  font-size: 16px;
+}
+.table th {
+  background-color: #f0f0f0;
+}
+.noDataMsg {
+  color: #555;
+  margin-top: 8px;
 }
 
-/* コメント欄 */
-.textarea {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 16px;
-  resize: vertical;
+/* コメントテーブル */
+.commentTableWrapper {
+  margin-bottom: 24px;
+}
+.nameCol {
+  width: 30%;
+  text-align: left;
+  padding-left: 12px;
+}
+.commentCol {
+  width: 70%;
+  text-align: left;
+  padding-left: 12px;
+  line-height: 1.6;
 }
 
-/* コメント文字数カウンター */
-.commentCounter {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #666;
-  text-align: right;
-}
-
-/* メッセージ表示（共通） */
-.message {
-  padding: 12px;
-  border-radius: 6px;
+/* 省略ボタン */
+.snippetButton {
+  margin-left: 8px;
   font-size: 14px;
-}
-
-/* 成功メッセージ */
-.successMessage {
-  background-color: #e6ffed;
-  color: #1a7f37;
-  border: 1px solid #a7e3b8;
+  color: #0070f3;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* エラーメッセージ */
-.errorMessage {
-  background-color: #ffeef0;
-  color: #86181d;
-  border: 1px solid #f5c6cb;
+.errorMsg {
+  color: red;
+  margin-top: 8px;
 }
 
-/* 送信ボタンの外枠 */
-.submitSection {
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* 送信ボタン */
-.submitButton {
-  background-color: #0070f3;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submitButton:hover:not(:disabled) {
-  background-color: #005bb5;
-}
-
-.submitButton:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* ====== モーダル用 ====== */
+/* モーダル */
 .modalOverlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  z-index: 50;
+  z-index: 1000;
 }
-.modalBox {
-  background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
-  max-width: 32rem;
-  width: 100%;
-  padding: 1.5rem;
-}
-.modalTitle {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 1.25rem;
-}
-.modalRow {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-.modalRowLabel {
-  color: #666;
-}
-.modalRowValue {
-  font-weight: 600;
-}
-.modalComment {
-  margin-top: 1rem;
-  background: #f3f4f6;
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  max-height: 8rem;
+.modalContent {
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
   overflow-y: auto;
-  font-size: 0.97rem;
+}
+.modalText {
   white-space: pre-wrap;
+  word-break: break-all;
 }
-.modalButtonRow {
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
+.modalFooter {
+  text-align: right;
+  margin-top: 24px;
 }
-.modalButton {
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
+.closeButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #0070f3;
+  color: white;
   border: none;
-  font-size: 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.15s;
-}
-.modalButton.cancel {
-  background: #e2e8f0;
-  color: #222;
-}
-.modalButton.cancel:hover {
-  background: #cbd5e1;
-}
-.modalButton.submit {
-  background: #2563eb;
-  color: #fff;
-}
-.modalButton.submit:hover {
-  background: #1d4ed8;
-}
-.modalButton.submit:disabled {
-  background: #a5b4fc;
-  cursor: not-allowed;
 }

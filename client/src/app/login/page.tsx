@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import axios from '@/utils/axiosInstance'
 import { useRouter } from 'next/navigation'
-import styles from './login.module.css'
+import styles from './login.module.css' // ← ここを統一
 
 export default function LoginPage() {
   const router = useRouter()
@@ -46,7 +46,6 @@ export default function LoginPage() {
     if (!validate()) return
 
     try {
-      // 1. ログインリクエスト
       const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
@@ -62,33 +61,60 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.title}>多面・自己評価</div>
-        <p>設定されたEmailとPasswordを入力してください</p>
+      <div className={styles.scoreTableWrapper} style={{ maxWidth: 400, margin: '64px auto', padding: 32 }}>
+        <div className={styles.titleBar}>
+          <h1>多面・自己評価</h1>
+        </div>
+        <div className={styles.descriptionBox} style={{ marginTop: 16, marginBottom: 24 }}>
+          <p>設定されたEmailとPasswordを入力してください</p>
+        </div>
 
         <input
-          className={styles.input}
+          className={styles.termDropdownButton}
           type="email"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
+          style={{ marginBottom: 8 }}
         />
-        {emailError && <p className={styles.error}>{emailError}</p>}
+        {emailError && <p className={styles.errorMsg}>{emailError}</p>}
 
         <input
-          className={styles.input}
+          className={styles.termDropdownButton}
           type="password"
-          placeholder="password"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          style={{ marginBottom: 8 }}
         />
-        {passwordError && <p className={styles.error}>{passwordError}</p>}
+        {passwordError && <p className={styles.errorMsg}>{passwordError}</p>}
 
-        <button className={styles.button} onClick={handleLogin}>login</button>
+        <button
+          className={styles.snippetButton}
+          onClick={handleLogin}
+          style={{
+            width: '100%',
+            marginTop: 8,
+            marginBottom: 8,
+            background: '#0070f3',
+            color: 'white',
+            fontWeight: 'bold',
+            padding: 10,
+            borderRadius: 4,
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          ログイン
+        </button>
 
-        {authError && <p className={styles.authError}>{authError}</p>}
+        {authError && <p className={styles.errorMsg}>{authError}</p>}
 
-        <p className={styles.link}><a href="/reset_mail">パスワードを忘れた方はこちら</a></p>
+        <div style={{ marginTop: 12 }}>
+          <a href="/reset_mail" className={styles.snippetButton} style={{ color: '#0070f3', textDecoration: 'underline' }}>
+            パスワードを忘れた方はこちら
+          </a>
+        </div>
       </div>
     </div>
   )

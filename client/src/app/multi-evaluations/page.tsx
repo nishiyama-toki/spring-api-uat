@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import axiosInstance from '../../utils/axiosInstance'
-import styles from './MultiEvaluations.module.css'
+import styles from './multi-evaluations.module.css'
 
 // 型定義
 type Target = {

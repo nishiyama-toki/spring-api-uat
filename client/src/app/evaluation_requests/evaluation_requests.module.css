@@ -1,81 +1,213 @@
-/* EvaluationRequestPage.module.css */
-
+/* コンテナ */
 .container {
-  max-width: 640px;
-  margin: 44px auto 0 auto;
-  background: #fff;
-  border-radius: 13px;
-  box-shadow: 0 4px 24px rgba(30, 50, 120, 0.07);
-  padding: 34px 20px 24px 20px;
-  min-height: 60vh;
-  font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
+  font-family: sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-.heading {
-  font-size: 1.55rem;
-  color: #1c357a;
-  font-weight: 700;
-  margin-bottom: 32px;
+/* (1) ヘッダー */
+.header {
+  background-color: #cccccc;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+}
+.hamburger {
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 16px;
+}
+.appTitle {
+  font-size: 18px;
+}
+
+/* (2) 見出し */
+.titleBar {
+  background-color: #999999;
+  margin-top: 16px;
+  padding: 12px;
   text-align: center;
 }
-
-.noData {
-  text-align: center;
-  color: #8fa1bb;
-  font-size: 1.04rem;
-  margin-top: 50px;
+.titleBar h1 {
+  margin: 0;
+  color: white;
 }
 
-.list {
+/* (3) 説明文 */
+.descriptionBox {
+  background-color: #f2f2f2;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.descriptionBox p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* (4)+(5) メイン */
+.mainContent {
+  display: flex;
+  margin-top: 24px;
+}
+
+/* サイドバー */
+.sidebar {
+  width: 180px;
+  margin-right: 24px;
+}
+.termDropdownButton {
+  width: 100%;
+  background-color: #cccccc;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+}
+.dropdownMenu {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 4px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
 }
-
-.item {
-  background: #f6f8fc;
-  border-radius: 7px;
-  margin-bottom: 17px;
-  box-shadow: 0 2px 6px rgba(80,100,160,0.07);
-  padding: 22px 18px 14px 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.period {
-  color: #4561b1;
-  font-size: 0.98rem;
-  margin-bottom: 7px;
-  font-weight: 600;
-}
-
-.link {
-  color: #225ae5;
-  font-size: 1.09rem;
-  font-weight: 700;
-  text-decoration: none;
-  border: none;
-  background: none;
+.dropdownItem {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
   cursor: pointer;
-  padding: 0;
-  transition: color 0.13s;
 }
-.link:hover,
-.link:focus {
-  color: #193b81;
-  text-decoration: underline;
-  outline: none;
+.dropdownItemSelected {
+  background-color: #e6f4ff;
 }
 
-@media (max-width: 600px) {
-  .container {
-    padding: 16px 2vw 12px 2vw;
-  }
-  .heading {
-    font-size: 1.18rem;
-  }
-  .item {
-    padding: 11px 7px 8px 7px;
-  }
+/* Qリンク一覧 */
+.quarterList {
+  margin-top: 16px;
+}
+.quarterItem {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+.quarterSelected {
+  background-color: #d0ebff;
+}
+
+/* 17期グレーアウト */
+.disabledTerm {
+  margin-top: 24px;
+  padding: 8px;
+  color: #888;
+  border: 1px dashed #888;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: not-allowed;
+  font-style: italic;
+  text-align: center;
+}
+
+/* コンテンツ */
+.content {
+  flex: 1;
+}
+
+/* 平均スコアテーブル */
+.scoreTableWrapper {
+  margin-bottom: 24px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.table th,
+.table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+.table th {
+  background-color: #f0f0f0;
+}
+.noDataMsg {
+  color: #555;
+  margin-top: 8px;
+}
+
+/* コメントテーブル */
+.commentTableWrapper {
+  margin-bottom: 24px;
+}
+.nameCol {
+  width: 30%;
+  text-align: left;
+  padding-left: 12px;
+}
+.commentCol {
+  width: 70%;
+  text-align: left;
+  padding-left: 12px;
+  line-height: 1.6;
+}
+
+/* 省略ボタン */
+.snippetButton {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #0070f3;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* エラーメッセージ */
+.errorMsg {
+  color: red;
+  margin-top: 8px;
+}
+
+/* モーダル */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modalContent {
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modalText {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.modalFooter {
+  text-align: right;
+  margin-top: 24px;
+}
+.closeButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
