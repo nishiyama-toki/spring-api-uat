@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
-import axios from 'utils/axiosInstance';
-import styles from './home.module.css'; // モジュールCSSを読み込む
+import axios from '@/utils/axiosInstance'; // ← 追加
 
 // アラート情報の型
 interface Alert {

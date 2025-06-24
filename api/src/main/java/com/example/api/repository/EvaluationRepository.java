@@ -42,4 +42,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
         )
     """)
     List<Employee> findEmployeesNotSubmitted(@Param("phaseId") Long phaseId);
+    List<Evaluation> findByEvaluatorId(Long evaluatorId);
+
 }

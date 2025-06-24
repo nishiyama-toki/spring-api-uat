@@ -211,8 +211,6 @@ CREATE TABLE evaluation.phases (
     name character varying(255) NOT NULL,
     start_date date,
     end_date date,
-    self_eval_due timestamp without time zone,
-    peer_eval_due timestamp without time zone,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     phase_number integer

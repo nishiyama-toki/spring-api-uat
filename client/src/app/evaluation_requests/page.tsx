@@ -1,8 +1,7 @@
-'use client';
+'use client'; // クライアントコンポーネントとして明示
 
-// --- 必要なライブラリやフックをインポート ---
 import React, { useEffect, useState } from 'react';
-import axios from 'utils/axiosInstance';
+import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 
 import styles from './evaluation_requests.module.css'; // そのまま！
@@ -17,12 +16,13 @@ function parseJwt(token: string) {
 }
 
 interface EvaluationResponse {
-  targetName: string;
+  targetId: number; // バックエンドから0Lが来るのでnumber型でOK
+  targetName: string; // バックエンドから空文字列が来る
   phaseNumber: number;
   quarterName: string;
-  type: string;
   startDate: string;
   endDate: string;
+  evaluationType: string; // 'SELF' or 'PEER'
 }
 
 export default function EvaluationRequestPage() {
@@ -33,11 +33,13 @@ export default function EvaluationRequestPage() {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('トークンが存在しません');
+      // 未認証ユーザーをログインページにリダイレクトすることも検討
+      // router.push('/login');
       return;
     }
 
     const payload = parseJwt(token);
-    const evaluatorId = payload?.userId;
+    const evaluatorId = payload?.sub;
 
     if (!evaluatorId) {
       console.error('トークンからevaluatorIdを取得できません');
@@ -55,6 +57,7 @@ export default function EvaluationRequestPage() {
       })
       .catch((err) => {
         console.error('評価依頼の取得に失敗しました', err);
+        // エラーハンドリング (例: ユーザーにメッセージを表示)
       });
   }, []);
 

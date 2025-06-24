@@ -1,87 +1,80 @@
-// JwtAuthenticationFilter.java
 package com.example.api.security;
 
-import com.example.api.entity.JwtToken;
-import com.example.api.repository.JwtTokenRepository;
-import com.example.api.service.CustomUserDetailsService;
+import com.example.api.entity.Employee;
+import com.example.api.repository.EmployeeRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-
-    private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService userDetailsService;
-    private final JwtTokenRepository jwtTokenRepository;
+    private final JwtTokenProvider   jwtTokenProvider;
+    private final EmployeeRepository employeeRepository;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
-                                   CustomUserDetailsService userDetailsService,
-                                   JwtTokenRepository jwtTokenRepository) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenRepository = jwtTokenRepository;
+                                   EmployeeRepository employeeRepository) {
+        this.jwtTokenProvider   = jwtTokenProvider;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
-    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return path.equals("/api/login")
-                || path.equals("/api/reset-mail")
-                || path.equals("/api/reset-password");
-    }
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+                                    throws ServletException, IOException {
 
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+        String token = resolveJwt(request);
 
-        try {
-            String authHeader = request.getHeader("Authorization");
-            String token = (authHeader != null && authHeader.startsWith("Bearer "))
-                    ? authHeader.substring(7)
-                    : null;
+        if (token != null && jwtTokenProvider.isValid(token)) {
 
-            if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtTokenProvider.isValid(token)) {
-                    boolean revoked = jwtTokenRepository.findByToken(token)
-                            .map(JwtToken::getIsRevoked)
-                            .orElse(true);
-                    if (!revoked) {
-                        String userId = jwtTokenProvider.extractUserId(token);
-                        UserDetails userDetails = userDetailsService.loadUserById(Long.parseLong(userId));
+            /* === 1. トークンから情報を取得 === */
+            Long   userId = Long.valueOf(jwtTokenProvider.extractUserId(token));
+            String role   = jwtTokenProvider.extractRole(token);   // "ROLE_ADMIN" か "ADMIN"
 
-                        UsernamePasswordAuthenticationToken authToken =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    } else {
-                        log.warn("JWT 認証エラー: トークンが失効しています");
-                    }
-                } else {
-                    log.warn("JWT 認証エラー: トークンが無効です");
-                }
+            /* === 2. 社員情報を取得 === */
+            Employee employee = employeeRepository.findById(userId).orElse(null);
+
+            if (employee != null) {
+
+                /* === 3. ROLE_ 接頭辞の二重付与を防いで GrantedAuthority を作成 === */
+                String authority =
+                        role.startsWith("ROLE_") ? role : "ROLE_" + role.toUpperCase();
+
+                List<GrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority(authority));
+
+                /* === 4. SecurityContext にセット === */
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(employee, null, authorities);
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ex) {
-            log.error("JWT 認証中に例外が発生しました: {}", ex.getMessage(), ex);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /** Authorization ヘッダーから Bearer トークンを取り出す */
+    private String resolveJwt(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        return (StringUtils.hasText(bearer) && bearer.startsWith("Bearer "))
+               ? bearer.substring(7)
+               : null;
     }
 }

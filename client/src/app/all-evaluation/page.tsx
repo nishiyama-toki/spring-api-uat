@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
-import styles from './all-evaluation.module.css'; // ← ここ注意
-import axios from '../../utils/axiosInstance';
+import styles from './all-evaluation.module.css';
+import axios from '@/utils/axiosInstance';
 
 type EmployeeEvaluation = {
     targetId: number;

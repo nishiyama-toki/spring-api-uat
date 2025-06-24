@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import axios from 'utils/axiosInstance'
+import axios from '@/utils/axiosInstance'
 import { useRouter } from 'next/navigation'
 import styles from './resetMail.module.css'
 

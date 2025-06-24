@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SelfEvaluation.module.css';
+import { useRouter } from 'next/navigation';
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
@@ -81,6 +82,10 @@ export default function SelfEvaluationPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const userId = 1; // TODO: 実際のユーザーIDを取得する処理に置き換えてください
+  const router = useRouter(); // ← 追加
+
 
   const userId = 1;
 
@@ -143,34 +148,36 @@ export default function SelfEvaluationPage() {
   };
 
   const handleConfirm = async () => {
-    setIsLoading(true);
-    const payload: EvaluationRequest = {
-      phase_id: phase,
-      evaluator_id: userId,
-      target_id: userId,
-      skill_score: skill ? parseFloat(skill) : null,
-      business_score: business ? parseFloat(business) : null,
-      team_score: team ? parseFloat(team) : null,
-      comment,
-    };
-    try {
-      const res = await axios.post(
-        `${BASE}/api/self-evaluations`,
-        payload,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-      setMessage(res.data.message || '評価を登録・更新しました。');
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        setMessage(`登録に失敗しました: ${error.response.data.message || error.message}`);
-      } else {
-        setMessage('登録に失敗しました。');
-      }
-    } finally {
-      setIsLoading(false);
-      setIsConfirmOpen(false);
-    }
+  setIsLoading(true);
+  const payload: EvaluationRequest = {
+    phase_id: phase,
+    evaluator_id: userId,
+    target_id: userId,
+    skill_score: skill ? parseFloat(skill) : null,
+    business_score: business ? parseFloat(business) : null,
+    team_score: team ? parseFloat(team) : null,
+    comment,
   };
+
+  try {
+    const res = await axios.post(`${BASE}/api/self-evaluations`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    // ✅ 成功時に遷移
+    router.push('/submitted');
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      setMessage(`登録に失敗しました: ${error.response.data.message || error.message}`);
+    } else {
+      setMessage('登録に失敗しました。');
+    }
+  } finally {
+    setIsLoading(false);
+    setIsConfirmOpen(false);
+  }
+};
+
 
   return (
     <div className={styles.container}>
