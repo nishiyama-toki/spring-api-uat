@@ -7,9 +7,13 @@
 import axios from 'axios'
 
 // Axiosインスタンスの作成
+// const instance = axios.create({
+//   baseURL: 'http://localhost:8080', // Spring Boot バックエンドのAPIベースURL
+// })
 const instance = axios.create({
-  baseURL: 'http://localhost:8080', // Spring Boot バックエンドのAPIベースURL
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL, // ← 環境変数を使用！
 })
+
 
 // リクエストインターセプター
 // リクエスト前にJWTをAuthorizationヘッダーに付与
