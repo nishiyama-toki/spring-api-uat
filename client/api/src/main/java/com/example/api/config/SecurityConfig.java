@@ -98,11 +98,29 @@ public class SecurityConfig {
     }
 
     /** CORS 設定を Security 直下に集約 */
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     // Spring 6 以降はパターン指定に setAllowedOriginPatterns を推奨
+    //     config.setAllowedOriginPatterns(Arrays.asList("*"));
+    //     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    //     config.setAllowedHeaders(Arrays.asList("*"));
+    //     config.setAllowCredentials(true);
+
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", config);
+    //     return source;
+    // }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Spring 6 以降はパターン指定に setAllowedOriginPatterns を推奨
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
+
+        config.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:3000", // ローカル開発
+            "https://toki-nishiyama-project-3.onrender.com" // 本番フロント
+        ));
+
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
@@ -111,4 +129,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }
