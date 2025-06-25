@@ -52,6 +52,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Long   userId = Long.valueOf(jwtTokenProvider.extractUserId(token));
             String role   = jwtTokenProvider.extractRole(token);   // "ROLE_ADMIN" か "ADMIN"
 
+            //レンダーでのデバック用に追記、消しても良い
+            System.out.println("▼▼▼ フィルター検証 ▼▼▼");
+            System.out.println("トークンのrole: " + role); // JWTから取り出した
+            System.out.println("GrantedAuthorityに入れる値: " + authority);
+            System.out.println("employee.email: " + employee.getEmail());
+            System.out.println("SecurityContextに登録してる？: " + SecurityContextHolder.getContext().getAuthentication());
+            System.out.println("▲▲▲ END ▲▲▲");
+
+
             /* === 2. 社員情報を取得 === */
             Employee employee = employeeRepository.findById(userId).orElse(null);
 

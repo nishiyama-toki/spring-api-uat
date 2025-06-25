@@ -38,9 +38,26 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+         // ★★★ 先にログを出す（メソッドチェーンの外で）★★★
+            org.springframework.security.core.Authentication auth =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+
+            System.out.println("▼▼▼ SecurityContext の確認 ▼▼▼");
+            if (auth != null) {
+                System.out.println("認証ユーザー: " + auth.getPrincipal());
+                System.out.println("認可情報: " + auth.getAuthorities());
+            } else {
+                System.out.println("Authentication is NULL");
+            }
+            System.out.println("▲▲▲ ここまで ▲▲▲");
+
+
+
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
+        
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ← 追加！OPTIONSリクエストを許可
                 .requestMatchers(
