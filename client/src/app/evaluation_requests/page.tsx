@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 import styles from './evaluation_requests.module.css'; // そのまま！
 
@@ -28,6 +29,9 @@ interface EvaluationResponse {
 export default function EvaluationRequestPage() {
   const [requests, setRequests] = useState<EvaluationResponse[]>([]);
   const router = useRouter();
+
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
 
   useEffect(() => {
     const token = localStorage.getItem('token');

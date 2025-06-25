@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import axiosInstance from '../../utils/axiosInstance'
+import { useEffect, useState } from "react"
+import axios from '@/utils/axiosInstance' //トークン自動付与のaxiosインスタンス
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 import styles from './MultiEvaluations.module.css'
 
 // 型定義
@@ -29,8 +30,11 @@ export default function MultiEvaluations() {
   const [targets, setTargets] = useState<Target[]>([])
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
 
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+
   useEffect(() => {
-    axiosInstance
+    axios
       .get('/api/multi-evaluations/targets')
       .then((res) => {
         const data: Target[] = res.data
@@ -71,7 +75,7 @@ export default function MultiEvaluations() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axiosInstance.post('/api/multi-evaluations', {
+      const res = await axios.post('/api/multi-evaluations', {
         phase_id: 1,
         evaluations,
       })

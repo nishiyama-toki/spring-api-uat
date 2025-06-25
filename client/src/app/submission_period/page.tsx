@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import axios from '@/utils/axiosInstance'
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface PhaseData {
   id: string
@@ -12,6 +13,9 @@ interface PhaseData {
 }
 
 export default function SubmissionPeriod() {
+// useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+
   const [form, setForm] = useState<PhaseData>({
     id: '',
     name: '',

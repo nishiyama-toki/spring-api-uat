@@ -3,8 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
-import axios from 'utils/axiosInstance';
+import axios from '@/utils/axiosInstance';
 import styles from './admin.module.css';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface NotSubmittedUser {
   name: string;
@@ -25,6 +26,8 @@ export default function AdminHome() {
   const [notSubmitted, setNotSubmitted] = useState<NotSubmittedUser[]>([]);
   const [userName, setUserName] = useState('');
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
+
+  useSessionTimeout(30);
 
   useEffect(() => {
     axios.get('/api/home')

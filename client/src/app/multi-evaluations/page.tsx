@@ -8,6 +8,7 @@ import styles from './multi-evaluations.module.css'
 import axios from '@/utils/axiosInstance'; // 共通のaxiosインスタンスをデフォルトインポート
 import { isAxiosError } from 'axios'; // <-- isAxiosError は 'axios' ライブラリから直接インポート
 import { useSearchParams } from 'next/navigation'; // URLパラメータ取得用
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 // -------------------------
 // 型定義
@@ -52,6 +53,11 @@ export default function MultiEvaluations() {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]) // 現在入力中の評価データ（単一のターゲット用）
   const [pageHeading, setPageHeading] = useState('多面評価'); // ページ見出し
   const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null); // ユーザーが選択した評価対象者ID
+
+  // -------------------------
+  // useSessionTimeout カスタムフックの呼び出し (ここを追加)
+  // -------------------------
+  useSessionTimeout(30); // <-- この行を追加！JWT有効期限が30分の場合
 
   // -------------------------
   // 画面初期表示時：評価可能な対象者一覧を取得

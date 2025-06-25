@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
 import axios from '@/utils/axiosInstance';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 type EmployeeEvaluation = {
     targetId: number;
@@ -27,6 +28,8 @@ const EvaluationSummaryPage: React.FC = () => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [selectedEmployeeName, setSelectedEmployeeName] = useState<string>('');
     const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
+
+    useSessionTimeout(30);
 
     useEffect(() => {
         if (!periodId) {

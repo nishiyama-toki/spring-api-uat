@@ -3,10 +3,15 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SubmittedPage.module.css'; // ← module CSSをインポート
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 export default function SubmittedPage() {
   const router = useRouter();
 
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+
+  // 「評価依頼一覧へ」ボタンが押されたときに実行される処理
   const handleBack = () => {
     router.push('/evaluation-requests');
   };
