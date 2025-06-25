@@ -33,10 +33,22 @@ public class MultiEvaluationHandler {
     }
 
     //その他のランタイム例外（予期しないエラー）を 500 で返す
+<<<<<<< HEAD
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", "サーバーエラーが発生しました");
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+=======
+//     @ExceptionHandler(RuntimeException.class)
+// public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
+//     ex.printStackTrace(); // ← 標準出力に例外の詳細を出力
+
+//     Map<String, String> error = new HashMap<>();
+//     error.put("message", "サーバーエラーが発生しました");
+//     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+// }
+
+>>>>>>> mizukami
 }

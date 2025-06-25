@@ -58,12 +58,15 @@ public class Phase {
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
+<<<<<<< HEAD
     public LocalDateTime getSelfEvalDue() { return selfEvalDue; }
     public void setSelfEvalDue(LocalDateTime selfEvalDue) { this.selfEvalDue = selfEvalDue; }
 
     public LocalDateTime getPeerEvalDue() { return peerEvalDue; }
     public void setPeerEvalDue(LocalDateTime peerEvalDue) { this.peerEvalDue = peerEvalDue; }
 
+=======
+>>>>>>> mizukami
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 

@@ -8,6 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
+<<<<<<< HEAD
+=======
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.util.Base64;
+>>>>>>> mizukami
 import java.util.Date;
 import java.util.function.Function;
 
@@ -17,8 +23,16 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
+<<<<<<< HEAD
     // ★ 本番では環境変数に切り出して！
     // private final String SECRET_KEY = "your_secret_key";
+=======
+    // 🔑 Base64でエンコードされたSECRET_KEYを復号してKeyとして使用
+    private Key getSigningKey() {
+        byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
+    }
+>>>>>>> mizukami
 
     // トークンからemail（=subject）を抽出
     public String extractUsername(String token) {
@@ -58,8 +72,14 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
+<<<<<<< HEAD
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
+=======
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // 🔧 修正：Base64デコードしたキーを使用
+                .build()
+>>>>>>> mizukami
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -71,7 +91,11 @@ public class JwtService {
                 .claim("id", userId) // ← ここで id を埋め込む！
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10時間有効
+<<<<<<< HEAD
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+=======
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // 🔧 修正：同じキーで署名
+>>>>>>> mizukami
                 .compact();
     }
 }

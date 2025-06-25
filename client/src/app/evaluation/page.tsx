@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // client/src/app/past-evaluation/page.tsx
 "use client";
 
@@ -6,12 +7,24 @@ import axios from "axios";
 import styles from "./PastEvaluation.module.css"; 
 
 // --- 型定義(interface) ---
+=======
+"use client";
+
+import React, { useState } from "react";
+import axios from '@/utils/axiosInstance';
+import styles from "./PastEvaluation.module.css";
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+
+>>>>>>> mizukami
 interface CommentData {
   name: string;
   comment: string;
 }
 
+<<<<<<< HEAD
 // 生データ用
+=======
+>>>>>>> mizukami
 interface EvaluationRawDTO {
   skillScore: number;
   businessScore: number;
@@ -20,16 +33,25 @@ interface EvaluationRawDTO {
   evaluatorName: string;
 }
 
+<<<<<<< HEAD
 // API レスポンスの型
+=======
+>>>>>>> mizukami
 interface PastEvaluationResponse {
   phase_number: number;
   name: string;
   comments: CommentData[];
+<<<<<<< HEAD
   rawEvaluations: EvaluationRawDTO[]; // バックエンドからの生データ配列
 }
 
 
 // ------- モーダル（全文表示モーダル）--------
+=======
+  rawEvaluations: EvaluationRawDTO[];
+}
+
+>>>>>>> mizukami
 const CommentModal: React.FC<{
   name: string;
   fullComment: string;
@@ -49,7 +71,13 @@ const CommentModal: React.FC<{
 );
 
 const PastEvaluationPage: React.FC = () => {
+<<<<<<< HEAD
   // --- state ---
+=======
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+  
+>>>>>>> mizukami
   const termList = ["18"];
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [termDropdownOpen, setTermDropdownOpen] = useState(false);
@@ -69,9 +97,13 @@ const PastEvaluationPage: React.FC = () => {
   const [modalName, setModalName] = useState("");
   const [modalFullComment, setModalFullComment] = useState("");
 
+<<<<<<< HEAD
   // --- handlers ---
   const toggleTermDropdown = () =>
     setTermDropdownOpen((open) => !open);
+=======
+  const toggleTermDropdown = () => setTermDropdownOpen((open) => !open);
+>>>>>>> mizukami
 
   const handlePhaseSelect = (term: string) => {
     setSelectedTerm(term);
@@ -87,7 +119,10 @@ const PastEvaluationPage: React.FC = () => {
   };
 
   const handleQuarterSelect = async (q: number) => {
+<<<<<<< HEAD
     // 表示をリセット
+=======
+>>>>>>> mizukami
     setSelectedQuarter(q);
     setPhaseNumber(null);
     setPhaseName(null);
@@ -97,6 +132,7 @@ const PastEvaluationPage: React.FC = () => {
     setComments([]);
     setErrorMessage(null);
 
+<<<<<<< HEAD
     try {
       // 本来は JWT などから動的に取得
         const res = await axios.get<PastEvaluationResponse>(
@@ -149,6 +185,38 @@ const PastEvaluationPage: React.FC = () => {
       // コメント一覧はそのままセット
       setComments(res.data.comments);
 
+=======
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get<PastEvaluationResponse>(
+        "/api/past-evaluations",
+        {
+          params: { phase_id: q },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setPhaseNumber(res.data.phase_number);
+      setPhaseName(res.data.name);
+
+      const raw = res.data.rawEvaluations;
+
+      const calculateAverage = (key: keyof EvaluationRawDTO) => {
+        const valid = raw.filter((v) => (v[key] as number) > 0);
+        if (valid.length === 0) return null;
+        const sum = valid.reduce((acc, v) => acc + (v[key] as number), 0);
+        return parseFloat((sum / valid.length).toFixed(1));
+      };
+
+      setSkillScore(calculateAverage("skillScore"));
+      setBusinessScore(calculateAverage("businessScore"));
+      setTeamScore(calculateAverage("teamScore"));
+
+      setComments(res.data.comments);
+>>>>>>> mizukami
     } catch (e: any) {
       const data = e.response?.data;
       const msg =
@@ -159,7 +227,10 @@ const PastEvaluationPage: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> mizukami
   const openCommentModal = (name: string, full: string) => {
     setModalName(name);
     setModalFullComment(full);
@@ -185,6 +256,7 @@ const PastEvaluationPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
+<<<<<<< HEAD
       {/* ヘッダー */}
 
       {/* 見出し */}
@@ -193,12 +265,18 @@ const PastEvaluationPage: React.FC = () => {
       </div>
 
       {/* 説明文 */}
+=======
+      <div className={styles.titleBar}>
+        <h1>過去評価履歴</h1>
+      </div>
+>>>>>>> mizukami
       <div className={styles.descriptionBox}>
         <p>
           【操作方法】期を選択→四半期を選択すると、その期・四半期の評価平均値と
           コメント一覧が表示されます。
         </p>
       </div>
+<<<<<<< HEAD
 
       {/* メイン */}
       <div className={styles.mainContent}>
@@ -207,6 +285,11 @@ const PastEvaluationPage: React.FC = () => {
             className={styles.termDropdownButton}
             onClick={toggleTermDropdown}
           >
+=======
+      <div className={styles.mainContent}>
+        <aside className={styles.sidebar}>
+          <button className={styles.termDropdownButton} onClick={toggleTermDropdown}>
+>>>>>>> mizukami
             {selectedTerm ? `${selectedTerm}期 ▼` : "期を選択 ▼"}
           </button>
           {termDropdownOpen && (
@@ -215,9 +298,13 @@ const PastEvaluationPage: React.FC = () => {
                 <li key={t}>
                   <div
                     className={`${styles.dropdownItem} ${
+<<<<<<< HEAD
                       selectedTerm === t
                         ? styles.dropdownItemSelected
                         : ""
+=======
+                      selectedTerm === t ? styles.dropdownItemSelected : ""
+>>>>>>> mizukami
                     }`}
                     onClick={() => handlePhaseSelect(t)}
                   >
@@ -227,16 +314,23 @@ const PastEvaluationPage: React.FC = () => {
               ))}
             </ul>
           )}
+<<<<<<< HEAD
 
+=======
+>>>>>>> mizukami
           {selectedTerm && (
             <div className={styles.quarterList}>
               {[1, 2, 3, 4].map((q) => (
                 <div
                   key={q}
                   className={`${styles.quarterItem} ${
+<<<<<<< HEAD
                     selectedQuarter === q
                       ? styles.quarterSelected
                       : ""
+=======
+                    selectedQuarter === q ? styles.quarterSelected : ""
+>>>>>>> mizukami
                   }`}
                   onClick={() => handleQuarterSelect(q)}
                 >
@@ -248,7 +342,10 @@ const PastEvaluationPage: React.FC = () => {
         </aside>
 
         <div className={styles.content}>
+<<<<<<< HEAD
           {/* 期・四半期タイトル */}
+=======
+>>>>>>> mizukami
           {phaseNumber !== null && phaseName && (
             <div className={styles.phaseHeader}>
               <h2>
@@ -257,7 +354,10 @@ const PastEvaluationPage: React.FC = () => {
             </div>
           )}
 
+<<<<<<< HEAD
           {/* 平均スコア */}
+=======
+>>>>>>> mizukami
           <div className={styles.scoreTableWrapper}>
             <h2>平均スコア</h2>
             <table className={styles.table}>
@@ -270,6 +370,7 @@ const PastEvaluationPage: React.FC = () => {
               </thead>
               <tbody>
                 <tr>
+<<<<<<< HEAD
                   <td>
                     {skillScore !== null
                       ? skillScore.toFixed(1)
@@ -285,12 +386,20 @@ const PastEvaluationPage: React.FC = () => {
                       ? teamScore.toFixed(1)
                       : "─"}
                   </td>
+=======
+                  <td>{skillScore !== null ? skillScore.toFixed(1) : "─"}</td>
+                  <td>{businessScore !== null ? businessScore.toFixed(1) : "─"}</td>
+                  <td>{teamScore !== null ? teamScore.toFixed(1) : "─"}</td>
+>>>>>>> mizukami
                 </tr>
               </tbody>
             </table>
           </div>
 
+<<<<<<< HEAD
           {/* コメント一覧 */}
+=======
+>>>>>>> mizukami
           <div className={styles.commentTableWrapper}>
             <h2>コメント</h2>
             <table className={styles.table}>
@@ -305,20 +414,28 @@ const PastEvaluationPage: React.FC = () => {
                   comments.map((c, i) => (
                     <tr key={i}>
                       <td>{c.name} さん</td>
+<<<<<<< HEAD
                       <td>
                         {renderCommentSnippet(
                           c.comment,
                           c.name
                         )}
                       </td>
+=======
+                      <td>{renderCommentSnippet(c.comment, c.name)}</td>
+>>>>>>> mizukami
                     </tr>
                   ))
                 ) : (
                   <tr>
+<<<<<<< HEAD
                     <td
                       colSpan={2}
                       className={styles.noDataMsg}
                     >
+=======
+                    <td colSpan={2} className={styles.noDataMsg}>
+>>>>>>> mizukami
                       この四半期のコメントはまだありません。
                     </td>
                   </tr>
@@ -327,6 +444,7 @@ const PastEvaluationPage: React.FC = () => {
             </table>
           </div>
 
+<<<<<<< HEAD
           {/* エラーメッセージ */}
           {errorMessage && (
             <p className={styles.errorMsg}>
@@ -343,6 +461,14 @@ const PastEvaluationPage: React.FC = () => {
           fullComment={modalFullComment}
           onClose={closeCommentModal}
         />
+=======
+          {errorMessage && <p className={styles.errorMsg}>{errorMessage}</p>}
+        </div>
+      </div>
+
+      {showModal && (
+        <CommentModal name={modalName} fullComment={modalFullComment} onClose={closeCommentModal} />
+>>>>>>> mizukami
       )}
     </div>
   );

@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
+<<<<<<< HEAD
 import axios from 'utils/axiosInstance'; // ← 追加
+=======
+import axios from '@/utils/axiosInstance'; // ← 追加
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+>>>>>>> mizukami
 
 interface Alert {
   message: string;
@@ -24,6 +29,12 @@ export default function UserHome() {
   const [userName, setUserName] = useState('');
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
 
+<<<<<<< HEAD
+=======
+   // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+
+>>>>>>> mizukami
   useEffect(() => {
     axios.get('/api/home')
       .then(res => {

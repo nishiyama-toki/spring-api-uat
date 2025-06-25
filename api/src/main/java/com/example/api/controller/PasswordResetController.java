@@ -15,6 +15,12 @@ public class PasswordResetController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+<<<<<<< HEAD
+=======
+        System.out.println("TOKEN: " + request.getToken());
+        System.out.println("NEW PASSWORD: " + request.getNewPassword());
+
+>>>>>>> mizukami
         boolean success = passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
         if (success) {
             return ResponseEntity.ok().build();

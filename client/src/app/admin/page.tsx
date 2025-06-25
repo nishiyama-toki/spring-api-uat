@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
 import axios from 'utils/axiosInstance';  // ← 追加
+<<<<<<< HEAD
+=======
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+>>>>>>> mizukami
 
 interface NotSubmittedUser {
   name: string;
@@ -24,6 +28,11 @@ export default function AdminHome() {
   const [userName, setUserName] = useState('');
   const [currentPhase, setCurrentPhase] = useState<Phase | null>(null);
 
+<<<<<<< HEAD
+=======
+  useSessionTimeout(30);
+
+>>>>>>> mizukami
   useEffect(() => {
     axios.get('/api/home')    // ← fetch から axios に
       .then(res => {

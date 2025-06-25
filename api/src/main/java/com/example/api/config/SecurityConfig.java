@@ -25,14 +25,11 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final TokenRefreshFilter tokenRefreshFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          TokenRefreshFilter tokenRefreshFilter,
                           CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.tokenRefreshFilter = tokenRefreshFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -59,12 +56,11 @@ public class SecurityConfig {
                     "/api/submission_period_edit",
                     "/api/unsubmitted",
                     "/api/reminder/batch"
-                ).hasRole("ADMIN")          // ★ ROLE_ 接頭辞を前提に変更
+                ).hasRole("ADMIN")  // ← ここが変更ポイント
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(tokenRefreshFilter, JwtAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -113,6 +109,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }
-

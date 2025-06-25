@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 'use client'; // クライアントコンポーネントとして明示
 
@@ -5,6 +6,14 @@
 import React, { useEffect, useState } from 'react'; // Reactの基本機能とHooks
 import axios from 'utils/axiosInstance'; // ← 修正：共通のaxiosインスタンスに変更
 import { useRouter } from 'next/navigation'; // ページ遷移用のフック
+=======
+'use client'; // クライアントコンポーネントとして明示
+
+import React, { useEffect, useState } from 'react';
+import axios from '@/utils/axiosInstance';
+import { useRouter } from 'next/navigation';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+>>>>>>> mizukami
 
 // --- JWTの中身をデコードするユーティリティ関数（Base64 → JSON） ---
 function parseJwt(token: string) {
@@ -17,92 +26,103 @@ function parseJwt(token: string) {
 
 // --- サーバーから受け取る評価依頼情報の型定義（Spring Bootのレスポンスに対応） ---
 interface EvaluationResponse {
-  targetName: string;        // 評価対象者のID（文字列として表示 or 遷移に使う）
-  phaseNumber: number;       // 期（例：19）
-  quarterName: string;       // Q名（例：1Q、2Q）
-  type: string;              // 評価種別（"SELF" or "PEER"）
-  startDate: string;         // 提出開始日
-  endDate: string;           // 提出終了日
+  targetId: number; // バックエンドから0Lが来るのでnumber型でOK
+  targetName: string; // バックエンドから空文字列が来る
+  phaseNumber: number;
+  quarterName: string;
+  startDate: string;
+  endDate: string;
+  evaluationType: string; // 'SELF' or 'PEER'
 }
 
 // --- コンポーネント本体 ---
 export default function EvaluationRequestPage() {
-  // 評価依頼一覧のステート（初期値は空配列）
   const [requests, setRequests] = useState<EvaluationResponse[]>([]);
   const router = useRouter();
 
-  // --- 初回レンダリング時にGETリクエストを実行 ---
+  // useSessionTimeout カスタムフックを呼び出す
+  useSessionTimeout(30); // JWT有効期限が30分の場合
+
   useEffect(() => {
-    const token = localStorage.getItem('token'); // ← ローカルストレージからJWTトークンを取得
+    const token = localStorage.getItem('token');
     if (!token) {
       console.error('トークンが存在しません');
+      // 未認証ユーザーをログインページにリダイレクトすることも検討
+      // router.push('/login');
       return;
     }
 
-    const payload = parseJwt(token); // ← トークンからpayload部分を抽出
-    const evaluatorId = payload?.userId; // ← JWT内のuserId（評価者ID）を取得
+    const payload = parseJwt(token);
+    const evaluatorId = payload?.sub;
 
     if (!evaluatorId) {
       console.error('トークンからevaluatorIdを取得できません');
       return;
     }
 
-    // Spring BootのバックエンドAPIにGETリクエストを送信する（認証ヘッダー付き）
     axios
-      .get(`/api/evaluations?evaluatorId=${evaluatorId}`, { // ← 相対パスに変更（共通axiosのbaseURL適用）
+      .get(`/api/evaluations?evaluatorId=${evaluatorId}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // ← トークンをAuthorizationヘッダーに付与
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        setRequests(res.data); // 成功したらレスポンスをステートに反映
+        setRequests(res.data);
       })
       .catch((err) => {
-        console.error('評価依頼の取得に失敗しました', err); // エラーが出た場合のログ
+        console.error('評価依頼の取得に失敗しました', err);
+        // エラーハンドリング (例: ユーザーにメッセージを表示)
       });
   }, []);
 
-  // --- 日付を「M/D」形式に整形して返す関数 ---
   const formatDate = (iso: string): string => {
-    const d = new Date(iso); // ISO文字列をDateオブジェクトに変換
-    return `${d.getMonth() + 1}/${d.getDate()}`; // 月は0始まりなので +1
+    const d = new Date(iso);
+    return `${d.getMonth() + 1}/${d.getDate()}`;
   };
 
-  // --- JSXの返却（画面の見た目） ---
   return (
     <main className="evaluation-list-container">
       <h1 className="heading">提出依頼一覧</h1>
 
-      {/* データが空の場合の表示 */}
       {requests.length === 0 ? (
         <p>現在、評価依頼はありません。</p>
       ) : (
         <ul className="evaluation-list">
-          {/* 評価依頼ごとにリスト項目を生成 */}
-          {requests.map((req, index) => (
-            <li key={index} className="evaluation-item">
-              <p className="period-label">
-                提出期間 {formatDate(req.startDate)} ～ {formatDate(req.endDate)}
-              </p>
+          {requests.map((req, index) => {
+            let navPath = '';
+            let label = '';
 
-              {/* 評価フォームへのリンク（クリックで画面遷移） */}
-              <a
-                className="evaluation-link"
-                onClick={() => {
-                  // localStorageに見出し文字列を一時保存（フォーム側で使用）
-                  const label = `${req.phaseNumber}期 ${req.quarterName} ${
-                    req.type === 'SELF' ? '自己評価' : '多面評価'
-                  }`;
-                  localStorage.setItem('heading', label);
+            if (req.evaluationType === 'SELF') {
+              navPath = `/selfEvaluation?phase=${req.phaseNumber}&quarter=${encodeURIComponent(req.quarterName)}`;
+              label = `${req.phaseNumber}期 ${req.quarterName} 自己評価`;
+            } else if (req.evaluationType === 'PEER') {
+              // 多面評価の場合: targetIdとtargetNameはダミーだが、URLには含めておく
+              navPath = `/multi-evaluations?phase=${req.phaseNumber}&quarter=${encodeURIComponent(req.quarterName)}&targetId=${req.targetId}&targetName=${encodeURIComponent(req.targetName)}`;
+              // 表示テキストから個人名を削除
+              label = `${req.phaseNumber}期 ${req.quarterName} 多面評価`; // <- ここを変更
+            } else {
+              navPath = '#';
+              label = `${req.phaseNumber}期 ${req.quarterName} (評価タイプ不明)`;
+            }
 
-                  // フォームページへ遷移（例：/form/3）
-                  router.push(`/form/${req.targetName}`);
-                }}
-              >
-                {req.phaseNumber}期 {req.quarterName} {req.type === 'SELF' ? '自己評価' : '多面評価'}
-              </a>
-            </li>
-          ))}
+            return (
+              <li key={index} className="evaluation-item">
+                <p className="period-label">
+                  提出期間 {formatDate(req.startDate)} ～ {formatDate(req.endDate)}
+                </p>
+
+                <a
+                  className="evaluation-link"
+                  onClick={() => {
+                    localStorage.setItem('heading', label);
+                    router.push(navPath);
+                  }}
+                >
+                  {label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>

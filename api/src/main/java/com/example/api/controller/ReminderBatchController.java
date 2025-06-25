@@ -42,11 +42,22 @@ public class ReminderBatchController {
         int sendCount = 0;
         List<Map<String, String>> sentList = new ArrayList<>();
         for (Employee e : unsubmitted) {
+<<<<<<< HEAD
+=======
+            // currentPhase.getSelfEvalDue().toString() を currentPhase.getEndDate().toString() に変更
+            // もし endDate も null の可能性があるなら、nullチェックを追加
+            String dueDateString = (currentPhase.getEndDate() != null) ? currentPhase.getEndDate().toString() : "期限不明";
+
+>>>>>>> mizukami
             boolean result = mailService.sendReminder(
                     e.getEmail(),
                     e.getName(),
                     currentPhase.getName(),
+<<<<<<< HEAD
                     currentPhase.getSelfEvalDue().toString()
+=======
+                    dueDateString // 修正後の期限文字列を使用
+>>>>>>> mizukami
             );
             if (result) {
                 sendCount++;
@@ -62,4 +73,8 @@ public class ReminderBatchController {
         );
         return ResponseEntity.ok(response);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> mizukami
