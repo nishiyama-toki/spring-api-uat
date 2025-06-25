@@ -52,8 +52,21 @@ public class AuthService {
         }
 
         // パスワード不一致 → 失敗カウントをインクリメント
+        // if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
+        //     int failedCount = employee.getFailedCount() + 1;
+        //     employee.setFailedCount(failedCount);
+
+        //     if (failedCount >= 5) {
+        //         employee.setIsLocked(true);
+        //         employee.setLockedAt(LocalDateTime.now());
+        //     }
+
+        //     employeeRepository.save(employee);
+        //     throw new RuntimeException("メールアドレスまたはパスワードが正しくありません");
+        // }
+
         if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
-            int failedCount = employee.getFailedCount() + 1;
+            int failedCount = (employee.getFailedCount() != null ? employee.getFailedCount() : 0) + 1;
             employee.setFailedCount(failedCount);
 
             if (failedCount >= 5) {
@@ -75,4 +88,6 @@ public class AuthService {
 
         return new LoginResponse(token, employee.getPermission());
     }
+
+    
 }

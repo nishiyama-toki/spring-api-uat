@@ -1,373 +1,95 @@
---
--- PostgreSQL database dump
---
+-- スキーマ作成
+CREATE SCHEMA IF NOT EXISTS evaluation;
 
--- Dumped from database version 13.21 (Debian 13.21-1.pgdg120+1)
--- Dumped by pg_dump version 13.21 (Debian 13.21-1.pgdg120+1)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: evaluation; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA evaluation;
-
-
-ALTER SCHEMA evaluation OWNER TO postgres;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- Name: employees; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
+-- employees テーブル
 CREATE TABLE evaluation.employees (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    password character varying(255) NOT NULL,
-    is_admin boolean DEFAULT false,
-    permission character varying(255),
-    failed_count integer DEFAULT 0,
-    is_locked boolean DEFAULT false,
-    locked_at timestamp without time zone,
-    role character varying(255)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN DEFAULT false,
+    permission VARCHAR(255),
+    failed_count INTEGER DEFAULT 0,
+    is_locked BOOLEAN DEFAULT false,
+    locked_at TIMESTAMP,
+    role VARCHAR(255)
 );
 
-
-ALTER TABLE evaluation.employees OWNER TO postgres;
-
---
--- Name: employees_id_seq; Type: SEQUENCE; Schema: evaluation; Owner: postgres
---
-
-CREATE SEQUENCE evaluation.employees_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE evaluation.employees_id_seq OWNER TO postgres;
-
---
--- Name: employees_id_seq; Type: SEQUENCE OWNED BY; Schema: evaluation; Owner: postgres
---
-
-ALTER SEQUENCE evaluation.employees_id_seq OWNED BY evaluation.employees.id;
-
-
---
--- Name: evaluation_periods; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
-CREATE TABLE evaluation.evaluation_periods (
-    id integer NOT NULL,
-    name character varying(100) NOT NULL,
-    start_date date NOT NULL,
-    end_date date NOT NULL,
-    self_eval_due date,
-    peer_eval_due date,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE evaluation.evaluation_periods OWNER TO postgres;
-
---
--- Name: evaluation_periods_id_seq; Type: SEQUENCE; Schema: evaluation; Owner: postgres
---
-
-CREATE SEQUENCE evaluation.evaluation_periods_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE evaluation.evaluation_periods_id_seq OWNER TO postgres;
-
---
--- Name: evaluation_periods_id_seq; Type: SEQUENCE OWNED BY; Schema: evaluation; Owner: postgres
---
-
-ALTER SEQUENCE evaluation.evaluation_periods_id_seq OWNED BY evaluation.evaluation_periods.id;
-
-
---
--- Name: evaluations; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
+-- evaluations テーブル
 CREATE TABLE evaluation.evaluations (
-    id integer NOT NULL,
-    evaluator_id integer NOT NULL,
-    target_id integer NOT NULL,
-    skill_score numeric(38,2),
-    business_score numeric(38,2),
-    team_score numeric(38,2),
-    comment character varying(255),
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    phase_id integer NOT NULL,
-    CONSTRAINT evaluations_business_score_check CHECK (((business_score >= 1.0) AND (business_score <= 5.0))),
-    CONSTRAINT evaluations_skill_score_check CHECK (((skill_score >= 1.0) AND (skill_score <= 5.0))),
-    CONSTRAINT evaluations_team_score_check CHECK (((team_score >= 1.0) AND (team_score <= 5.0)))
+    id SERIAL PRIMARY KEY,
+    evaluator_id INTEGER NOT NULL,
+    target_id INTEGER NOT NULL,
+    skill_score NUMERIC(3, 1),
+    business_score NUMERIC(3, 1),
+    team_score NUMERIC(3, 1),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    phase_id INTEGER NOT NULL,
+    CONSTRAINT evaluations_skill_score_check CHECK (skill_score BETWEEN 1.0 AND 5.0),
+    CONSTRAINT evaluations_business_score_check CHECK (business_score BETWEEN 1.0 AND 5.0),
+    CONSTRAINT evaluations_team_score_check CHECK (team_score BETWEEN 1.0 AND 5.0)
 );
 
-
-ALTER TABLE evaluation.evaluations OWNER TO postgres;
-
---
--- Name: evaluations_id_seq; Type: SEQUENCE; Schema: evaluation; Owner: postgres
---
-
-CREATE SEQUENCE evaluation.evaluations_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE evaluation.evaluations_id_seq OWNER TO postgres;
-
---
--- Name: evaluations_id_seq; Type: SEQUENCE OWNED BY; Schema: evaluation; Owner: postgres
---
-
-ALTER SEQUENCE evaluation.evaluations_id_seq OWNED BY evaluation.evaluations.id;
-
-
---
--- Name: jwt_tokens; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
+-- jwt_tokens テーブル
 CREATE TABLE evaluation.jwt_tokens (
-    id bigint NOT NULL,
-    expired_at timestamp(6) without time zone NOT NULL,
-    is_revoked boolean NOT NULL,
-    issued_at timestamp(6) without time zone NOT NULL,
-    token character varying(255) NOT NULL,
-    employee_id integer NOT NULL
+    id BIGSERIAL PRIMARY KEY,
+    token VARCHAR(255) NOT NULL,
+    issued_at TIMESTAMP(6) NOT NULL,
+    expired_at TIMESTAMP(6) NOT NULL,
+    is_revoked BOOLEAN NOT NULL,
+    employee_id BIGINT NOT NULL
 );
 
-
-ALTER TABLE evaluation.jwt_tokens OWNER TO postgres;
-
---
--- Name: jwt_tokens_id_seq; Type: SEQUENCE; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE evaluation.jwt_tokens ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME evaluation.jwt_tokens_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
--- Name: password_reset_tokens; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
+-- password_reset_tokens テーブル
 CREATE TABLE evaluation.password_reset_tokens (
-    token character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    expires_at timestamp without time zone NOT NULL,
-    used boolean DEFAULT false,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    employee_id integer NOT NULL
+    token VARCHAR(255) PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    employee_id BIGINT NOT NULL
 );
 
-
-ALTER TABLE evaluation.password_reset_tokens OWNER TO postgres;
-
---
--- Name: phases; Type: TABLE; Schema: evaluation; Owner: postgres
---
-
+-- phases テーブル
 CREATE TABLE evaluation.phases (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    start_date date,
-    end_date date,
-    self_eval_due timestamp without time zone,
-    peer_eval_due timestamp without time zone,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    phase_number integer
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    start_date VARCHAR(255),
+    end_date VARCHAR(255),
+    self_eval_due TIMESTAMP,
+    peer_eval_due TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    phase_number INTEGER
 );
 
+-- 外部キー制約（必要なら後から追加可能）
+ALTER TABLE evaluation.evaluations
+  ADD CONSTRAINT fk_evaluator FOREIGN KEY (evaluator_id) REFERENCES evaluation.employees(id),
+  ADD CONSTRAINT fk_target FOREIGN KEY (target_id) REFERENCES evaluation.employees(id),
+  ADD CONSTRAINT fk_phase FOREIGN KEY (phase_id) REFERENCES evaluation.phases(id);
 
-ALTER TABLE evaluation.phases OWNER TO postgres;
+ALTER TABLE evaluation.jwt_tokens
+  ADD CONSTRAINT fk_token_employee FOREIGN KEY (employee_id) REFERENCES evaluation.employees(id);
 
---
--- Name: phases_id_seq; Type: SEQUENCE; Schema: evaluation; Owner: postgres
---
+ALTER TABLE evaluation.password_reset_tokens
+  ADD CONSTRAINT fk_reset_employee FOREIGN KEY (employee_id) REFERENCES evaluation.employees(id);
 
-CREATE SEQUENCE evaluation.phases_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+-- =====================
+-- ダミーデータの挿入
+-- =====================
 
+-- employees
+INSERT INTO evaluation.employees (id, name, email, password, is_admin, permission, failed_count, is_locked, locked_at, role) VALUES
+(1, '管理 太郎', 'admin@example.com', 'hashed_password', true, 'admin', 0, false, NULL, '部長'),
+(2, '一般 花子', 'user@example.com', 'hashed_password', false, NULL, 0, false, NULL, '社員');
 
-ALTER TABLE evaluation.phases_id_seq OWNER TO postgres;
+-- phases
+INSERT INTO evaluation.phases (id, name, start_date, end_date, self_eval_due, peer_eval_due, created_at, updated_at, phase_number) VALUES
+(1, '2025年度上期', '2025-04-01', '2025-09-30', '2025-06-30 23:59:59', '2025-07-31 23:59:59', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
---
--- Name: phases_id_seq; Type: SEQUENCE OWNED BY; Schema: evaluation; Owner: postgres
---
-
-ALTER SEQUENCE evaluation.phases_id_seq OWNED BY evaluation.phases.id;
-
-
---
--- Name: employees id; Type: DEFAULT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.employees ALTER COLUMN id SET DEFAULT nextval('evaluation.employees_id_seq'::regclass);
-
-
---
--- Name: evaluation_periods id; Type: DEFAULT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluation_periods ALTER COLUMN id SET DEFAULT nextval('evaluation.evaluation_periods_id_seq'::regclass);
-
-
---
--- Name: evaluations id; Type: DEFAULT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluations ALTER COLUMN id SET DEFAULT nextval('evaluation.evaluations_id_seq'::regclass);
-
-
---
--- Name: phases id; Type: DEFAULT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.phases ALTER COLUMN id SET DEFAULT nextval('evaluation.phases_id_seq'::regclass);
-
-
---
--- Name: employees employees_email_key; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.employees
-    ADD CONSTRAINT employees_email_key UNIQUE (email);
-
-
---
--- Name: employees employees_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.employees
-    ADD CONSTRAINT employees_pkey PRIMARY KEY (id);
-
-
---
--- Name: evaluation_periods evaluation_periods_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluation_periods
-    ADD CONSTRAINT evaluation_periods_pkey PRIMARY KEY (id);
-
-
---
--- Name: evaluations evaluations_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluations
-    ADD CONSTRAINT evaluations_pkey PRIMARY KEY (id);
-
-
---
--- Name: jwt_tokens jwt_tokens_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.jwt_tokens
-    ADD CONSTRAINT jwt_tokens_pkey PRIMARY KEY (id);
-
-
---
--- Name: password_reset_tokens password_reset_tokens_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.password_reset_tokens
-    ADD CONSTRAINT password_reset_tokens_pkey PRIMARY KEY (token);
-
-
---
--- Name: phases phases_pkey; Type: CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.phases
-    ADD CONSTRAINT phases_pkey PRIMARY KEY (id);
-
-
---
--- Name: evaluations evaluations_evaluator_id_fkey; Type: FK CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluations
-    ADD CONSTRAINT evaluations_evaluator_id_fkey FOREIGN KEY (evaluator_id) REFERENCES evaluation.employees(id);
-
-
---
--- Name: evaluations evaluations_target_id_fkey; Type: FK CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluations
-    ADD CONSTRAINT evaluations_target_id_fkey FOREIGN KEY (target_id) REFERENCES evaluation.employees(id);
-
-
---
--- Name: jwt_tokens fk4s9e99k4jbjsq1we5n7ka05hn; Type: FK CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.jwt_tokens
-    ADD CONSTRAINT fk4s9e99k4jbjsq1we5n7ka05hn FOREIGN KEY (employee_id) REFERENCES evaluation.employees(id);
-
-
---
--- Name: evaluations fk_phase_id; Type: FK CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.evaluations
-    ADD CONSTRAINT fk_phase_id FOREIGN KEY (phase_id) REFERENCES evaluation.phases(id);
-
-
---
--- Name: password_reset_tokens fksw5coj33ux4dbhs9ollqlccfl; Type: FK CONSTRAINT; Schema: evaluation; Owner: postgres
---
-
-ALTER TABLE ONLY evaluation.password_reset_tokens
-    ADD CONSTRAINT fksw5coj33ux4dbhs9ollqlccfl FOREIGN KEY (employee_id) REFERENCES evaluation.employees(id);
-
-
---
--- PostgreSQL database dump complete
---
-
+-- evaluations
+INSERT INTO evaluation.evaluations (id, evaluator_id, target_id, skill_score, business_score, team_score, comment, created_at, updated_at, phase_id) VALUES
+(1, 2, 1, 4.0, 3.5, 4.5, 'がんばっていました', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
