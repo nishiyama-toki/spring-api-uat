@@ -1,19 +1,9 @@
-<<<<<<< HEAD
-
-'use client'; // クライアントコンポーネントとして明示
-
-// --- 必要なライブラリやフックをインポート ---
-import React, { useEffect, useState } from 'react'; // Reactの基本機能とHooks
-import axios from 'utils/axiosInstance'; // ← 修正：共通のaxiosインスタンスに変更
-import { useRouter } from 'next/navigation'; // ページ遷移用のフック
-=======
 'use client'; // クライアントコンポーネントとして明示
 
 import React, { useEffect, useState } from 'react';
 import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
->>>>>>> mizukami
 
 // --- JWTの中身をデコードするユーティリティ関数（Base64 → JSON） ---
 function parseJwt(token: string) {

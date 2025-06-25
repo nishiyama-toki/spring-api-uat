@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-// client/src/app/past-evaluation/page.tsx
-"use client";
-
-import React, { useState } from "react";
-import axios from "axios";
-import styles from "./PastEvaluation.module.css"; 
-
-// --- 型定義(interface) ---
-=======
 "use client";
 
 import React, { useState } from "react";
@@ -15,16 +5,11 @@ import axios from '@/utils/axiosInstance';
 import styles from "./PastEvaluation.module.css";
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
->>>>>>> mizukami
 interface CommentData {
   name: string;
   comment: string;
 }
 
-<<<<<<< HEAD
-// 生データ用
-=======
->>>>>>> mizukami
 interface EvaluationRawDTO {
   skillScore: number;
   businessScore: number;
@@ -33,25 +18,13 @@ interface EvaluationRawDTO {
   evaluatorName: string;
 }
 
-<<<<<<< HEAD
-// API レスポンスの型
-=======
->>>>>>> mizukami
 interface PastEvaluationResponse {
   phase_number: number;
   name: string;
   comments: CommentData[];
-<<<<<<< HEAD
-  rawEvaluations: EvaluationRawDTO[]; // バックエンドからの生データ配列
-}
-
-
-// ------- モーダル（全文表示モーダル）--------
-=======
   rawEvaluations: EvaluationRawDTO[];
 }
 
->>>>>>> mizukami
 const CommentModal: React.FC<{
   name: string;
   fullComment: string;
@@ -71,13 +44,9 @@ const CommentModal: React.FC<{
 );
 
 const PastEvaluationPage: React.FC = () => {
-<<<<<<< HEAD
-  // --- state ---
-=======
   // useSessionTimeout カスタムフックを呼び出す
   useSessionTimeout(30); // JWT有効期限が30分の場合
   
->>>>>>> mizukami
   const termList = ["18"];
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [termDropdownOpen, setTermDropdownOpen] = useState(false);
@@ -97,13 +66,7 @@ const PastEvaluationPage: React.FC = () => {
   const [modalName, setModalName] = useState("");
   const [modalFullComment, setModalFullComment] = useState("");
 
-<<<<<<< HEAD
-  // --- handlers ---
-  const toggleTermDropdown = () =>
-    setTermDropdownOpen((open) => !open);
-=======
   const toggleTermDropdown = () => setTermDropdownOpen((open) => !open);
->>>>>>> mizukami
 
   const handlePhaseSelect = (term: string) => {
     setSelectedTerm(term);
@@ -119,10 +82,6 @@ const PastEvaluationPage: React.FC = () => {
   };
 
   const handleQuarterSelect = async (q: number) => {
-<<<<<<< HEAD
-    // 表示をリセット
-=======
->>>>>>> mizukami
     setSelectedQuarter(q);
     setPhaseNumber(null);
     setPhaseName(null);
@@ -132,60 +91,6 @@ const PastEvaluationPage: React.FC = () => {
     setComments([]);
     setErrorMessage(null);
 
-<<<<<<< HEAD
-    try {
-      // 本来は JWT などから動的に取得
-        const res = await axios.get<PastEvaluationResponse>(
-        "http://localhost:8080/api/past-evaluations", // 1. URLを修正
-        { params: { phase_id: q } }                   // 2. target_idを削除
-      );
-
-      // フェーズ情報をセット
-      setPhaseNumber(res.data.phase_number);
-      setPhaseName(res.data.name);
-
-      // --- ここからがスコア平均値計算の修正箇所 ---
-
-      // 生データ一覧を取得
-      const raw = res.data.rawEvaluations;
-
-      if (raw && raw.length > 0) {
-        // スコアが0より大きい（＝有効な）評価のみを対象に平均を計算する関数
-        const calculateAverage = (key: keyof EvaluationRawDTO) => {
-          // スコアが0より大きいレコードだけを抽出
-          const validEvaluations = raw.filter(v => (v[key] as number) > 0);
-          const count = validEvaluations.length;
-
-          // 有効な評価が1件もなければ、nullを返す (画面には '─' が表示される)
-          if (count === 0) {
-            return null;
-          }
-
-          // 有効な評価の合計スコアを計算
-          const sum = validEvaluations.reduce((acc, v) => acc + (v[key] as number), 0);
-
-          // 平均値を小数点第1位まで計算して返す
-          return parseFloat((sum / count).toFixed(1));
-        };
-
-        // 各スコアの平均値を計算してstateを更新
-        setSkillScore(calculateAverage("skillScore"));
-        setBusinessScore(calculateAverage("businessScore"));
-        setTeamScore(calculateAverage("teamScore"));
-
-      } else {
-        // データがない場合はnullのまま
-        setSkillScore(null);
-        setBusinessScore(null);
-        setTeamScore(null);
-      }
-      
-      // --- ここまでがスコア平均値計算の修正箇所 ---
-
-      // コメント一覧はそのままセット
-      setComments(res.data.comments);
-
-=======
 
     try {
       const token = localStorage.getItem("token");
@@ -216,7 +121,6 @@ const PastEvaluationPage: React.FC = () => {
       setTeamScore(calculateAverage("teamScore"));
 
       setComments(res.data.comments);
->>>>>>> mizukami
     } catch (e: any) {
       const data = e.response?.data;
       const msg =
@@ -227,10 +131,6 @@ const PastEvaluationPage: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> mizukami
   const openCommentModal = (name: string, full: string) => {
     setModalName(name);
     setModalFullComment(full);
@@ -256,40 +156,18 @@ const PastEvaluationPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-<<<<<<< HEAD
-      {/* ヘッダー */}
-
-      {/* 見出し */}
       <div className={styles.titleBar}>
         <h1>過去評価履歴</h1>
       </div>
-
-      {/* 説明文 */}
-=======
-      <div className={styles.titleBar}>
-        <h1>過去評価履歴</h1>
-      </div>
->>>>>>> mizukami
       <div className={styles.descriptionBox}>
         <p>
           【操作方法】期を選択→四半期を選択すると、その期・四半期の評価平均値と
           コメント一覧が表示されます。
         </p>
       </div>
-<<<<<<< HEAD
-
-      {/* メイン */}
-      <div className={styles.mainContent}>
-        <aside className={styles.sidebar}>
-          <button
-            className={styles.termDropdownButton}
-            onClick={toggleTermDropdown}
-          >
-=======
       <div className={styles.mainContent}>
         <aside className={styles.sidebar}>
           <button className={styles.termDropdownButton} onClick={toggleTermDropdown}>
->>>>>>> mizukami
             {selectedTerm ? `${selectedTerm}期 ▼` : "期を選択 ▼"}
           </button>
           {termDropdownOpen && (
@@ -298,13 +176,7 @@ const PastEvaluationPage: React.FC = () => {
                 <li key={t}>
                   <div
                     className={`${styles.dropdownItem} ${
-<<<<<<< HEAD
-                      selectedTerm === t
-                        ? styles.dropdownItemSelected
-                        : ""
-=======
                       selectedTerm === t ? styles.dropdownItemSelected : ""
->>>>>>> mizukami
                     }`}
                     onClick={() => handlePhaseSelect(t)}
                   >
@@ -314,23 +186,13 @@ const PastEvaluationPage: React.FC = () => {
               ))}
             </ul>
           )}
-<<<<<<< HEAD
-
-=======
->>>>>>> mizukami
           {selectedTerm && (
             <div className={styles.quarterList}>
               {[1, 2, 3, 4].map((q) => (
                 <div
                   key={q}
                   className={`${styles.quarterItem} ${
-<<<<<<< HEAD
-                    selectedQuarter === q
-                      ? styles.quarterSelected
-                      : ""
-=======
                     selectedQuarter === q ? styles.quarterSelected : ""
->>>>>>> mizukami
                   }`}
                   onClick={() => handleQuarterSelect(q)}
                 >
@@ -342,10 +204,6 @@ const PastEvaluationPage: React.FC = () => {
         </aside>
 
         <div className={styles.content}>
-<<<<<<< HEAD
-          {/* 期・四半期タイトル */}
-=======
->>>>>>> mizukami
           {phaseNumber !== null && phaseName && (
             <div className={styles.phaseHeader}>
               <h2>
@@ -354,10 +212,6 @@ const PastEvaluationPage: React.FC = () => {
             </div>
           )}
 
-<<<<<<< HEAD
-          {/* 平均スコア */}
-=======
->>>>>>> mizukami
           <div className={styles.scoreTableWrapper}>
             <h2>平均スコア</h2>
             <table className={styles.table}>
@@ -370,36 +224,14 @@ const PastEvaluationPage: React.FC = () => {
               </thead>
               <tbody>
                 <tr>
-<<<<<<< HEAD
-                  <td>
-                    {skillScore !== null
-                      ? skillScore.toFixed(1)
-                      : "─"}
-                  </td>
-                  <td>
-                    {businessScore !== null
-                      ? businessScore.toFixed(1)
-                      : "─"}
-                  </td>
-                  <td>
-                    {teamScore !== null
-                      ? teamScore.toFixed(1)
-                      : "─"}
-                  </td>
-=======
                   <td>{skillScore !== null ? skillScore.toFixed(1) : "─"}</td>
                   <td>{businessScore !== null ? businessScore.toFixed(1) : "─"}</td>
                   <td>{teamScore !== null ? teamScore.toFixed(1) : "─"}</td>
->>>>>>> mizukami
                 </tr>
               </tbody>
             </table>
           </div>
 
-<<<<<<< HEAD
-          {/* コメント一覧 */}
-=======
->>>>>>> mizukami
           <div className={styles.commentTableWrapper}>
             <h2>コメント</h2>
             <table className={styles.table}>
@@ -414,28 +246,12 @@ const PastEvaluationPage: React.FC = () => {
                   comments.map((c, i) => (
                     <tr key={i}>
                       <td>{c.name} さん</td>
-<<<<<<< HEAD
-                      <td>
-                        {renderCommentSnippet(
-                          c.comment,
-                          c.name
-                        )}
-                      </td>
-=======
                       <td>{renderCommentSnippet(c.comment, c.name)}</td>
->>>>>>> mizukami
                     </tr>
                   ))
                 ) : (
                   <tr>
-<<<<<<< HEAD
-                    <td
-                      colSpan={2}
-                      className={styles.noDataMsg}
-                    >
-=======
                     <td colSpan={2} className={styles.noDataMsg}>
->>>>>>> mizukami
                       この四半期のコメントはまだありません。
                     </td>
                   </tr>
@@ -444,31 +260,12 @@ const PastEvaluationPage: React.FC = () => {
             </table>
           </div>
 
-<<<<<<< HEAD
-          {/* エラーメッセージ */}
-          {errorMessage && (
-            <p className={styles.errorMsg}>
-              {errorMessage}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* モーダル */}
-      {showModal && (
-        <CommentModal
-          name={modalName}
-          fullComment={modalFullComment}
-          onClose={closeCommentModal}
-        />
-=======
           {errorMessage && <p className={styles.errorMsg}>{errorMessage}</p>}
         </div>
       </div>
 
       {showModal && (
         <CommentModal name={modalName} fullComment={modalFullComment} onClose={closeCommentModal} />
->>>>>>> mizukami
       )}
     </div>
   );
