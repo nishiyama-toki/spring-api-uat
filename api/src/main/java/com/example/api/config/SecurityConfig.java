@@ -48,6 +48,7 @@ public class SecurityConfig {
                     "/api/reset-mail",
                     "/api/reset-password/**",
                     "/api/phases"
+                    "/api/health"//レンダーでのデバックのためにヘルスチェックの認証をパス 
                 ).permitAll()
                 .requestMatchers(
                     "/api/admin-only",
