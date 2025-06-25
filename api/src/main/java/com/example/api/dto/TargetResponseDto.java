@@ -2,20 +2,6 @@ package com.example.api.dto;
 
 public class TargetResponseDto {
 
-<<<<<<< HEAD
-    private Integer id;
-    private String name;
-    private String role;
-
-    private GetEvaluationDto evaluation; // ← ★追加！
-
-    // --- Getter & Setter ---
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-=======
     private Long id; // <-- IntegerからLongに変更済み
     private String name;
     private String role;
@@ -28,7 +14,6 @@ public class TargetResponseDto {
     }
 
     public void setId(Long id) { // <-- SetterもLong
->>>>>>> mizukami
         this.id = id;
     }
 
@@ -55,8 +40,4 @@ public class TargetResponseDto {
     public void setEvaluation(GetEvaluationDto evaluation) {
         this.evaluation = evaluation;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> mizukami
