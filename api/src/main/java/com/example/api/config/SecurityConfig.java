@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //先に書く！
-            .anonymous() //後に書く！(renderのために追加)
+            // .anonymous() //後に書く！(renderのために追加)
             .authenticationProvider(authenticationProvider());
 
         return http.build();
