@@ -40,17 +40,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
          // ★★★ 先にログを出す（メソッドチェーンの外で）★★★
-            org.springframework.security.core.Authentication auth =
+            org.springframework.security.core.Authentication authentication =
                 org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
 
             System.out.println("▼▼▼ SecurityContext の確認 ▼▼▼");
-            if (auth != null) {
-                System.out.println("認証ユーザー: " + auth.getPrincipal());
-                System.out.println("認可情報: " + auth.getAuthorities());
+            if (authentication != null) {
+                System.out.println("認証ユーザー: " + authentication.getPrincipal());
+                System.out.println("認可情報: " + authentication.getAuthorities());
             } else {
                 System.out.println("Authentication is NULL");
             }
             System.out.println("▲▲▲ ここまで ▲▲▲");
+
 
 
 
