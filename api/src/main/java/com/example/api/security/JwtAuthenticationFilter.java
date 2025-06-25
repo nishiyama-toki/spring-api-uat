@@ -36,6 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
                                     throws ServletException, IOException {
 
+    String path = request.getRequestURI();
+
+    // ★★★ ログインとパスワードリセット関連はスルー！★★★
+    if (path.equals("/api/login") || path.startsWith("/api/reset-")) {
+        filterChain.doFilter(request, response);
+        return;
+    }
+
         String token = resolveJwt(request);
 
         if (token != null && jwtTokenProvider.isValid(token)) {
