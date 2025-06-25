@@ -104,8 +104,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // ★ ここをフロントのURLに明示的に限定！
-        config.setAllowedOrigins(Arrays.asList("https://toki-nishiyama-project-3.onrender.com"));
-
+        config.setAllowedOrigins(Arrays.asList("https://toki-nishiyama-project-3.onrender.com","http://localhost:3000"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
