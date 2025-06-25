@@ -59,9 +59,9 @@ public class SecurityConfig {
                 ).hasRole("ADMIN")  // ← ここが変更ポイント
                 .anyRequest().authenticated()
             )
-            .anonymous()//render画面のために一時追加
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //先に書く！
+            .anonymous() //後に書く！(renderのために追加)
+            .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
