@@ -38,6 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
+        //レンダーのデバックログ
+        System.out.println(">>> リクエストパス: " + path);
+
         // ★★★ ログインとパスワードリセット関連はスルー！★★★
         if (path.equals("/api/login") || path.startsWith("/api/reset-")) {
             filterChain.doFilter(request, response);
