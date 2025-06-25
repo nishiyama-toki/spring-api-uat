@@ -8,16 +8,15 @@ import java.time.LocalDateTime;
 @Table(name = "phases")
 public class Phase {
 
-    /* ---------- カラム ---------- */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "phase_number", nullable = false)
-    private Integer phaseNumber;       // 期（1,2,3…）
+    private Integer phaseNumber;
 
     @Column(name = "name", nullable = false)
-    private String periodName;         // クォーター名（Q1 / Q2 …）
+    private String periodName;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -37,7 +36,8 @@ public class Phase {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    /* ---------- Getter / Setter ---------- */
+    // --------- Getter / Setter ---------
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -47,8 +47,7 @@ public class Phase {
     public String getPeriodName() { return periodName; }
     public void setPeriodName(String periodName) { this.periodName = periodName; }
 
-    // ── もし “名前” を汎用的に呼び出したい場合は ↓ をシンタックスシュガーとして残す
-    @Transient
+    // 🚫 Transientではなく、シンプルなGetterとして使用
     public String getName() { return periodName; }
     public void setName(String name) { this.periodName = name; }
 
@@ -57,6 +56,12 @@ public class Phase {
 
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+
+    public LocalDateTime getSelfEvalDue() { return selfEvalDue; }
+    public void setSelfEvalDue(LocalDateTime selfEvalDue) { this.selfEvalDue = selfEvalDue; }
+
+    public LocalDateTime getPeerEvalDue() { return peerEvalDue; }
+    public void setPeerEvalDue(LocalDateTime peerEvalDue) { this.peerEvalDue = peerEvalDue; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

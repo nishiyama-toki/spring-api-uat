@@ -7,9 +7,14 @@
 import axios, { isAxiosError } from 'axios'; // <-- isAxiosError をインポートに追加
 
 // Axiosインスタンスの作成
+// const instance = axios.create({
+//   baseURL: 'http://localhost:8080', // Spring Boot バックエンドのAPIベースURL
+// })
 const instance = axios.create({
   baseURL: 'http://localhost:8080', // Spring Boot バックエンドのAPIベースURL
 });
+
+
 
 // リクエストインターセプター
 // リクエスト前にJWTをAuthorizationヘッダーに付与
