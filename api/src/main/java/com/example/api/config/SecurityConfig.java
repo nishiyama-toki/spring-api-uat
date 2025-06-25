@@ -59,6 +59,7 @@ public class SecurityConfig {
                 ).hasRole("ADMIN")  // ← ここが変更ポイント
                 .anyRequest().authenticated()
             )
+            .anonymous()//render画面のために一時追加
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
