@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
->>>>>>> mizukami
 
 @RestController
 @RequestMapping("/api/multi-evaluations")
@@ -42,13 +39,6 @@ public class MultiEvaluationController {
     }
 
     @GetMapping("/targets")
-<<<<<<< HEAD
-    public List<TargetResponseDto> getTargetsWithEvaluations(HttpServletRequest request) {
-        Integer evaluatorId = jwtService.extractUserId(request);
-        return userService.getTargetsWithEvaluation(evaluatorId.longValue());
-    }
-}
-=======
     public List<TargetResponseDto> getTargetsWithEvaluations(
         HttpServletRequest request,
         @RequestParam(name = "phase") Long phaseId, // 'phase' パラメータを受け取る (必須)
@@ -78,4 +68,3 @@ public class MultiEvaluationController {
         }
     }
 }
->>>>>>> mizukami
