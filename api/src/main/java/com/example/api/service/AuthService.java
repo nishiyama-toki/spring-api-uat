@@ -26,6 +26,7 @@ public class AuthService {
     private final TokenService tokenService;
 
     public LoginResponse login(LoginRequest request) {
+        try {//ログイン認証ができない原因を探るためのデバック
         Optional<Employee> optionalEmployee = employeeRepository.findByEmail(request.getEmail());
 
         if (optionalEmployee.isEmpty()) {
@@ -93,6 +94,12 @@ public class AuthService {
         tokenService.saveToken(employee, token);
 
         return new LoginResponse(token, employee.getPermission());
+
+        } catch (Exception e) {
+            System.out.println("▼▼▼ 例外が発生 ▼▼▼");
+            e.printStackTrace(); // ← これが超重要
+            System.out.println("▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲");
+            throw e;
     }
 
     
