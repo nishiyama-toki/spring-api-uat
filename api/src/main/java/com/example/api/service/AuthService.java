@@ -65,6 +65,12 @@ public class AuthService {
         //     throw new RuntimeException("メールアドレスまたはパスワードが正しくありません");
         // }
 
+        // ログ仕込み（この3行を追加）
+        System.out.println("入力パスワード: " + request.getPassword());
+        System.out.println("DBのハッシュ: " + employee.getPassword());
+        System.out.println("一致するか？→ " + passwordEncoder.matches(request.getPassword(), employee.getPassword()));
+        System.out.println("エンコーダーの種類: " + passwordEncoder.getClass().getName());
+
         if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
             int failedCount = (employee.getFailedCount() != null ? employee.getFailedCount() : 0) + 1;
             employee.setFailedCount(failedCount);
