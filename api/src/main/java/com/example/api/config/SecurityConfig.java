@@ -110,6 +110,9 @@ public class SecurityConfig {
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
 
+        config.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));//フロント側からレスポンスヘッダーを見れるようにするために追加
+
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
