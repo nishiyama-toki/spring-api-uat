@@ -54,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             /* === 1. トークンから情報を取得 === */
             Long userId = Long.valueOf(jwtTokenProvider.extractUserId(token));
             String role = jwtTokenProvider.extractRole(token);   // "ROLE_ADMIN" か "ADMIN"
+            boolean isAdmin = jwtTokenProvider.extractIsAdmin(token); // ← ★ 追加！
 
             /* === 2. 社員情報を取得 === */
             Employee employee = employeeRepository.findById(userId).orElse(null);
@@ -74,8 +75,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         List.of(new SimpleGrantedAuthority(authority));
 
                 /* === 4. SecurityContext にセット === */
+                UserDetailsImpl userDetails = new UserDetailsImpl(
+                        new Employee(
+                            employee.getId(),
+                            employee.getName(),
+                            employee.getEmail(),
+                            employee.getPassword(),
+                            employee.getRole(),
+                            employee.getPermission(),
+                            isAdmin, // ← トークンから取った admin を反映
+                            employee.getIsLocked()
+                        )
+                );
+
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(employee, null, authorities);
+                        new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
