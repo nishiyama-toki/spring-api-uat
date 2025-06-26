@@ -1,12 +1,10 @@
 package com.example.api.controller;
 
 import com.example.api.dto.EvaluationResponseDTO;
-import com.example.api.dto.TargetResponseDto; // UserServiceから受け取るDTO
 import com.example.api.entity.Employee;
 import com.example.api.entity.Phase;
 import com.example.api.repository.EmployeeRepository;
 import com.example.api.repository.PhaseRepository;
-import com.example.api.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional; // Optionalを使用するために追加
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +21,6 @@ public class EvaluationsController {
 
     private final PhaseRepository    phaseRepo;
     private final EmployeeRepository employeeRepo;
-    private final UserService        userService;
 
     @GetMapping("/evaluations")
     public ResponseEntity<?> getEvaluations(@RequestParam Long evaluatorId) {
@@ -37,7 +33,6 @@ public class EvaluationsController {
         LocalDate today = LocalDate.now();
         List<EvaluationResponseDTO> list = new ArrayList<>();
 
-        /* ==================== 全フェーズを走査 ==================== */
         for (Phase p : phaseRepo.findAll()) {
 
             if (p.getStartDate() != null && p.getEndDate() != null) {
@@ -45,10 +40,11 @@ public class EvaluationsController {
                 LocalDate end   = p.getEndDate();
 
                 if (!today.isBefore(start) && !today.isAfter(end)) {
-                    // 自己評価 (評価対象は自分自身)
+                    // 自己評価
                     list.add(EvaluationResponseDTO.of(
-                            me.getId(), // targetId は自分
-                            me.getName(), // targetName は自分の名前
+                            p.getId(),       // phaseId
+                            me.getId(),      // targetId
+                            me.getName(),    // targetName
                             p.getPhaseNumber(),
                             p.getPeriodName(),
                             start,
@@ -56,12 +52,11 @@ public class EvaluationsController {
                             "SELF"
                     ));
 
-                    // 多面評価 (特定の個人を指定せず、汎用的なリンクを生成)
-                    // この画面では具体的な対象者を特定しない
-                    // targetIdとtargetNameは、nullまたは汎用的なダミー値を設定
+                    // 多面評価
                     list.add(EvaluationResponseDTO.of(
-                            0L,   // ダミーのtargetId (nullはDTOでLongだとエラーになる場合があるので0L)
-                            "",   // ダミーのtargetName (空文字列)
+                            p.getId(),       // phaseId
+                            0L,              // targetId (ダミー)
+                            "",              // targetName (ダミー)
                             p.getPhaseNumber(),
                             p.getPeriodName(),
                             start,
@@ -71,7 +66,6 @@ public class EvaluationsController {
                 }
             }
         }
-
         return ResponseEntity.ok(list);
     }
 }

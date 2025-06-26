@@ -1,11 +1,10 @@
-'use client'; // クライアントコンポーネントとして明示
+'use client'; 
 
 import React, { useEffect, useState } from 'react';
 import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
-// --- JWTの中身をデコードするユーティリティ関数（Base64 → JSON） ---
 function parseJwt(token: string) {
   try {
     return JSON.parse(atob(token.split('.')[1]));
@@ -14,31 +13,27 @@ function parseJwt(token: string) {
   }
 }
 
-// --- サーバーから受け取る評価依頼情報の型定義（Spring Bootのレスポンスに対応） ---
 interface EvaluationResponse {
-  targetId: number; // バックエンドから0Lが来るのでnumber型でOK
-  targetName: string; // バックエンドから空文字列が来る
+  phaseId: number; // ★ DTOに合わせて追加
+  targetId: number;
+  targetName: string;
   phaseNumber: number;
   quarterName: string;
   startDate: string;
   endDate: string;
-  evaluationType: string; // 'SELF' or 'PEER'
+  evaluationType: string;
 }
 
-// --- コンポーネント本体 ---
 export default function EvaluationRequestPage() {
   const [requests, setRequests] = useState<EvaluationResponse[]>([]);
   const router = useRouter();
 
-  // useSessionTimeout カスタムフックを呼び出す
-  useSessionTimeout(30); // JWT有効期限が30分の場合
+  useSessionTimeout(30);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('トークンが存在しません');
-      // 未認証ユーザーをログインページにリダイレクトすることも検討
-      // router.push('/login');
       return;
     }
 
@@ -51,17 +46,12 @@ export default function EvaluationRequestPage() {
     }
 
     axios
-      .get(`/api/evaluations?evaluatorId=${evaluatorId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(`/api/evaluations?evaluatorId=${evaluatorId}`)
       .then((res) => {
         setRequests(res.data);
       })
       .catch((err) => {
         console.error('評価依頼の取得に失敗しました', err);
-        // エラーハンドリング (例: ユーザーにメッセージを表示)
       });
   }, []);
 
@@ -83,13 +73,13 @@ export default function EvaluationRequestPage() {
             let label = '';
 
             if (req.evaluationType === 'SELF') {
-              navPath = `/selfEvaluation?phase=${req.phaseNumber}&quarter=${encodeURIComponent(req.quarterName)}`;
+              // ★ 正しい phaseId を使うように修正
+              navPath = `/selfEvaluation?phase=${req.phaseId}&quarter=${encodeURIComponent(req.quarterName)}`;
               label = `${req.phaseNumber}期 ${req.quarterName} 自己評価`;
             } else if (req.evaluationType === 'PEER') {
-              // 多面評価の場合: targetIdとtargetNameはダミーだが、URLには含めておく
-              navPath = `/multi-evaluations?phase=${req.phaseNumber}&quarter=${encodeURIComponent(req.quarterName)}&targetId=${req.targetId}&targetName=${encodeURIComponent(req.targetName)}`;
-              // 表示テキストから個人名を削除
-              label = `${req.phaseNumber}期 ${req.quarterName} 多面評価`; // <- ここを変更
+              // ★ 正しい phaseId を使うように修正
+              navPath = `/multi-evaluations?phase=${req.phaseId}&quarter=${encodeURIComponent(req.quarterName)}`;
+              label = `${req.phaseNumber}期 ${req.quarterName} 多面評価`;
             } else {
               navPath = '#';
               label = `${req.phaseNumber}期 ${req.quarterName} (評価タイプ不明)`;
@@ -103,6 +93,7 @@ export default function EvaluationRequestPage() {
 
                 <a
                   className="evaluation-link"
+                  style={{ cursor: 'pointer' }} // クリック可能であることを示す
                   onClick={() => {
                     localStorage.setItem('heading', label);
                     router.push(navPath);

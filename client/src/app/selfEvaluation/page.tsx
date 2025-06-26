@@ -4,13 +4,14 @@
 // useEffect をインポートに追加します
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useMemo, useEffect } from 'react';
-import axios from 'axios';
+import { isAxiosError } from 'axios'; // <-- isAxiosError は 'axios' ライブラリから直接インポート
+import axios from '@/utils/axiosInstance'; // <-- axios のインポートパスを修正
 import styles from './SelfEvaluation.module.css';
 import { useRouter } from 'next/navigation';
-import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout'; // useSessionTimeout をインポート
 
-// API ベース URL を環境変数で設定
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+// API ベース URL は axiosInstance に設定されているため、ここでは不要です
+// const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
 // 登録用リクエスト型
 interface EvaluationRequest {
@@ -80,27 +81,30 @@ const ConfirmationModal = ({
 );
 
 export default function SelfEvaluationPage() {
+  // URLクエリパラメータからフェーズ情報を取得します
   const searchParams = useSearchParams();
   const phase = parseInt(searchParams.get('phase') || '0', 10);
   const quarter = parseInt(searchParams.get('quarter') || '0', 10);
 
-  const [heading, setHeading] = useState('自己評価');
-
+  // コンポーネントの状態を管理するuseStateフック
+  const [heading, setHeading] = useState('自己評価'); // ページの見出し
   const [skill, setSkill] = useState('');
   const [business, setBusiness] = useState('');
   const [team, setTeam] = useState('');
   const [comment, setComment] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const userId = 1; // TODO: 実際のユーザーIDを取得する処理に置き換えてください
-  const router = useRouter(); // ← 追加
+  const [message, setMessage] = useState<string | null>(null); // ユーザーへのメッセージ
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 確認モーダルの開閉状態
+  const [isLoading, setIsLoading] = useState(false); // ローディング状態
+
+  // TODO: 実際のユーザーIDを取得する処理に置き換えてください (JWTから抽出するなど)
+  // 現時点ではダミーのIDを使用
+  const userId = 1; 
+  const router = useRouter(); // ページ遷移用ルーター
 
   // useSessionTimeout カスタムフックを呼び出す
   useSessionTimeout(30); // JWT有効期限が30分の場合
 
-  // localStorageから見出しを取得する処理
+  // localStorageから見出しを取得し、設定します
   useEffect(() => {
     const storedHeading = localStorage.getItem('heading');
     if (storedHeading) {
@@ -108,18 +112,20 @@ export default function SelfEvaluationPage() {
     }
   }, []);
 
-  // ページ読み込み時に、既存の評価データを取得する
+  // ページ読み込み時に、既存の評価データをバックエンドから取得します
   useEffect(() => {
-    // phaseとuserIdが有効な値の場合のみ実行
+    // フェーズIDとユーザーIDが有効な値の場合のみ実行
     if (phase > 0 && userId > 0) {
       const fetchEvaluation = async () => {
         try {
           // バックエンドのGETエンドポイントを呼び出す
-          const response = await axios.get(`${BASE}/api/self-evaluations`, {
+          // axiosInstanceがJWTを自動で付与するため、headersは不要です
+          const response = await axios.get(`/api/self-evaluations`, {
             params: {
               phase_id: phase,
               user_id: userId,
             },
+            // headers: { Authorization: `Bearer ${token}` }, // ← 削除: axiosInstanceが処理
           });
 
           // レスポンスデータでフォームの初期値を設定
@@ -131,15 +137,19 @@ export default function SelfEvaluationPage() {
             setComment(data.comment || '');
             setMessage('以前の評価を読み込みました。');
           }
-        } catch (error) {
+        } catch (error: any) { // エラーの型をanyで受ける
           // 404エラーの場合は、まだ評価が存在しないだけなので正常な動作
-          if (axios.isAxiosError(error) && error.response?.status === 404) {
+          if (isAxiosError(error) && error.response?.status === 404) { // isAxiosErrorを直接使用
             console.log('まだ評価データはありません。新規作成します。');
             setMessage(null); // メッセージをクリア
           } else {
             // その他のエラーはコンソールに出力
             console.error('評価データの取得に失敗しました:', error);
-            setMessage('評価データの読み込みに失敗しました。');
+            if (isAxiosError(error) && error.response?.data?.message) { // isAxiosErrorを直接使用
+              setMessage(`評価データの読み込みに失敗しました: ${error.response.data.message}`);
+            } else {
+              setMessage('評価データの読み込みに失敗しました。サーバー接続に失敗しました。');
+            }
           }
         }
       };
@@ -148,6 +158,7 @@ export default function SelfEvaluationPage() {
     }
   }, [phase, userId]); // phaseかuserIdが変わったときに再実行される
 
+  // フォームが送信可能か（いずれかの項目に入力があるか）を判定するメモ化された値
   const isSubmittable = useMemo(
     () =>
       skill.trim() !== '' ||
@@ -157,47 +168,51 @@ export default function SelfEvaluationPage() {
     [skill, business, team, comment]
   );
 
+  // フォームの送信ボタンクリック時の処理（確認モーダルを開く）
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // デフォルトのフォーム送信を防ぐ
     if (!isSubmittable) {
       setMessage('いずれかの項目を入力してください');
       return;
     }
-    setMessage(null);
-    setIsConfirmOpen(true);
+    setMessage(null); // メッセージをクリア
+    setIsConfirmOpen(true); // 確認モーダルを開く
   };
 
-  // 本送信の処理は変更ありません
+  // 確認モーダルで「送信」がクリックされた際の本送信処理
   const handleConfirm = async () => {
-  setIsLoading(true);
-  const payload: EvaluationRequest = {
-    phase_id: phase,
-    evaluator_id: userId,
-    target_id: userId,
-    skill_score: skill ? parseFloat(skill) : null,
-    business_score: business ? parseFloat(business) : null,
-    team_score: team ? parseFloat(team) : null,
-    comment,
-  };
+    setIsLoading(true); // ローディング開始
+    const payload: EvaluationRequest = {
+      phase_id: phase,
+      evaluator_id: userId,
+      target_id: userId, // 自己評価なのでtarget_idも自身のuserId
+      skill_score: skill ? parseFloat(skill) : null,
+      business_score: business ? parseFloat(business) : null,
+      team_score: team ? parseFloat(team) : null,
+      comment,
+    };
 
-  try {
-    const res = await axios.post(`${BASE}/api/self-evaluations`, payload, {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    try {
+      // バックエンドの自己評価登録エンドポイントにPOSTリクエスト
+      // axiosInstanceがJWTを自動で付与するため、headersは不要です
+      const res = await axios.post(`/api/self-evaluations`, payload, {
+        headers: { 'Content-Type': 'application/json' }, // Content-Typeは明示的に指定
+      });
 
-    // ✅ 成功時に遷移
-    router.push('/submitted');
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      setMessage(`登録に失敗しました: ${error.response.data.message || error.message}`);
-    } else {
-      setMessage('登録に失敗しました。');
+      // 成功時に遷移
+      router.push('/submitted'); // 評価完了ページなどへリダイレクト
+    } catch (error: any) { // エラーの型をanyで受ける
+      // エラーメッセージをユーザーに表示
+      if (isAxiosError(error) && error.response) { // isAxiosErrorを直接使用
+        setMessage(`登録に失敗しました: ${error.response.data.message || error.message}`);
+      } else {
+        setMessage('登録に失敗しました。サーバー接続に失敗しました。');
+      }
+    } finally {
+      setIsLoading(false); // ローディング終了
+      setIsConfirmOpen(false); // 確認モーダルを閉じる
     }
-  } finally {
-    setIsLoading(false);
-    setIsConfirmOpen(false);
-  }
-};
+  };
 
 
   return (
@@ -212,7 +227,7 @@ export default function SelfEvaluationPage() {
         <main className={styles.mainContent}>
           <form onSubmit={handleSubmit} className={styles.formSections}>
             <div className={styles.scoreGrid}>
-              {/* スキル */}
+              {/* スキル評価入力フィールド */}
               <div className={styles.inputGroup}>
                 <label htmlFor="skill-input" className={styles.label}>スキル</label>
                 <input
@@ -225,7 +240,7 @@ export default function SelfEvaluationPage() {
                   step={0.1} min={1} max={5}
                 />
               </div>
-              {/* ビジネス */}
+              {/* ビジネス評価入力フィールド */}
               <div className={styles.inputGroup}>
                 <label htmlFor="business-input" className={styles.label}>ビジネス</label>
                 <input
@@ -238,7 +253,7 @@ export default function SelfEvaluationPage() {
                   step={0.1} min={1} max={5}
                 />
               </div>
-              {/* チーム */}
+              {/* チームマネジメント評価入力フィールド */}
               <div className={styles.inputGroup}>
                 <label htmlFor="team-input" className={styles.label}>チームマネジメント</label>
                 <input
@@ -253,7 +268,7 @@ export default function SelfEvaluationPage() {
               </div>
             </div>
 
-            {/* コメント */}
+            {/* コメント入力フィールド */}
             <div className={styles.inputGroup}>
               <label htmlFor="comment-input" className={styles.label}>コメント</label>
               <textarea
@@ -265,14 +280,13 @@ export default function SelfEvaluationPage() {
                 maxLength={1000}
                 rows={5}
               />
-              {/* ▼▼▼ この部分を追加しました ▼▼▼ */}
+              {/* コメント文字数カウンター */}
               <div className={styles.commentCounter}>
                 {comment.length} / 1000
               </div>
-              {/* ▲▲▲ ここまで ▲▲▲ */}
             </div>
 
-            {/* メッセージ */}
+            {/* メッセージ表示エリア */}
             {message && (
               <div className={`${styles.message} ${
                 message.includes('失敗') ? styles.errorMessage : styles.successMessage
@@ -282,6 +296,7 @@ export default function SelfEvaluationPage() {
               </div>
             )}
 
+            {/* 送信ボタン */}
             <div className={styles.submitSection}>
               <button
                 type="submit"

@@ -17,7 +17,7 @@ export default function SubmittedPage() {
   // 「評価依頼一覧へ」ボタンが押されたときに実行される処理
   const handleBack = () => {
     // 一覧画面（評価依頼一覧）にクライアント遷移する
-    router.push('/evaluation-requests'); // ← URIは画面ID「Evaluation-008」に対応
+    router.push('/evaluation_requests'); // ← URIは画面ID「Evaluation-008」に対応
   };
 
   // 実際の画面の構成を返す（JSXで定義）
