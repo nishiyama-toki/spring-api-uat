@@ -56,6 +56,7 @@ public class SecurityConfig {
                     "/api/unsubmitted",
                     "/api/reminder/batch"
                 ).hasRole("ADMIN")
+                .requestMatchers("/api/multi-evaluations/targets").authenticated()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
