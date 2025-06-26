@@ -1,8 +1,10 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { jwtDecode } from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
+import styles from './HamburgerMenu.module.css'
+
 
 interface JwtPayload {
   permission?: string  // ← permission クレームを使って判定（"admin" or "user"）
@@ -40,11 +42,11 @@ export default function HamburgerMenu() {
     '/reset_password',
     '/reset_password/success',
     '/reset_mail',
-    '/reset_mail/sent'
-  ]
+    '/reset_mail/sent',
+  ];
 
-  if (hiddenPaths.some(p => pathname === p)) {
-    return null
+  if (hiddenPaths.includes(pathname)) {
+    return null;
   }
 
   const menuItems = [
@@ -54,7 +56,7 @@ export default function HamburgerMenu() {
     { name: '等級基準書', href: '/grade-guidelines.pdf', target: '_blank' },
     { name: '人事評価', href: '/personnel-evaluation.pdf', target: '_blank' },
     { name: '社員等級', href: '/employee-grades.pdf', target: '_blank' },
-  ]
+  ];
 
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
@@ -67,7 +69,7 @@ export default function HamburgerMenu() {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="hamburger-btn"
+        className={styles.hamburgerBtn}
         aria-label="Toggle Menu"
       >
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
@@ -79,7 +81,7 @@ export default function HamburgerMenu() {
 
       {open && (
         <div
-          className="menu-overlay"
+          className={styles.menuOverlay}
           onClick={() => setOpen(false)}
           aria-label="Close Menu Overlay"
         />
@@ -87,7 +89,7 @@ export default function HamburgerMenu() {
 
       <nav className={`menu-panel${open ? ' open' : ''}`}>
         <ul>
-          {menuItems.map(item => (
+          {menuItems.map((item) => (
             <li key={item.href}>
               <a
                 href={item.href}
@@ -100,12 +102,9 @@ export default function HamburgerMenu() {
             </li>
           ))}
           {isAdmin &&
-            adminItems.map(item => (
-              <li key={item.href} className="admin">
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                >
+            adminItems.map((item) => (
+              <li key={item.href} className={styles.admin}>
+                <a href={item.href} onClick={() => setOpen(false)}>
                   {item.name}
                 </a>
               </li>
@@ -113,5 +112,5 @@ export default function HamburgerMenu() {
         </ul>
       </nav>
     </>
-  )
+  );
 }

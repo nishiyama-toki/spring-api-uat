@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import axios from '@/utils/axiosInstance'
-import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+import { useSessionTimeout } from '@/hooks/useSessionTimeout'
+import styles from './PastEvaluation.module.css'
 
 interface PhaseData {
   id: string
@@ -13,8 +14,7 @@ interface PhaseData {
 }
 
 export default function SubmissionPeriod() {
-// useSessionTimeout カスタムフックを呼び出す
-  useSessionTimeout(30); // JWT有効期限が30分の場合
+  useSessionTimeout(30);
 
   const [form, setForm] = useState<PhaseData>({
     id: '',
@@ -27,7 +27,6 @@ export default function SubmissionPeriod() {
   const [dateList, setDateList] = useState<PhaseData[]>([])
   const quarters = ['1', '2', '3', '4']
 
-  // 初期データ取得（DBから）
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,19 +46,16 @@ export default function SubmissionPeriod() {
     fetchData()
   }, [])
 
-  // 入力変更
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  // 編集モードに切り替え
   const handleEdit = (item: PhaseData) => {
     setForm(item)
     setIsEditMode(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // バリデーション（整数チェックと日付妥当性）
   const isValid =
     form.name &&
     !isNaN(Number(form.name)) &&
@@ -69,7 +65,6 @@ export default function SubmissionPeriod() {
     form.end_date &&
     new Date(form.start_date) <= new Date(form.end_date)
 
-  // 登録 or 更新
   const handleSubmit = async () => {
     const endpoint = inEditMode ? '/api/submission_period_edit' : '/api/submission_period'
     const method = inEditMode ? 'put' : 'post'
@@ -94,7 +89,6 @@ export default function SubmissionPeriod() {
         setDateList(prev => [...prev, { ...form, id: newId }])
       }
 
-      // 初期化
       setForm({ id: '', name: '', period_name: '', start_date: '', end_date: '' })
       setIsEditMode(false)
     } catch (err: any) {
@@ -104,117 +98,136 @@ export default function SubmissionPeriod() {
   }
 
   return (
-    <div className="flex gap-8 p-6 max-w-6xl mx-auto">
-      {/* 左：フォーム */}
-      <div className="w-1/2 border-r pr-4">
-        <h2 className="text-lg font-bold mb-4">
-          {inEditMode ? '編集中' : '新規評価依頼登録'}
-        </h2>
-
-        <div className="mb-4">
-          <label htmlFor="phase" className="block mb-1">評価期</label>
-          <input
-            type="text"
-            id="phase"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="例：18"
-            className="w-full border p-2 rounded"
-          />
-          {form.name && (isNaN(Number(form.name)) || Number(form.name) <= 0) && (
-            <p className="text-red-500 text-sm mt-1">1以上の整数を入力してください</p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="period_name" className="block mb-1">クォーター</label>
-          <select
-            id="period_name"
-            name="period_name"
-            value={form.period_name}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
+    <div className={styles.container}>
+      <div className={styles.mainContent}>
+        {/* 左カラム：フォーム */}
+        <div className={`${styles.content} ${styles.formPane}`}>
+          <div className={styles.titleBar}>
+            <h1>{inEditMode ? '編集中' : '新規評価依頼登録'}</h1>
+          </div>
+          <form
+            className={styles.formVertical}
+            onSubmit={e => { e.preventDefault(); handleSubmit(); }}
+            autoComplete="off"
           >
-            <option value="">クォーターを選択してください</option>
-            {quarters.map(q => (
-              <option key={q} value={q}>{q}</option>
-            ))}
-          </select>
+            <div>
+              <label className={styles.inputLabel} htmlFor="phase">
+                評価期
+              </label>
+              <input
+                type="text"
+                id="phase"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="例：18"
+                className={styles.inputNum}
+                autoComplete="off"
+              />
+              {form.name && (isNaN(Number(form.name)) || Number(form.name) <= 0) && (
+                <p className={styles.errorMsg}>1以上の整数を入力してください</p>
+              )}
+            </div>
+
+            <div>
+              <label className={styles.inputLabel} htmlFor="period_name">
+                クォーター
+              </label>
+              <select
+                id="period_name"
+                name="period_name"
+                value={form.period_name}
+                onChange={handleChange}
+                className={styles.selectInput}
+              >
+                <option value="">クォーターを選択してください</option>
+                {quarters.map(q => (
+                  <option key={q} value={q}>{q}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className={styles.inputLabel} htmlFor="start_date">
+                開始日
+              </label>
+              <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                value={form.start_date}
+                onChange={handleChange}
+                className={styles.dateInput}
+              />
+            </div>
+
+            <div>
+              <label className={styles.inputLabel} htmlFor="end_date">
+                終了日
+              </label>
+              <input
+                type="date"
+                id="end_date"
+                name="end_date"
+                value={form.end_date}
+                onChange={handleChange}
+                className={styles.dateInput}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={!isValid}
+              className={`${isValid ? styles.buttonActive : styles.buttonInactive} ${styles.submitButton}`}
+            >
+              {inEditMode ? '更新' : '登録'}
+            </button>
+          </form>
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="start_date" className="block mb-1">開始日</label>
-          <input
-            type="date"
-            id="start_date"
-            name="start_date"
-            value={form.start_date}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="end_date" className="block mb-1">終了日</label>
-          <input
-            type="date"
-            id="end_date"
-            name="end_date"
-            value={form.end_date}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!isValid}
-          className={`w-full p-2 rounded font-bold ${isValid ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}
-        >
-          {inEditMode ? '更新' : '登録'}
-        </button>
-      </div>
-
-      {/* 右：テーブル */}
-      <div className="w-1/2 pl-4">
-        <h2 className="text-lg font-bold mb-4">提出期間編集</h2>
-        <table className="w-full table-auto border border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-2 py-1">評価期</th>
-              <th className="border px-2 py-1">クォーター</th>
-              <th className="border px-2 py-1">開始日</th>
-              <th className="border px-2 py-1">終了日</th>
-              <th className="border px-2 py-1">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dateList.length > 0 ? (
-              dateList.map((item, index) => (
-                <tr key={index}>
-                  <td className="border px-2 py-1 text-center">{item.name}期</td>
-                  <td className="border px-2 py-1 text-center">{item.period_name}</td>
-                  <td className="border px-2 py-1 text-center">{item.start_date}</td>
-                  <td className="border px-2 py-1 text-center">{item.end_date}</td>
-                  <td className="border px-2 py-1 text-center">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="bg-blue-100 hover:bg-blue-200 text-sm px-2 py-1 rounded"
-                    >
-                      編集
-                    </button>
-                  </td>
+        {/* 右カラム：テーブル */}
+        <div className={`${styles.content} ${styles.tablePane}`}>
+          <div className={styles.titleBar}>
+            <h1>提出期間編集</h1>
+          </div>
+          <div className={styles.scoreTableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>評価期</th>
+                  <th>クォーター</th>
+                  <th>開始日</th>
+                  <th>終了日</th>
+                  <th>操作</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="text-center py-4">データがありません</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {dateList.length > 0 ? (
+                  dateList.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.name}期</td>
+                      <td>{item.period_name}</td>
+                      <td>{item.start_date}</td>
+                      <td>{item.end_date}</td>
+                      <td>
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className={styles.editButton}
+                        >
+                          編集
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className={styles.noDataMsg}>データがありません</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   )

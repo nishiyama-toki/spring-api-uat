@@ -1,85 +1,109 @@
+/* ------------- 画面全体 ------------- */
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: 'Noto Sans JP', sans-serif;              /* ★変更: 日本語向けフォント */
   min-height: 100vh;
-  background-color: #f4f4f4;
-  padding: 2rem;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;                                        /* ★変更: 余白を確保して中央寄せ */
 }
 
-.card {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
+/* ------------- カード（フォーム全体） ------------- */
+.loginWrapper {
   width: 100%;
-  max-width: 500px;
-  min-width: 280px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 420px;                                     /* ★変更: ややスリムに */
+  padding: 40px 48px;                                   /* ★変更: 内側余白を広めに */
+  margin: 64px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);           /* ★変更: 少し濃いめの影 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ------------- タイトルバー ------------- */
+.titleBar {
+  background: #9b9b9b;                                  /* ★変更: 微調整 */
+  padding: 14px 0;                                      /* ★変更: わずかに高く */
   text-align: center;
+  border-radius: 4px;
+}
+.titleBar h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;                                    /* ★変更: 1 枚目に合わせて小さく */
+  font-weight: 700;
 }
 
-.title {
-  background-color: #d9d9d9;
-  padding: 1rem;
-  font-size: 1.6rem;
-  font-weight: bold;
-  border-radius: 1rem;
-  margin-bottom: 1.5rem;
+/* ------------- 説明ボックス ------------- */
+.loginDescriptionBox {
+  background: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 24px 0;                                       /* ★変更: 上下にゆったり余白 */
+  padding: 16px 20px;
+}
+.loginDescriptionBox p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
 }
 
-.input {
+/* ------------- 入力欄 ------------- */
+.loginInput {
   width: 100%;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 1.5rem;
-  background-color: #d9d9d9;
-  border: none;
-  font-size: 1rem;
+  margin-bottom: 12px;                                  /* ★変更: 行間を広げる */
+  padding: 12px 14px;                                   /* ★変更: 縦横パディング増量 */
+  font-size: 0.95rem;
+  border: 1px solid #cfd5db;                            /* ★変更: 淡いグレー */
+  border-radius: 4px;
+  background: #fafbfc;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.loginInput:focus {
+  border-color: #0070f3;
+  outline: none;
 }
 
-.button {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  background-color: #d9d9d9;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-}
-
-.error {
-  color: red;
+/* ------------- エラーメッセージ ------------- */
+.errorMsg {
+  color: #e53e3e;
+  margin: 0 0 8px 0;
   font-size: 0.9rem;
-  margin-top: 0.5rem;
-  text-align: left;
 }
 
-.authError {
-  color: red;
+/* ------------- ログインボタン ------------- */
+.loginButton {
+  width: 100%;
+  margin: 4px 0 12px;                                   /* ★変更: ボタン上下余白 */
+  padding: 12px 0;
+  background: #0070f3;
+  color: #fff;
   font-size: 1rem;
-  margin-top: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.loginButton:hover {
+  background: #0056b3;
 }
 
-.link {
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  text-align: right;
-  color: #444;
+/* ------------- パスワード忘れリンク ------------- */
+.loginForgotSection {
+  text-align: center;                                   /* ★変更: 1 枚目は中央寄せ */
+  margin-top: 4px;
 }
-
-/* レスポンシブ微調整 */
-@media screen and (min-width: 768px) {
-  .card {
-    max-width: 560px;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .input,
-  .button {
-    font-size: 1.1rem;
-  }
+.loginForgotLink {
+  color: #0070f3;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.loginForgotLink:hover {
+  color: #0056b3;
 }

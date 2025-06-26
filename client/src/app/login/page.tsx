@@ -7,15 +7,20 @@ import styles from './login.module.css'
 
 export default function LoginPage() {
   const router = useRouter()
+
+  // ----------------- 状態 -----------------
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [authError, setAuthError] = useState('')
 
+  // ----------------- バリデーション -----------------
   const validate = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
+
     let isValid = true
 
     if (!email) {
@@ -32,7 +37,9 @@ export default function LoginPage() {
       setPasswordError('必須項目です。')
       isValid = false
     } else if (!passwordRegex.test(password)) {
-      setPasswordError('大文字・小文字・数字・記号を含んだ8～20文字にしてください。')
+      setPasswordError(
+        '大文字・小文字・数字・記号を含んだ8～20文字にしてください。'
+      )
       isValid = false
     } else {
       setPasswordError('')
@@ -41,54 +48,67 @@ export default function LoginPage() {
     return isValid
   }
 
+  // ----------------- 送信 -----------------
   const handleLogin = async () => {
     setAuthError('')
     if (!validate()) return
 
     try {
-      // 1. ログインリクエスト
       const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
 
-      if (res.data.permission === 'admin') {
-        router.push('/admin')
-      } else {
-        router.push('/home')
-      }
-    } catch (err) {
+      router.push(res.data.permission === 'admin' ? '/admin' : '/home')
+    } catch {
       setAuthError('メールアドレスまたはパスワードが正しくありません。')
     }
   }
 
+  // ----------------- JSX -----------------
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.title}>多面・自己評価</div>
-        <p>設定されたEmailとPasswordを入力してください</p>
+      <div className={styles.loginWrapper}>
+        {/* タイトル */}
+        <div className={styles.titleBar}>
+          <h1>多面・自己評価</h1>
+        </div>
 
+        {/* 説明文 */}
+        <div className={styles.loginDescriptionBox}>
+          <p>設定されたEmailとPasswordを入力してください</p>
+        </div>
+
+        {/* Email */}
         <input
-          className={styles.input}
+          className={styles.loginInput}
           type="email"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-        {emailError && <p className={styles.error}>{emailError}</p>}
+        {emailError && <p className={styles.errorMsg}>{emailError}</p>}
 
+        {/* Password */}
         <input
-          className={styles.input}
+          className={styles.loginInput}
           type="password"
-          placeholder="password"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
-        {passwordError && <p className={styles.error}>{passwordError}</p>}
+        {passwordError && <p className={styles.errorMsg}>{passwordError}</p>}
 
-        <button className={styles.button} onClick={handleLogin}>login</button>
+        {/* ログインボタン */}
+        <button className={styles.loginButton} onClick={handleLogin}>
+          ログイン
+        </button>
+        {authError && <p className={styles.errorMsg}>{authError}</p>}
 
-        {authError && <p className={styles.authError}>{authError}</p>}
-
-        <p className={styles.link}><a href="/reset_mail">パスワードを忘れた方はこちら</a></p>
+        {/* パスワード忘れリンク */}
+        <div className={styles.loginForgotSection}>
+          <a href="/reset_mail" className={styles.loginForgotLink}>
+            パスワードを忘れた方はこちら
+          </a>
+        </div>
       </div>
     </div>
   )
