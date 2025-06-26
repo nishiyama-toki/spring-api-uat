@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-<<<<<<< HEAD
 import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
 import styles from './HamburgerMenu.module.css'
 
@@ -10,8 +9,6 @@ import styles from './HamburgerMenu.module.css'
 interface JwtPayload {
   permission?: string  // ← permission クレームを使って判定（"admin" or "user"）
 }
-=======
->>>>>>> upstream/gen
 
 export default function HamburgerMenu() {
   const [isAdmin, setIsAdmin] = useState(false)

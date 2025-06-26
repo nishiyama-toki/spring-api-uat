@@ -3,13 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { TermQuarterSelector } from '../components/TermQuarterSelector';
 import styles from './all-evaluation.module.css';
-<<<<<<< HEAD
-import axios from '../../utils/axiosInstance';
-import { withAdminAuth } from '../hooks/useAuth';
-=======
 import axios from '@/utils/axiosInstance';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
->>>>>>> finaltest-from-develop
 
 type EmployeeEvaluation = {
     targetId: number;
@@ -34,11 +29,8 @@ const EvaluationSummaryPage: React.FC = () => {
     const [selectedEmployeeName, setSelectedEmployeeName] = useState<string>('');
     const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
 
-<<<<<<< HEAD
-=======
     useSessionTimeout(30);
 
->>>>>>> finaltest-from-develop
     useEffect(() => {
         if (!periodId) {
             setEvaluations([]);
@@ -54,11 +46,7 @@ const EvaluationSummaryPage: React.FC = () => {
                 } else {
                     setEvaluations([]);
                 }
-<<<<<<< HEAD
-            }catch (error) {
-=======
             } catch (error) {
->>>>>>> finaltest-from-develop
                 console.error('評価データの取得に失敗しました:', error);
                 setEvaluations([]);
             }
@@ -66,11 +54,7 @@ const EvaluationSummaryPage: React.FC = () => {
         fetchEvaluations();
     }, [periodId]);
 
-<<<<<<< HEAD
-    // コメント取得ボタンが押された時の関数を追加
-=======
     // コメント取得ボタンが押された時の関数
->>>>>>> finaltest-from-develop
     const handleViewComments = async (targetId: number, targetName: string) => {
         if (!periodId) return;
         setSelectedEmployeeName(targetName);
@@ -82,19 +66,11 @@ const EvaluationSummaryPage: React.FC = () => {
                 params: { phase_id: periodId }
             });
             setComments(response.data);
-<<<<<<< HEAD
-        }   catch (error) {
-                console.error('コメントの取得に失敗しました', error);
-                setComments([]);
-        }   finally {
-                setIsLoadingComments(false);
-=======
         } catch (error) {
             console.error('コメントの取得に失敗しました', error);
             setComments([]);
         } finally {
             setIsLoadingComments(false);
->>>>>>> finaltest-from-develop
         }
     };
 
@@ -193,13 +169,6 @@ const EvaluationSummaryPage: React.FC = () => {
             )}
         </div>
     );
-<<<<<<< HEAD
-
-};
-
-export default withAdminAuth(EvaluationSummaryPage);
-=======
 };
 
 export default EvaluationSummaryPage;
->>>>>>> finaltest-from-develop
