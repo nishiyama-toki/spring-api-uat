@@ -18,6 +18,9 @@ type User = {
 }
 
 export default function UserManagementPage() {
+  // useSessionTimeout カスタムフックを呼び出す
+    useSessionTimeout(30); // JWT有効期限が30分の場合
+  
 // ------------------------
 // 登録ユーザー一覧
 // ------------------------

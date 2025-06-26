@@ -2,9 +2,7 @@ package com.example.api.controller;
 
 import com.example.api.dto.UserRegisterDto;
 import com.example.api.dto.UserEditDto;
-// import com.example.api.entity.User; // Userエンティティは使用しない方向でコメントアウト
 import com.example.api.entity.Employee; // Employeeエンティティを使用
-// import com.example.api.repository.UserRepository; // UserRepositoryは使用しない方向でコメントアウト
 import com.example.api.repository.EmployeeRepository; // EmployeeRepositoryを使用
 import com.example.api.service.UserService; // UserServiceを使用
 import org.springframework.beans.factory.annotation.Autowired;

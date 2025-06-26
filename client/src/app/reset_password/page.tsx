@@ -13,6 +13,14 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
 
   const handleReset = async () => {
+    // バリデーション：パスワード形式チェック
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
+
+    if (!passwordRegex.test(password)) {
+      setError('大文字・小文字・数字・記号を含んだ8～20文字にしてください。')
+      return
+    }
+    
     if (password !== confirm) {
       setError('パスワードが一致しません')
       return
@@ -23,9 +31,9 @@ export default function ResetPasswordPage() {
         token,
         newPassword: password
       }, {
-      headers: {
+        headers: {
         'Content-Type': 'application/json'
-      }
+        }
       })
       router.push('/reset_password/success')
     } catch {
