@@ -2,6 +2,7 @@ package com.example.api.controller;
 
 import com.example.api.dto.SelfEvaluationRequest;
 import com.example.api.dto.SelfEvaluationResponseDTO;
+import com.example.api.entity.Employee; // ★ このimport文が必須です
 import com.example.api.service.SelfEvaluationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,12 @@ public class SelfEvaluationController {
             @RequestParam("phase_id") Long phaseId,
             Authentication authentication
     ) {
-        Long userId = Long.parseLong(authentication.getName()); // トークンからログインユーザーIDを取得
+        // --- ★★★ ここが修正点です ★★★ ---
+        // 認証情報からユーザーオブジェクト本体を取得し、そこから安全にIDを取り出します
+        Employee principal = (Employee) authentication.getPrincipal();
+        Long userId = principal.getId();
+        // --- ここまで ---
+
         Optional<SelfEvaluationResponseDTO> evaluationOpt = selfEvaluationService.getSelfEvaluation(phaseId, userId);
         return evaluationOpt
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
@@ -43,7 +49,12 @@ public class SelfEvaluationController {
             @RequestBody SelfEvaluationRequest request,
             Authentication authentication
     ) {
-        Long userId = Long.parseLong(authentication.getName());
+        // --- ★★★ ここが修正点です ★★★ ---
+        // 認証情報からユーザーオブジェクト本体を取得し、そこから安全にIDを取り出します
+        Employee principal = (Employee) authentication.getPrincipal();
+        Long userId = principal.getId();
+        // --- ここまで ---
+
         request.setEvaluatorId(userId);
         request.setTargetId(userId);
 
