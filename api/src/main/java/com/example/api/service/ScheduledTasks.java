@@ -46,6 +46,7 @@ public class ScheduledTasks {
         String dueDateString = (currentPhase.getEndDate() != null) ? currentPhase.getEndDate().toString() : "期限不明";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //         for (Employee employee : employeesNotSubmitted) {
 //             mailService.sendReminder(
 //                 employee.getEmail(),
@@ -58,6 +59,8 @@ public class ScheduledTasks {
 //     }
 // }
 =======
+=======
+>>>>>>> finaltest-from-develop
         for (Employee employee : employeesNotSubmitted) {
             mailService.sendReminder(
                 employee.getEmail(),
@@ -68,5 +71,9 @@ public class ScheduledTasks {
         }
         System.out.println("リマインダーメールの送信処理が完了しました。"); // 処理完了メッセージを追加
     }
+<<<<<<< HEAD
 }
 >>>>>>> finaltestNishiyama
+=======
+}
+>>>>>>> finaltest-from-develop

@@ -1,7 +1,10 @@
 package com.example.api.config;
 
 import com.example.api.security.JwtAuthenticationFilter;
+<<<<<<< HEAD
 import com.example.api.security.TokenRefreshFilter;
+=======
+>>>>>>> finaltest-from-develop
 import com.example.api.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +21,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+<<<<<<< HEAD
 import org.springframework.http.HttpMethod;//25日に追加
 
 
+=======
+>>>>>>> finaltest-from-develop
 import java.util.Arrays;
 
 @Configuration
@@ -38,6 +44,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+<<<<<<< HEAD
 
          // ★★★ 先にログを出す（メソッドチェーンの外で）★★★
             org.springframework.security.core.Authentication authentication =
@@ -61,12 +68,22 @@ public class SecurityConfig {
         
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ← 追加！OPTIONSリクエストを許可
+=======
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+>>>>>>> finaltest-from-develop
                 .requestMatchers(
                     "/api/login",
                     "/api/reset-mail",
                     "/api/reset-password/**",
+<<<<<<< HEAD
                     "/api/phases",
                     "/api/health"//レンダーでのデバックのためにヘルスチェックの認証をパス 
+=======
+                    "/api/phases"
+>>>>>>> finaltest-from-develop
                 ).permitAll()
                 .requestMatchers(
                     "/api/admin-only",
@@ -82,9 +99,14 @@ public class SecurityConfig {
                 ).hasRole("ADMIN")  // ← ここが変更ポイント
                 .anyRequest().authenticated()
             )
+<<<<<<< HEAD
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //先に書く！
             // .anonymous() //後に書く！(renderのために追加)
             .authenticationProvider(authenticationProvider());
+=======
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+>>>>>>> finaltest-from-develop
 
         return http.build();
     }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import axios from '@/utils/axiosInstance'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { isAxiosError } from 'axios'
 
 // ------------------------
@@ -12,6 +13,10 @@ import { isAxiosError } from 'axios'
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 import styles from './user_management.module.css'
 >>>>>>> finaltestNishiyama
+=======
+import { useSessionTimeout } from '@/hooks/useSessionTimeout';
+import styles from './user_management.module.css'
+>>>>>>> finaltest-from-develop
 
 type User = {
   id: number
@@ -24,13 +29,19 @@ type User = {
 
 export default function UserManagementPage() {
 <<<<<<< HEAD
+<<<<<<< HEAD
   const [users, setUsers ] = useState<User[]>([])
 =======
+=======
+>>>>>>> finaltest-from-develop
   useSessionTimeout(30);
 
   const [users, setUsers] = useState<User[]>([])
 
+<<<<<<< HEAD
 >>>>>>> finaltestNishiyama
+=======
+>>>>>>> finaltest-from-develop
   const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     name: '',
     email: '',
@@ -39,10 +50,15 @@ export default function UserManagementPage() {
     role: 'スペシャリスト'
   })
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
   const [passwordError, setPasswordError] = useState('');
 >>>>>>> finaltestNishiyama
+=======
+
+  const [passwordError, setPasswordError] = useState('');
+>>>>>>> finaltest-from-develop
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
@@ -50,6 +66,7 @@ export default function UserManagementPage() {
     axios.get<User[]>('/api/user_management_DB')
       .then(res => setUsers(res.data))
       .catch(err => {
+<<<<<<< HEAD
 <<<<<<< HEAD
         console.error('取得失敗:' , err)
         if (isAxiosError(err)) {
@@ -61,10 +78,16 @@ export default function UserManagementPage() {
         if (err.response?.status === 401 || err.response?.status === 403) {
           alert('⛔ 認証エラー：再ログインしてください')
 >>>>>>> finaltestNishiyama
+=======
+        console.error('取得失敗:', err)
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          alert('⛔ 認証エラー：再ログインしてください')
+>>>>>>> finaltest-from-develop
         }
       })
   }, [])
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const handleRegister = async () => {
     try {
@@ -73,6 +96,8 @@ export default function UserManagementPage() {
         permission: newUser.isAdmin ? 'ADMIN' : 'USER'
       });
 =======
+=======
+>>>>>>> finaltest-from-develop
   const validateNewUser = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
     let isValid = true;
@@ -100,7 +125,10 @@ export default function UserManagementPage() {
           permission: newUser.isAdmin ? 'ADMIN' : 'USER'
         }
       );
+<<<<<<< HEAD
 >>>>>>> finaltestNishiyama
+=======
+>>>>>>> finaltest-from-develop
       setUsers(prev => [...prev, res.data])
       setNewUser({
         name: '',
@@ -108,6 +136,7 @@ export default function UserManagementPage() {
         password: '',
         isAdmin: false,
         role: 'スペシャリスト'
+<<<<<<< HEAD
 <<<<<<< HEAD
       }) 
     } catch (e: unknown) {
@@ -120,22 +149,31 @@ export default function UserManagementPage() {
       } else {
         alert('予期しないエラーが発生しました')
 =======
+=======
+>>>>>>> finaltest-from-develop
       })
     } catch (e: any) {
       if (e.response?.status === 401 || e.response?.status === 403) {
         alert('⛔ 認証エラー：再ログインしてください')
       } else {
         alert('登録失敗')
+<<<<<<< HEAD
 >>>>>>> finaltestNishiyama
+=======
+>>>>>>> finaltest-from-develop
       }
     }
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const handleChange = <K extends keyof User>(index: number, key: K, value: User[K]) => {
 =======
   const handleChange = (index: number, key: keyof User, value: any) => {
 >>>>>>> finaltestNishiyama
+=======
+  const handleChange = (index: number, key: keyof User, value: any) => {
+>>>>>>> finaltest-from-develop
     const copy = [...users]
     copy[index] = {
       ...copy[index],
@@ -156,6 +194,7 @@ export default function UserManagementPage() {
       });
       alert('変更を保存しました');
 <<<<<<< HEAD
+<<<<<<< HEAD
     } catch (e: unknown) {
       if (isAxiosError(e)) {
         if (e.response?.status === 401 || e.response?.status === 403) {
@@ -166,6 +205,8 @@ export default function UserManagementPage() {
       } else {
         alert('予期しないエラーが発生しました');
 =======
+=======
+>>>>>>> finaltest-from-develop
     } catch (e: any) {
       if (e.response?.status === 401 || e.response?.status === 403) {
         alert('⛔ 認証エラー：再ログインしてください');
@@ -189,11 +230,15 @@ export default function UserManagementPage() {
         alert('⛔ 認証エラー：再ログインしてください')
       } else {
         alert('削除失敗')
+<<<<<<< HEAD
 >>>>>>> finaltestNishiyama
+=======
+>>>>>>> finaltest-from-develop
       }
     }
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const handleDeleteConfirmed = async () => {
     if (!userToDelete) return
@@ -226,6 +271,11 @@ export default function UserManagementPage() {
     <div className={styles.container}>
       {/* モーダル */}
 >>>>>>> finaltestNishiyama
+=======
+  return (
+    <div className={styles.container}>
+      {/* モーダル */}
+>>>>>>> finaltest-from-develop
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -244,6 +294,7 @@ export default function UserManagementPage() {
         </div>
       )}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       {/* 登録フォーム */}
       <h1 className="text-2xl font-bold mb-4">新規ユーザー登録</h1>
@@ -354,6 +405,8 @@ export default function UserManagementPage() {
         </tbody>
       </table>
 =======
+=======
+>>>>>>> finaltest-from-develop
       <div className={styles.titleBar}>
         <h1>ユーザー管理</h1>
       </div>
@@ -489,7 +542,10 @@ export default function UserManagementPage() {
           </table>
         </section>
       </div>
+<<<<<<< HEAD
 >>>>>>> finaltestNishiyama
+=======
+>>>>>>> finaltest-from-develop
     </div>
   )
 }

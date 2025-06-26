@@ -26,6 +26,7 @@ public class AuthService {
     private final TokenService tokenService;
 
     public LoginResponse login(LoginRequest request) {
+<<<<<<< HEAD
 
         // ▼▼▼ ログの仕込み ▼▼▼
         System.out.println("ログイン処理を開始します。 email: " + request.getEmail());
@@ -33,6 +34,8 @@ public class AuthService {
 
 
         try {//ログイン認証ができない原因を探るためのデバック
+=======
+>>>>>>> finaltest-from-develop
         Optional<Employee> optionalEmployee = employeeRepository.findByEmail(request.getEmail());
 
         if (optionalEmployee.isEmpty()) {
@@ -59,6 +62,7 @@ public class AuthService {
         }
 
         // パスワード不一致 → 失敗カウントをインクリメント
+<<<<<<< HEAD
         // if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
         //     int failedCount = employee.getFailedCount() + 1;
         //     employee.setFailedCount(failedCount);
@@ -80,6 +84,10 @@ public class AuthService {
 
         if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
             int failedCount = (employee.getFailedCount() != null ? employee.getFailedCount() : 0) + 1;
+=======
+        if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
+            int failedCount = employee.getFailedCount() + 1;
+>>>>>>> finaltest-from-develop
             employee.setFailedCount(failedCount);
 
             if (failedCount >= 5) {
