@@ -60,20 +60,19 @@ public class UserService {
             dto.setId(targetEmployee.getId());
             dto.setName(targetEmployee.getName());
             // 権限はpermissionで管理されているため、getRoleではなくgetPermissionを使用
-            dto.setRole(targetEmployee.getPermission() != null ? targetEmployee.getPermission() : ""); // <-- ここを修正
+            dto.setRole(targetEmployee.getPermission() != null ? targetEmployee.getPermission() : "");
 
             Optional<Evaluation> existingEvaluation = evaluationRepository
                 .findByEvaluatorIdAndTargetIdAndPhaseId(evaluatorId, targetEmployee.getId(), phaseId);
 
-            existingEvaluation
-                .ifPresent(evaluation -> {
-                    GetEvaluationDto evalDto = new GetEvaluationDto();
-                    evalDto.setSkill_score(evaluation.getSkillScore() != null ? evaluation.getSkillScore().floatValue() : null);
-                    evalDto.setBusiness_score(evaluation.getBusinessScore() != null ? evaluation.getBusinessScore().floatValue() : null);
-                    evalDto.setTeam_score(evaluation.getTeamScore() != null ? evaluation.getTeamScore().floatValue() : null);
-                    evalDto.setComment(evaluation.getComment());
-                    dto.setEvaluation(evalDto);
-                });
+            existingEvaluation.ifPresent(evaluation -> {
+                GetEvaluationDto evalDto = new GetEvaluationDto();
+                evalDto.setSkill_score(evaluation.getSkillScore() != null ? evaluation.getSkillScore().floatValue() : null);
+                evalDto.setBusiness_score(evaluation.getBusinessScore() != null ? evaluation.getBusinessScore().floatValue() : null);
+                evalDto.setTeam_score(evaluation.getTeamScore() != null ? evaluation.getTeamScore().floatValue() : null);
+                evalDto.setComment(evaluation.getComment());
+                dto.setEvaluation(evalDto);
+            });
 
             result.add(dto);
         }
