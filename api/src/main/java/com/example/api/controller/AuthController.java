@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
+    
 
     private final AuthService authService;
 
@@ -18,6 +19,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+
+        // ▼▼▼ ログの仕込み ▼▼▼
+        System.out.println("コントローラーに届いた");
+        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
