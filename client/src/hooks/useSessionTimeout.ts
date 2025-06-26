@@ -58,7 +58,7 @@ export const useSessionTimeout = (timeoutMinutes: number) => { // <-- export が
 
     // 実際にリダイレクトするまでの時間 (ミリ秒)
     const bufferTimeMs = 5 * 1000; // 期限切れの5秒前に処理を開始するバッファ
-    let timeUntilRedirect = expirationTimeMs - currentTimeMs - bufferTimeMs;
+    const timeUntilRedirect = expirationTimeMs - currentTimeMs - bufferTimeMs;
 
     let timeoutId: NodeJS.Timeout;
 
