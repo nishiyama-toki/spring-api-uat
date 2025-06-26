@@ -1,0 +1,171 @@
+/* === グローバル共通 === */
+.container {
+  font-family: sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #fff;
+}
+
+.titleBar {
+  background-color: #999999;
+  margin-top: 16px;
+  padding: 12px;
+  text-align: center;
+}
+.titleBar h1 {
+  margin: 0;
+  color: white;
+  font-size: 1.7rem;
+}
+
+.descriptionBox {
+  background-color: #f2f2f2;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.descriptionBox p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* メインレイアウト（flex） */
+.mainContent {
+  display: flex;
+  margin-top: 24px;
+}
+
+/* サイドバー（将来追加のため） */
+.sidebar {
+  width: 180px;
+  margin-right: 24px;
+  /* 空実装でもOK（将来的にドロップダウンやナビ） */
+}
+
+.content {
+  flex: 1;
+}
+
+/* 評価カード */
+.targetCard {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+  background: #fcfcfc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.nameRole {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.inputBlock {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  gap: 4px;
+}
+
+.inputNum {
+  width: 100px;
+  padding: 6px 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+.inputNum:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.textarea {
+  min-height: 60px;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+.textarea:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.counter {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 2px;
+  align-self: flex-end;
+}
+
+.submitButton {
+  display: block;
+  margin: 0 auto;
+  background: #0070f3;
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: bold;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.18s;
+}
+.submitButton:hover {
+  background: #274183;
+}
+
+/* テーブルデザインの継承も一応 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.table th,
+.table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+.table th {
+  background-color: #f0f0f0;
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+  .container {
+    padding: 12px 4px;
+  }
+  .mainContent {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    margin-right: 0;
+  }
+  .inputNum {
+    width: 100%;
+  }
+  .targetCard {
+    margin-bottom: 16px;
+  }
+}

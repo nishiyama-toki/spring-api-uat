@@ -2,11 +2,12 @@
 import { useState } from 'react'
 import axios from '@/utils/axiosInstance'
 import { useRouter, useSearchParams } from 'next/navigation'
+import styles from './resetPassword.module.css'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get('token') // メールから渡されるトークン
+  const token = searchParams.get('token')
 
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -42,13 +43,26 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div>
-      <h1>パスワード再設定</h1>
-      <input type="password" placeholder="新しいパスワード" value={password} onChange={e => setPassword(e.target.value)} />
-      <input type="password" placeholder="再入力" value={confirm} onChange={e => setConfirm(e.target.value)} />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button onClick={handleReset}>設定</button>
+    <div className={styles.container}>
+      <h1 className={styles.title}>パスワード再設定</h1>
+      <input
+        type="password"
+        placeholder="新しいパスワード"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        className={styles.input}
+        autoComplete="new-password"
+      />
+      <input
+        type="password"
+        placeholder="再入力"
+        value={confirm}
+        onChange={e => setConfirm(e.target.value)}
+        className={styles.input}
+        autoComplete="new-password"
+      />
+      {error && <p className={styles.error}>{error}</p>}
+      <button onClick={handleReset} className={styles.button}>設定</button>
     </div>
   )
 }
-

@@ -1,7 +1,5 @@
-// app/selfEvaluation/page.tsx
 'use client';
 
-// useEffect をインポートに追加します
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useMemo, useEffect } from 'react';
 import { isAxiosError } from 'axios'; // <-- isAxiosError は 'axios' ライブラリから直接インポート
@@ -13,7 +11,6 @@ import { useSessionTimeout } from '@/hooks/useSessionTimeout'; // useSessionTime
 // API ベース URL は axiosInstance に設定されているため、ここでは不要です
 // const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
-// 登録用リクエスト型
 interface EvaluationRequest {
   phase_id: number;
   evaluator_id: number;
@@ -24,7 +21,6 @@ interface EvaluationRequest {
   comment: string;
 }
 
-// 確認モーダルコンポーネント (変更なし)
 const ConfirmationModal = ({
   onConfirm,
   onCancel,
@@ -34,46 +30,42 @@ const ConfirmationModal = ({
   onConfirm: () => void;
   onCancel: () => void;
   isLoading: boolean;
-  data: { skill: string; business: string; team: string; comment:string };
+  data: { skill: string; business: string; team: string; comment: string };
 }) => (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-      <h2 className="text-xl font-bold mb-4">登録内容の確認</h2>
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <span className="text-gray-600">スキル:</span><span className="font-medium">{data.skill || 'ー'}</span>
+  <div className={styles.modalOverlay}>
+    <div className={styles.modalContent}>
+      <h2 className={styles.modalTitle}>登録内容の確認</h2>
+      <div>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>スキル:</span>
+          <span className={styles.modalValue}>{data.skill || 'ー'}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">ビジネス:</span><span className="font-medium">{data.business || 'ー'}</span>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>ビジネス:</span>
+          <span className={styles.modalValue}>{data.business || 'ー'}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">チーム:</span><span className="font-medium">{data.team || 'ー'}</span>
+        <div className={styles.modalRow}>
+          <span className={styles.modalLabel}>チーム:</span>
+          <span className={styles.modalValue}>{data.team || 'ー'}</span>
         </div>
         {data.comment.trim() && (
-          <div className="mt-2">
-            <span className="text-gray-600">コメント:</span>
-            <p className="mt-1 p-2 bg-gray-100 rounded whitespace-pre-wrap break-words max-h-32 overflow-auto text-sm">
-              {data.comment}
-            </p>
-          </div>
+          <div className={styles.modalComment}>{data.comment}</div>
         )}
       </div>
-      <div className="mt-6 flex justify-end space-x-3">
+      <div className={styles.modalActions}>
         <button
           onClick={onCancel}
           disabled={isLoading}
-          className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50"
-        >戻る</button>
+          className={`${styles.modalButton} ${styles.modalCancel} ${isLoading ? styles.modalDisabled : ''}`}
+        >
+          戻る
+        </button>
         <button
           onClick={onConfirm}
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md flex items-center hover:bg-blue-700 disabled:bg-blue-400"
+          className={`${styles.modalButton} ${styles.modalConfirm} ${isLoading ? styles.modalDisabled : ''}`}
         >
-          {isLoading ? (
-            <span>送信中...</span>
-          ) : (
-            '送信'
-          )}
+          {isLoading ? '送信中...' : '送信'}
         </button>
       </div>
     </div>
@@ -127,8 +119,6 @@ export default function SelfEvaluationPage() {
             },
             // headers: { Authorization: `Bearer ${token}` }, // ← 削除: axiosInstanceが処理
           });
-
-          // レスポンスデータでフォームの初期値を設定
           if (response.data) {
             const data = response.data;
             setSkill(data.skillScore?.toString() || '');
@@ -141,9 +131,8 @@ export default function SelfEvaluationPage() {
           // 404エラーの場合は、まだ評価が存在しないだけなので正常な動作
           if (isAxiosError(error) && error.response?.status === 404) { // isAxiosErrorを直接使用
             console.log('まだ評価データはありません。新規作成します。');
-            setMessage(null); // メッセージをクリア
+            setMessage(null);
           } else {
-            // その他のエラーはコンソールに出力
             console.error('評価データの取得に失敗しました:', error);
             if (isAxiosError(error) && error.response?.data?.message) { // isAxiosErrorを直接使用
               setMessage(`評価データの読み込みに失敗しました: ${error.response.data.message}`);
@@ -153,10 +142,9 @@ export default function SelfEvaluationPage() {
           }
         }
       };
-
       fetchEvaluation();
     }
-  }, [phase, userId]); // phaseかuserIdが変わったときに再実行される
+  }, [phase, userId]);
 
   // フォームが送信可能か（いずれかの項目に入力があるか）を判定するメモ化された値
   const isSubmittable = useMemo(
@@ -219,9 +207,7 @@ export default function SelfEvaluationPage() {
     <div className={styles.container}>
       <div className={styles.mainWrapper}>
         <header className={styles.header}>
-          <h1 className={styles.headerTitle}>
-            {heading}
-          </h1>
+          <h1 className={styles.headerTitle}>{heading}</h1>
         </header>
 
         <main className={styles.mainContent}>
@@ -290,8 +276,7 @@ export default function SelfEvaluationPage() {
             {message && (
               <div className={`${styles.message} ${
                 message.includes('失敗') ? styles.errorMessage : styles.successMessage
-              }`}
-              >
+              }`}>
                 {message}
               </div>
             )}
@@ -310,7 +295,6 @@ export default function SelfEvaluationPage() {
         </main>
       </div>
 
-      {/* 確認モーダル */}
       {isConfirmOpen && (
         <ConfirmationModal
           onConfirm={handleConfirm}

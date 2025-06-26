@@ -5,6 +5,12 @@ import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
+<<<<<<< HEAD
+=======
+import styles from './evaluation_requests.module.css'; // そのまま！
+
+// --- JWTの中身をデコードするユーティリティ関数 ---
+>>>>>>> origin/sakayacss
 function parseJwt(token: string) {
   try {
     return JSON.parse(atob(token.split('.')[1]));
@@ -60,13 +66,19 @@ export default function EvaluationRequestPage() {
     return `${d.getMonth() + 1}/${d.getDate()}`;
   };
 
+  // --- JSXの返却 ---
   return (
-    <main className="evaluation-list-container">
-      <h1 className="heading">提出依頼一覧</h1>
-
+    <div className={styles.container}>
+      <div className={styles.titleBar}>
+        <h1>提出依頼一覧</h1>
+      </div>
+      <div className={styles.descriptionBox}>
+        <p>下記の評価提出依頼を選択してください</p>
+      </div>
       {requests.length === 0 ? (
-        <p>現在、評価依頼はありません。</p>
+        <p className={styles.noDataMsg}>現在、評価依頼はありません。</p>
       ) : (
+<<<<<<< HEAD
         <ul className="evaluation-list">
           {requests.map((req, index) => {
             let navPath = '';
@@ -104,8 +116,35 @@ export default function EvaluationRequestPage() {
               </li>
             );
           })}
+=======
+        <ul style={{ listStyle: "none", padding: 0, marginTop: 24 }}>
+          {requests.map((req, index) => (
+            <li key={index} className={styles.scoreTableWrapper} style={{ marginBottom: 16 }}>
+              <div className={styles.phaseHeader}>
+                <span className={styles.nameCol}>
+                  {req.phaseNumber}期 {req.quarterName} {req.type === 'SELF' ? '自己評価' : '多面評価'}
+                </span>
+                <span style={{ marginLeft: 12, color: '#888' }}>
+                  提出期間 {formatDate(req.startDate)} ～ {formatDate(req.endDate)}
+                </span>
+              </div>
+              <button
+                className={styles.snippetButton}
+                onClick={() => {
+                  const label = `${req.phaseNumber}期 ${req.quarterName} ${
+                    req.type === 'SELF' ? '自己評価' : '多面評価'
+                  }`;
+                  localStorage.setItem('heading', label);
+                  router.push(`/form/${req.targetName}`);
+                }}
+              >
+                提出フォームへ
+              </button>
+            </li>
+          ))}
+>>>>>>> origin/sakayacss
         </ul>
       )}
-    </main>
+    </div>
   );
 }

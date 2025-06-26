@@ -1,5 +1,7 @@
 'use client';
 
+import styles from './AlertBox.module.css'; // ← 追加
+
 interface Alert {
   message: string;
   date: string;
@@ -20,22 +22,23 @@ interface AlertBoxProps {
 
 export default function AlertBox({ alerts, notSubmitted, isAdmin }: AlertBoxProps) {
   return (
-    <div className="bg-yellow-100 p-4 rounded mb-4">
-      <h3 className="font-semibold mb-2">アラート</h3>
+    <div className={styles.alertWrapper}>
+      <h3 className={styles.alertTitle}>アラート</h3>
       <ul>
         {alerts.map((alert, i) => (
-          <li key={i} className="text-red-700">
+          <li key={i} className={styles.alertItem}>
             {alert.message}（{alert.date}）
-            <span className="ml-2 text-xs text-gray-600">[{alert.type}]</span>
+            <span className={styles.alertType}>[{alert.type}]</span>
           </li>
         ))}
       </ul>
+
       {isAdmin && notSubmitted && notSubmitted.length > 0 && (
-        <div className="bg-blue-100 p-3 rounded mt-3">
-          <h4 className="font-semibold text-blue-700 mb-2">未入力者一覧（{notSubmitted.length}名）</h4>
-          <ul className="list-disc list-inside">
+        <div className={styles.notSubmittedBox}>
+          <h4 className={styles.notSubmittedTitle}>未入力者一覧（{notSubmitted.length}名）</h4>
+          <ul className={styles.list}>
             {notSubmitted.map((u, i) => (
-              <li key={i} className="text-blue-800">
+              <li key={i} className={styles.notSubmittedItem}>
                 {u.name}（{u.email}） - {u.alert_message}
               </li>
             ))}

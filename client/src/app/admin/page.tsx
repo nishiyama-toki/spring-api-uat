@@ -1,8 +1,10 @@
+// app/admin/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
 import AlertBox from '../components/AlertBox';
-import axios from 'utils/axiosInstance';  // ← 追加
+import axios from '@/utils/axiosInstance';
+import styles from './admin.module.css';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
 interface NotSubmittedUser {
@@ -28,7 +30,7 @@ export default function AdminHome() {
   useSessionTimeout(30);
 
   useEffect(() => {
-    axios.get('/api/home')    // ← fetch から axios に
+    axios.get('/api/home')
       .then(res => {
         const data = res.data;
         setOverview(data.overview);
@@ -39,14 +41,14 @@ export default function AdminHome() {
   }, []);
 
   return (
-    <div className="pe-container">
-      <div className="pe-titleBar">
+    <div className={styles.container}>
+      <div className={styles.titleBar}>
         <h1>{overview}</h1>
       </div>
-      <div className="pe-descriptionBox">
+      <div className={styles.descriptionBox}>
         <div>ユーザー名：{userName}（管理者）</div>
         <div>現在の評価フェーズ: {currentPhase?.name}</div>
-        <div className="text-sm text-gray-500">
+        <div className={styles.phasePeriod}>
           フェーズ期間: {currentPhase?.start_date} ～ {currentPhase?.end_date}<br />
           自己評価期限: {currentPhase?.self_eval_due} / 多面評価期限: {currentPhase?.peer_eval_due}
         </div>

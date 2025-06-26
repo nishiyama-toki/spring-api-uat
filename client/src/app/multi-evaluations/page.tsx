@@ -1,6 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import axiosInstance from '../../utils/axiosInstance'
+import styles from './multi-evaluations.module.css'
+
+// 型定義
 import axios from '@/utils/axiosInstance'; // 共通のaxiosインスタンスをデフォルトインポート
 import { isAxiosError } from 'axios'; // <-- isAxiosError は 'axios' ライブラリから直接インポート
 import { useSearchParams } from 'next/navigation'; // URLパラメータ取得用
@@ -23,7 +27,6 @@ type Target = {
   }
 }
 
-// 評価データ（POSTで送る構成に準拠）
 type Evaluation = {
   target_id: number
   skill_score: number | null
@@ -127,9 +130,6 @@ export default function MultiEvaluations() {
   }, [selectedTargetId, targets]);
 
 
-  // -------------------------
-  // 入力変更時：数値 or コメント欄を更新
-  // -------------------------
   const handleChange = (
     // indexは常に0になるはず（evaluations配列は常に1要素だから）
     index: number,
@@ -153,9 +153,6 @@ export default function MultiEvaluations() {
     setEvaluations([currentEvaluation]); // 常に配列の0番目を更新してstateにセット
   }
 
-  // -------------------------
-  // 送信ボタンクリック時：POST送信処理
-  // -------------------------
   const handleSubmit = async () => {
     if (!selectedTargetId || evaluations.length === 0 || !evaluations[0].target_id) {
         alert('評価対象者を選択し、入力内容を確認してください。');
@@ -241,7 +238,7 @@ export default function MultiEvaluations() {
             {targets.find(t => t.id === selectedTargetId)?.name}（{targets.find(t => t.id === selectedTargetId)?.role}）の評価
           </p>
 
-          <div className="mt-2 space-y-2">
+          <div className={styles.inputGroup}>
             <label>
               スキル：
               <input
@@ -254,7 +251,6 @@ export default function MultiEvaluations() {
                 className="ml-2 border px-2 py-1 w-24"
               />
             </label>
-            <br />
 
             <label>
               ビジネス：
@@ -268,7 +264,6 @@ export default function MultiEvaluations() {
                 className="ml-2 border px-2 py-1 w-24"
               />
             </label>
-            <br />
 
             <label>
               チームマネジメント：
@@ -282,7 +277,6 @@ export default function MultiEvaluations() {
                 className="ml-2 border px-2 py-1 w-24"
               />
             </label>
-            <br />
 
             <label>
               コメント：
