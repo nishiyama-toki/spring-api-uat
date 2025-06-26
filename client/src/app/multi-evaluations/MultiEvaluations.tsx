@@ -1,9 +1,13 @@
+//MultiEvaluation.tsx
+
 'use client'
 
 import { useEffect, useState } from 'react'
 import axios from '@/utils/axiosInstance'
 import { isAxiosError } from 'axios'
 import { useSearchParams } from 'next/navigation'
+import { useSessionTimeout } from '@/hooks/useSessionTimeout'
+import styles from './multi-evaluations.module.css'
 
 // -------------------------
 // 型定義
@@ -37,6 +41,8 @@ export default function MultiEvaluations() {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
   const [pageHeading, setPageHeading] = useState('多面評価')
   const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null)
+
+  useSessionTimeout(30) // セッションタイムアウト用フック（30分）
 
   useEffect(() => {
     if (phaseNumber > 0 && quarterName) {
@@ -110,15 +116,12 @@ export default function MultiEvaluations() {
       const parsed = parseFloat(value)
       currentEvaluation[field] = !isNaN(parsed) ? parsed : null
     }
+
     setEvaluations([currentEvaluation])
   }
 
   const handleSubmit = async () => {
-    if (
-      !selectedTargetId ||
-      evaluations.length === 0 ||
-      !evaluations[0].target_id
-    ) {
+    if (!selectedTargetId || evaluations.length === 0 || !evaluations[0].target_id) {
       alert('評価対象者を選択し、入力内容を確認してください。')
       return
     }
@@ -158,10 +161,7 @@ export default function MultiEvaluations() {
 
       {targets.length > 0 ? (
         <div className="mb-4">
-          <label
-            htmlFor="target-select"
-            className="block text-lg font-medium text-gray-700"
-          >
+          <label htmlFor="target-select" className="block text-lg font-medium text-gray-700">
             評価対象者を選択:
           </label>
           <select
@@ -188,35 +188,49 @@ export default function MultiEvaluations() {
       {selectedTargetId && evaluations.length > 0 && (
         <div className="mb-6 border-b pb-4">
           <p className="font-semibold">
-            {
-              targets.find((t) => t.id === selectedTargetId)?.name
-            }（{targets.find((t) => t.id === selectedTargetId)?.role}）の評価
+            {targets.find((t) => t.id === selectedTargetId)?.name}（
+            {targets.find((t) => t.id === selectedTargetId)?.role}）の評価
           </p>
 
-          <div className="mt-2 space-y-2">
-            {['skill_score', 'business_score', 'team_score'].map((field) => (
-              <div key={field}>
-                <label>
-                  {field === 'skill_score'
-                    ? 'スキル'
-                    : field === 'business_score'
-                    ? 'ビジネス'
-                    : 'チームマネジメント'}
-                  ：
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="1.0"
-                    max="5.0"
-                    value={evaluations[0][field as keyof Evaluation] ?? ''}
-                    onChange={(e) =>
-                      handleChange(0, field as any, e.target.value)
-                    }
-                    className="ml-2 border px-2 py-1 w-24"
-                  />
-                </label>
-              </div>
-            ))}
+          <div className={styles.inputGroup}>
+            <label>
+              スキル：
+              <input
+                type="number"
+                step="0.1"
+                min="1.0"
+                max="5.0"
+                value={evaluations[0].skill_score ?? ''}
+                onChange={(e) => handleChange(0, 'skill_score', e.target.value)}
+                className="ml-2 border px-2 py-1 w-24"
+              />
+            </label>
+
+            <label>
+              ビジネス：
+              <input
+                type="number"
+                step="0.1"
+                min="1.0"
+                max="5.0"
+                value={evaluations[0].business_score ?? ''}
+                onChange={(e) => handleChange(0, 'business_score', e.target.value)}
+                className="ml-2 border px-2 py-1 w-24"
+              />
+            </label>
+
+            <label>
+              チームマネジメント：
+              <input
+                type="number"
+                step="0.1"
+                min="1.0"
+                max="5.0"
+                value={evaluations[0].team_score ?? ''}
+                onChange={(e) => handleChange(0, 'team_score', e.target.value)}
+                className="ml-2 border px-2 py-1 w-24"
+              />
+            </label>
 
             <label>
               コメント：

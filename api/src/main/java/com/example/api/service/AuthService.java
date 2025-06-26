@@ -62,7 +62,6 @@ public class AuthService {
         }
 
         // パスワード不一致 → 失敗カウントをインクリメント
-<<<<<<< HEAD
         // if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
         //     int failedCount = employee.getFailedCount() + 1;
         //     employee.setFailedCount(failedCount);
@@ -84,10 +83,6 @@ public class AuthService {
 
         if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
             int failedCount = (employee.getFailedCount() != null ? employee.getFailedCount() : 0) + 1;
-=======
-        if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
-            int failedCount = employee.getFailedCount() + 1;
->>>>>>> finaltest-from-develop
             employee.setFailedCount(failedCount);
 
             if (failedCount >= 5) {
