@@ -55,7 +55,8 @@ public class SecurityConfig {
                     "/api/submission_period_edit",
                     "/api/unsubmitted",
                     "/api/reminder/batch"
-                ).hasRole("ADMIN")  // ← ここが変更ポイント
+                ).hasRole("ADMIN")
+                .requestMatchers("/api/multi-evaluations/targets").authenticated()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
@@ -82,15 +83,31 @@ public class SecurityConfig {
         return provider;
     }
 
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowedOriginPatterns(Arrays.asList("*"));
+    //     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    //     config.setAllowedHeaders(Arrays.asList("*"));
+    //     config.setAllowCredentials(true);
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", config);
+    //     return source;
+    // }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        config.setAllowedOriginPatterns(Arrays.asList("*")); // ← 本番では限定的にする
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*")); // Authorization 含め許可
+        config.setExposedHeaders(Arrays.asList("Authorization")); // 任意：必要に応じて
         config.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+
 }

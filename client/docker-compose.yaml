@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    container_name: api
+    volumes:
+      - ./api:/var/www/html/api
+      - ./client/out:/var/www/html/client
+    ports:
+      - "8080:8080"
+      - "80:80"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+    networks:
+      - db_network
+  
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - db_network
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    ports:
+      - "8025:8025" # Mailpit web interface
+      - "1025:1025" # SMTP server
+    networks:
+      - db_network
+
+networks:
+  db_network:
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local

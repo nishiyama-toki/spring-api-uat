@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+<<<<<<< HEAD
 import { jwtDecode } from 'jwt-decode'  // ← 修正済み（named import）
 import styles from './HamburgerMenu.module.css'
 
@@ -9,34 +10,21 @@ import styles from './HamburgerMenu.module.css'
 interface JwtPayload {
   permission?: string  // ← permission クレームを使って判定（"admin" or "user"）
 }
+=======
+>>>>>>> upstream/gen
 
 export default function HamburgerMenu() {
   const [isAdmin, setIsAdmin] = useState(false)
-  const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
-
-    if (token) {
-      try {
-        const decoded = jwtDecode<JwtPayload>(token)
-
-        // 管理者判定（permission クレーム使用）
-        if (decoded.permission === 'admin') {
-          setIsAdmin(true)
-        } else {
-          setIsAdmin(false)
-        }
-      } catch (error) {
-        console.error('トークン解析に失敗しました:', error)
-        setIsAdmin(false)
-      }
-    } else {
-      setIsAdmin(false)
-    }
+    const isAdminStr = typeof window !== "undefined" ? localStorage.getItem('is_admin') : null
+    setIsAdmin(isAdminStr === 'true')
   }, [pathname])
 
+  const [open, setOpen] = useState(false)
+
+  // 除外したいパス
   const hiddenPaths = [
     '/login',
     '/reset_password',
@@ -49,6 +37,7 @@ export default function HamburgerMenu() {
     return null;
   }
 
+  // 「ホーム」だけ isAdmin でリンク先を切り替え
   const menuItems = [
     { name: 'ホーム', href: isAdmin ? '/admin' : '/home' },
     { name: '評価提出依頼', href: '/evaluation_requests' },
@@ -60,9 +49,9 @@ export default function HamburgerMenu() {
 
   const adminItems = [
     { name: '評価期間設定', href: '/submission_period' },
-    { name: 'ユーザー管理', href: '/user_management' },
-    { name: '全社員評価確認', href: '/all-evaluation' },
-    { name: '未提出者確認', href: '/unsubmitted-list' },
+    { name: 'ユーザー管理', href: '/user-management' },
+    { name: '全社員評価確認', href: '/all-evaluations' },
+    { name: '未提出者確認', href: '/pending-submissions' },
   ]
 
   return (
@@ -87,7 +76,7 @@ export default function HamburgerMenu() {
         />
       )}
 
-      <nav className={`menu-panel${open ? ' open' : ''}`}>
+      <nav className={`menu-panel${open ? " open" : ""}`}>
         <ul>
           {menuItems.map((item) => (
             <li key={item.href}>
