@@ -1,0 +1,33 @@
+/* app/admin/AdminHome.module.css */
+
+.container {
+  font-family: sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.titleBar {
+  background-color: #999999;
+  margin-top: 16px;
+  padding: 12px;
+  text-align: center;
+}
+
+.titleBar h1 {
+  margin: 0;
+  color: white;
+}
+
+.descriptionBox {
+  background-color: #f2f2f2;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.phasePeriod {
+  font-size: 0.875rem;
+  color: #6b7280; /* text-gray-500 相当 */
+}

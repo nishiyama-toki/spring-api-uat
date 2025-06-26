@@ -1,0 +1,63 @@
+/* success.module.css */
+
+.container {
+  min-height: 100vh;
+  background: #f6f7fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.08);
+  padding: 40px 30px 24px 30px;
+  margin-bottom: 30px;
+  max-width: 410px;
+  width: 90vw;
+}
+
+.heading {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #263c6d;
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.buttonBox {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  background: #286ef4;
+  color: #fff;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(40,110,244,0.11);
+  transition: background 0.18s;
+}
+.button:hover, .button:focus {
+  background: #1c4eb7;
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .box {
+    padding: 20px 7vw 16px 7vw;
+    max-width: 97vw;
+  }
+  .button {
+    width: 100%;
+    padding: 13px 0;
+    font-size: 1rem;
+  }
+}
