@@ -21,20 +21,12 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-<<<<<<< HEAD
     private final JwtTokenProvider jwtTokenProvider;
-=======
-    private final JwtTokenProvider   jwtTokenProvider;
->>>>>>> finaltest-from-develop
     private final EmployeeRepository employeeRepository;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
                                    EmployeeRepository employeeRepository) {
-<<<<<<< HEAD
         this.jwtTokenProvider = jwtTokenProvider;
-=======
-        this.jwtTokenProvider   = jwtTokenProvider;
->>>>>>> finaltest-from-develop
         this.employeeRepository = employeeRepository;
     }
 
@@ -44,7 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
                                     throws ServletException, IOException {
 
-<<<<<<< HEAD
         String path = request.getRequestURI();
 
         //レンダーのデバックログ
@@ -56,8 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-=======
->>>>>>> finaltest-from-develop
         String token = resolveJwt(request);
 
         if (token != null && jwtTokenProvider.isValid(token)) {

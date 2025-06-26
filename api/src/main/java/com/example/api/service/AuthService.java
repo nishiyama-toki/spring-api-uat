@@ -26,7 +26,6 @@ public class AuthService {
     private final TokenService tokenService;
 
     public LoginResponse login(LoginRequest request) {
-<<<<<<< HEAD
 
         // ▼▼▼ ログの仕込み ▼▼▼
         System.out.println("ログイン処理を開始します。 email: " + request.getEmail());
@@ -34,8 +33,6 @@ public class AuthService {
 
 
         try {//ログイン認証ができない原因を探るためのデバック
-=======
->>>>>>> finaltest-from-develop
         Optional<Employee> optionalEmployee = employeeRepository.findByEmail(request.getEmail());
 
         if (optionalEmployee.isEmpty()) {

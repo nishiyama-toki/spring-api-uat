@@ -8,11 +8,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-<<<<<<< HEAD
 @Table(name = "jwt_token", schema = "evaluation")
-=======
-@Table(name = "jwt_tokens")
->>>>>>> finaltest-from-develop
 @Getter @Setter @NoArgsConstructor
 public class JwtToken {
 
