@@ -45,19 +45,6 @@ public class ScheduledTasks {
         // selfEvalDue が削除されたため、代わりに endDate を使用するか、別の期限情報を利用
         String dueDateString = (currentPhase.getEndDate() != null) ? currentPhase.getEndDate().toString() : "期限不明";
 
-
-//         for (Employee employee : employeesNotSubmitted) {
-//             mailService.sendReminder(
-//                 employee.getEmail(),
-//                 employee.getName(),
-//                 currentPhase.getName(),
-//                 dueDateString // 修正後の期限文字列を使用
-//             );
-//         }
-//         System.out.println("リマインダーメールの送信処理が完了しました。"); // 処理完了メッセージを追加
-//     }
-// }
-
         for (Employee employee : employeesNotSubmitted) {
             mailService.sendReminder(
                 employee.getEmail(),
@@ -68,6 +55,4 @@ public class ScheduledTasks {
         }
         System.out.println("リマインダーメールの送信処理が完了しました。"); // 処理完了メッセージを追加
     }
-
 }
-
