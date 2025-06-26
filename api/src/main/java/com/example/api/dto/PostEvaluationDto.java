@@ -25,7 +25,7 @@ public class PostEvaluationDto {
     private Float teamScore;
 
     @JsonProperty("comment")
-    @Size(max = 255, message = "コメントは255文字以内で入力してください")
+    @Size(max = 1000, message = "コメントは1000文字以内で入力してください")
     private String comment;
 
     @JsonProperty("phase_id")

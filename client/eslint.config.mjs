@@ -11,8 +11,6 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   // ▼ 本番ビルド用にルール無効化
   {
@@ -23,10 +21,8 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "off", // warningだから無効化しなくてもいい
     },
   },
-=======
->>>>>>> mizukami
-=======
->>>>>>> finaltest-from-develop
+
+
 ];
 
 export default eslintConfig;

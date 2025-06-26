@@ -96,7 +96,8 @@ public class SecurityConfig {
                     "/api/submission_period_edit",
                     "/api/unsubmitted",
                     "/api/reminder/batch"
-                ).hasRole("ADMIN")  // ← ここが変更ポイント
+                ).hasRole("ADMIN")
+                .requestMatchers("/api/multi-evaluations/targets").authenticated()
                 .anyRequest().authenticated()
             )
 <<<<<<< HEAD
@@ -148,7 +149,8 @@ public class SecurityConfig {
         // ★ ここをフロントのURLに明示的に限定！
         config.setAllowedOrigins(Arrays.asList("https://toki-nishiyama-project-3.onrender.com","http://localhost:3000"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*")); // Authorization 含め許可
+        config.setExposedHeaders(Arrays.asList("Authorization")); // 任意：必要に応じて
         config.setAllowCredentials(true);
 
         config.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));//フロント側からレスポンスヘッダーを見れるようにするために追加
@@ -158,4 +160,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+
 }

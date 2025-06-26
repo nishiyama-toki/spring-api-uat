@@ -320,4 +320,7 @@ export default function MultiEvaluations() {
     </div>
   )
 }
+<<<<<<< HEAD
 >>>>>>> finaltest-from-develop
+=======
+>>>>>>> finaltestNishiyama
