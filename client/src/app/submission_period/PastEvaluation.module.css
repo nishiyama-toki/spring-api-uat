@@ -211,3 +211,107 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.formPane {
+  border-right: 1px solid #ddd;
+  padding-right: 32px;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.tablePane {
+  padding-left: 32px;
+  min-width: 340px;
+}
+
+.buttonActive {
+  background: #0070f3;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.buttonActive:hover {
+  background: #274183;
+}
+.buttonInactive {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+.editButton {
+  background: #e0ecff;
+  border: 1px solid #aac6fd;
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 2px 12px;
+  color: #184488;
+  transition: background 0.16s;
+}
+.editButton:hover {
+  background: #c7e1ff;
+}
+
+
+.formVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  max-width: 330px;
+}
+
+.inputLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+  display: block;
+}
+
+.inputNum,
+.selectInput,
+.dateInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+.inputNum:focus,
+.selectInput:focus,
+.dateInput:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.buttonActive {
+  background: #0070f3;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.buttonActive:hover {
+  background: #274183;
+}
+.buttonInactive {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+.editButton {
+  background: #e0ecff;
+  border: 1px solid #aac6fd;
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 2px 12px;
+  color: #184488;
+  transition: background 0.16s;
+}
+.editButton:hover {
+  background: #c7e1ff;
+}

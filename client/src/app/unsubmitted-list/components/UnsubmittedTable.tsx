@@ -11,7 +11,7 @@ type Props = {
 export const UnsubmittedTable = ({ unsubmittedList }: Props) => {
     // 未提出者がいなければメッセージを表示
     if (unsubmittedList.length === 0) {
-        return <p className={styles.message}>全社員が提出済みです</p>;
+        return <p className={styles.noDataMsg}>全社員が提出済みです</p>;
     }
 
     return (

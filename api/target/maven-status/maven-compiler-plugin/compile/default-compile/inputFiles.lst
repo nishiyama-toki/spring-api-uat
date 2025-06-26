@@ -43,7 +43,6 @@
 /var/www/html/api/src/main/java/com/example/api/entity/JwtToken.java
 /var/www/html/api/src/main/java/com/example/api/entity/PasswordResetToken.java
 /var/www/html/api/src/main/java/com/example/api/entity/Phase.java
-/var/www/html/api/src/main/java/com/example/api/entity/User.java
 /var/www/html/api/src/main/java/com/example/api/exception/InvalidEvaluationPeriodException.java
 /var/www/html/api/src/main/java/com/example/api/exception/MultiEvaluationHandler.java
 /var/www/html/api/src/main/java/com/example/api/repository/EmployeeRepository.java
@@ -51,7 +50,6 @@
 /var/www/html/api/src/main/java/com/example/api/repository/JwtTokenRepository.java
 /var/www/html/api/src/main/java/com/example/api/repository/PasswordResetTokenRepository.java
 /var/www/html/api/src/main/java/com/example/api/repository/PhaseRepository.java
-/var/www/html/api/src/main/java/com/example/api/repository/UserRepository.java
 /var/www/html/api/src/main/java/com/example/api/security/JwtAuthenticationFilter.java
 /var/www/html/api/src/main/java/com/example/api/security/JwtTokenProvider.java
 /var/www/html/api/src/main/java/com/example/api/security/TokenRefreshFilter.java

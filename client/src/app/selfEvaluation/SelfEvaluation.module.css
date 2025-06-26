@@ -1,213 +1,150 @@
-/* コンテナ */
+/* SelfEvaluation.module.css */
+
 .container {
-  font-family: sans-serif;
-  max-width: 960px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
+.mainWrapper {
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 16px;
 }
 
-/* (1) ヘッダー */
 .header {
-  background-color: #cccccc;
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-}
-.hamburger {
-  font-size: 24px;
-  cursor: pointer;
-  margin-right: 16px;
-}
-.appTitle {
-  font-size: 18px;
-}
-
-/* (2) 見出し */
-.titleBar {
-  background-color: #999999;
-  margin-top: 16px;
-  padding: 12px;
-  text-align: center;
-}
-.titleBar h1 {
-  margin: 0;
-  color: white;
-}
-
-/* (3) 説明文 */
-.descriptionBox {
-  background-color: #f2f2f2;
-  margin-top: 16px;
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-.descriptionBox p {
-  margin: 0;
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-
-/* (4)+(5) メイン */
-.mainContent {
-  display: flex;
-  margin-top: 24px;
-}
-
-/* サイドバー */
-.sidebar {
-  width: 180px;
-  margin-right: 24px;
-}
-.termDropdownButton {
-  width: 100%;
-  background-color: #cccccc;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: left;
-  border-radius: 4px;
-}
-.dropdownMenu {
-  list-style: none;
-  padding: 0;
-  margin: 4px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
-}
-.dropdownItem {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-.dropdownItemSelected {
-  background-color: #e6f4ff;
-}
-
-/* Qリンク一覧 */
-.quarterList {
-  margin-top: 16px;
-}
-.quarterItem {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  text-align: center;
-  cursor: pointer;
-}
-.quarterSelected {
-  background-color: #d0ebff;
-}
-
-/* 17期グレーアウト */
-.disabledTerm {
-  margin-top: 24px;
-  padding: 8px;
-  color: #888;
-  border: 1px dashed #888;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  cursor: not-allowed;
-  font-style: italic;
-  text-align: center;
-}
-
-/* コンテンツ */
-.content {
-  flex: 1;
-}
-
-/* 平均スコアテーブル */
-.scoreTableWrapper {
-  margin-bottom: 24px;
-}
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-}
-.table th,
-.table td {
-  border: 1px solid #ccc;
-  padding: 8px;
-}
-.table th {
-  background-color: #f0f0f0;
-}
-.noDataMsg {
-  color: #555;
-  margin-top: 8px;
-}
-
-/* コメントテーブル */
-.commentTableWrapper {
-  margin-bottom: 24px;
-}
-.nameCol {
-  width: 30%;
-  text-align: left;
-  padding-left: 12px;
-}
-.commentCol {
-  width: 70%;
-  text-align: left;
-  padding-left: 12px;
-  line-height: 1.6;
-}
-
-/* 省略ボタン */
-.snippetButton {
-  margin-left: 8px;
-  font-size: 14px;
-  color: #0070f3;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-/* エラーメッセージ */
-.errorMsg {
-  color: red;
-  margin-top: 8px;
-}
-
-/* モーダル */
-.modalOverlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.modalContent {
   background-color: white;
-  padding: 24px;
-  border-radius: 8px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
 }
-.modalText {
-  white-space: pre-wrap;
-  word-break: break-all;
+.headerTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
 }
-.modalFooter {
+
+.mainContent {
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+@media (min-width: 768px) {
+  .mainContent {
+    padding: 2.5rem;
+  }
+}
+
+.formSections {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.scoreGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #374151;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #adb5bd;
+  background-color: #e9ecef;
+  transition: all 0.2s ease-in-out;
+}
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+.commentCounter {
   text-align: right;
-  margin-top: 24px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #6c757d;
 }
-.closeButton {
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #0070f3;
+.errorCounter {
+  color: #e5383b;
+  font-weight: 700;
+}
+
+.message {
+  padding: 1rem;
+  margin-top: 1rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+.successMessage {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+.errorMessage {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.submitSection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.submitButton {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
   color: white;
+  padding: 0.875rem 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.5rem;
+  background-color: #3b82f6;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+  transition: background-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
+}
+.submitButton:hover {
+  background-color: #2563eb;
+}
+.submitButton:disabled,
+.submitButtonDisabled {
+  background-color: #adb5bd;
+  box-shadow: none;
+  cursor: not-allowed;
 }

@@ -12,7 +12,6 @@ type UnsubmittedResponse = {
 };
 
 export default function UnsubmittedPage() {
-  // useSessionTimeout カスタムフックを呼び出す
   useSessionTimeout(30); // JWT有効期限が30分の場合
   const [selectedPhaseId, setSelectedPhaseId] = useState<string>('');
   const [unsubmittedEmployees, setUnsubmittedEmployees] = useState<UnsubmittedResponse[]>([]);
@@ -46,13 +45,20 @@ export default function UnsubmittedPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>未提出者一覧</h1>
+      {/* 見出しは .titleBar と .titleBar h1 を活用 */}
+      <div className={styles.titleBar}>
+        <h1>未提出者一覧</h1>
+      </div>
 
-      <TermQuarterSelector
-        value={selectedPhaseId}
-        onChange={(newId: string) => setSelectedPhaseId(newId)}
-      />
+      {/* セレクター部分。囲い不要ならこのままでもOK */}
+      <div style={{ margin: "16px 0" }}>
+        <TermQuarterSelector
+          value={selectedPhaseId}
+          onChange={(newId: string) => setSelectedPhaseId(newId)}
+        />
+      </div>
 
+      {/* 未提出リスト表示エリア */}
       <div className={styles.listContainer}>
         <UnsubmittedTable unsubmittedList={unsubmittedEmployees} />
       </div>

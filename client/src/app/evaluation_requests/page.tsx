@@ -5,12 +5,9 @@ import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
 
-<<<<<<< HEAD
-=======
 import styles from './evaluation_requests.module.css'; // そのまま！
 
 // --- JWTの中身をデコードするユーティリティ関数 ---
->>>>>>> origin/sakayacss
 function parseJwt(token: string) {
   try {
     return JSON.parse(atob(token.split('.')[1]));
@@ -78,7 +75,6 @@ export default function EvaluationRequestPage() {
       {requests.length === 0 ? (
         <p className={styles.noDataMsg}>現在、評価依頼はありません。</p>
       ) : (
-<<<<<<< HEAD
         <ul className="evaluation-list">
           {requests.map((req, index) => {
             let navPath = '';
@@ -116,33 +112,6 @@ export default function EvaluationRequestPage() {
               </li>
             );
           })}
-=======
-        <ul style={{ listStyle: "none", padding: 0, marginTop: 24 }}>
-          {requests.map((req, index) => (
-            <li key={index} className={styles.scoreTableWrapper} style={{ marginBottom: 16 }}>
-              <div className={styles.phaseHeader}>
-                <span className={styles.nameCol}>
-                  {req.phaseNumber}期 {req.quarterName} {req.type === 'SELF' ? '自己評価' : '多面評価'}
-                </span>
-                <span style={{ marginLeft: 12, color: '#888' }}>
-                  提出期間 {formatDate(req.startDate)} ～ {formatDate(req.endDate)}
-                </span>
-              </div>
-              <button
-                className={styles.snippetButton}
-                onClick={() => {
-                  const label = `${req.phaseNumber}期 ${req.quarterName} ${
-                    req.type === 'SELF' ? '自己評価' : '多面評価'
-                  }`;
-                  localStorage.setItem('heading', label);
-                  router.push(`/form/${req.targetName}`);
-                }}
-              >
-                提出フォームへ
-              </button>
-            </li>
-          ))}
->>>>>>> origin/sakayacss
         </ul>
       )}
     </div>
