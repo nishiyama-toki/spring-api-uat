@@ -1,23 +1,18 @@
-#renderとの接続のためにdockerを追加
-
 # Stage 1: Build
-FROM node:18 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 COPY . .
 
 RUN npm install
-RUN npm run build && npm run export
+RUN npm run build
 
-# Stage 2: Serve with nginx
-FROM nginx:stable-alpine
+# Stage 2: Run with Next.js built-in server
+FROM node:20-alpine
 
-# ビルド成果物をnginxの公開ディレクトリにコピー
-COPY --from=builder /app/out /usr/share/nginx/html
+WORKDIR /app
+COPY --from=builder /app ./
 
-# nginxの設定をコピー（あれば）
-COPY ../docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 3000
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
