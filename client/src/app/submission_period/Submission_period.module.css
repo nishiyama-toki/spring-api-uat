@@ -315,3 +315,124 @@
 .editButton:hover {
   background: #c7e1ff;
 }
+
+/* スマホ表示対応 */
+@media (max-width: 768px) {
+  .container {
+    padding: 8px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px;
+  }
+
+  .appTitle {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  .titleBar {
+    padding: 8px;
+  }
+
+  .descriptionBox {
+    padding: 8px;
+  }
+
+  .mainContent {
+    flex-direction: column;
+    margin-top: 16px;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .termDropdownButton {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .dropdownMenu {
+    font-size: 14px;
+  }
+
+  .quarterItem {
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .disabledTerm {
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  .formPane {
+    padding-right: 0;
+    border-right: none;
+    min-width: auto;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .tablePane {
+    padding-left: 0;
+    min-width: auto;
+    width: 100%;
+  }
+
+  .scoreTableWrapper,
+  .commentTableWrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    min-width: 500px;
+  }
+
+  .formVertical {
+    max-width: 100%;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .inputLabel {
+    font-size: 0.9rem;
+  }
+
+  .inputNum,
+  .selectInput,
+  .dateInput {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .buttonActive,
+  .buttonInactive,
+  .editButton {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .modalContent {
+    padding: 16px;
+    max-width: 90%;
+  }
+
+  .modalFooter {
+    text-align: center;
+  }
+
+  .closeButton {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+}

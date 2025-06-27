@@ -54,3 +54,23 @@
 .menuPanel a:hover {
   color: #007bff;
 }
+
+.menuYellow {
+  font-weight: bold;
+  color: #ffd700 !important; /* ビビッドな黄色 */
+}
+
+.menuYellow a {
+  color: #ffd700 !important;
+}
+
+.menuYellow a:hover,
+.menuYellow a:focus {
+  color: #fff700 !important; /* ホバー時にもっと明るく */
+}
+
+
+
+
+
+

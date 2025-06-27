@@ -20,9 +20,7 @@ export default function LoginPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
-
     let isValid = true
-
     if (!email) {
       setEmailError('必須項目です。')
       isValid = false
@@ -32,7 +30,6 @@ export default function LoginPage() {
     } else {
       setEmailError('')
     }
-
     if (!password) {
       setPasswordError('必須項目です。')
       isValid = false
@@ -44,7 +41,6 @@ export default function LoginPage() {
     } else {
       setPasswordError('')
     }
-
     return isValid
   }
 
@@ -52,57 +48,50 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setAuthError('')
     if (!validate()) return
-
     try {
       const res = await axios.post('/api/login', { email, password })
       localStorage.setItem('token', res.data.token)
-
       router.push(res.data.permission === 'admin' ? '/admin' : '/home')
     } catch {
       setAuthError('メールアドレスまたはパスワードが正しくありません。')
     }
   }
-
+  
   // ----------------- JSX -----------------
   return (
     <div className={styles.container}>
       <div className={styles.loginWrapper}>
         {/* タイトル */}
         <div className={styles.titleBar}>
-          <h1>多面・自己評価</h1>
+          <h1>自己・多面評価アプリ</h1>
         </div>
-
         {/* 説明文 */}
         <div className={styles.loginDescriptionBox}>
-          <p>設定されたEmailとPasswordを入力してください</p>
+          <p>設定されたメールアドレスとパスワードを入力してください</p>
         </div>
-
         {/* Email */}
         <input
           className={styles.loginInput}
           type="email"
-          placeholder="Email"
+          placeholder="メールアドレス"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
         {emailError && <p className={styles.errorMsg}>{emailError}</p>}
-
         {/* Password */}
         <input
           className={styles.loginInput}
           type="password"
-          placeholder="Password"
+          placeholder="パスワード"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
         {passwordError && <p className={styles.errorMsg}>{passwordError}</p>}
-
         {/* ログインボタン */}
         <button className={styles.loginButton} onClick={handleLogin}>
           ログイン
         </button>
         {authError && <p className={styles.errorMsg}>{authError}</p>}
-
         {/* パスワード忘れリンク */}
         <div className={styles.loginForgotSection}>
           <a href="/reset_mail" className={styles.loginForgotLink}>

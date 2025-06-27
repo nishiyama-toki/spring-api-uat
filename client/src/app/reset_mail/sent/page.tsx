@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import styles from "./sent.module.css";
+import styles from "../sent.module.css"; // login.module.css でもOK
 
-export default function ResetSentPage() {
+export default function ResetMailSentPage() {
   return (
-    <div className={styles.container}>
-      <div className={styles.box}>
-        <h1 className={styles.heading}>メールを送信しました</h1>
-      </div>
-      <div className={styles.buttonBox}>
-        <Link href="/login">
-          <button className={styles.button}>ログイン画面に戻る</button>
-        </Link>
-      </div>
+  <div className={styles.container}>
+    <div className={styles.loginWrapper}>
+      <p className={styles.icon}>✅</p>
+      <p className={styles.sentMessage}>
+        メールを送信しました
+      </p>
+      <Link href="/login">
+        <button className={styles.loginButton}>ログイン画面に戻る</button>
+      </Link>
     </div>
+  </div>
   );
 }

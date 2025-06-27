@@ -12,7 +12,7 @@
 /* ------------- カード（フォーム全体） ------------- */
 .loginWrapper {
   width: 100%;
-  max-width: 420px;                                     /* ★変更: ややスリムに */
+  max-width: 600px;                                     /* ★変更: ややスリムに */
   padding: 40px 48px;                                   /* ★変更: 内側余白を広めに */
   margin: 64px auto;
   background: #fff;
@@ -95,7 +95,7 @@
 
 /* ------------- パスワード忘れリンク ------------- */
 .loginForgotSection {
-  text-align: center;                                   /* ★変更: 1 枚目は中央寄せ */
+  text-align: right;                                   /* ★変更: 1 枚目は中央寄せ */
   margin-top: 4px;
 }
 .loginForgotLink {

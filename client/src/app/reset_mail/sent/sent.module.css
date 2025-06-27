@@ -1,63 +1,91 @@
-/* sent.module.css */
-
 .container {
+  font-family: 'Noto Sans JP', sans-serif;
   min-height: 100vh;
-  background: #f6f7fa;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+/* カード全体 */
+.loginWrapper {
+  width: 100%;
+  max-width: 560px;
+  padding: 48px 56px;
+  margin: 64px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-.box {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 18px rgba(0,0,0,0.08);
-  padding: 40px 30px 24px 30px;
-  margin-bottom: 30px;
-  max-width: 410px;
-  width: 90vw;
-}
-
-.heading {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #263c6d;
+/* タイトルバー（使う場合のみ） */
+.titleBar {
+  background: #9b9b9b;
+  padding: 14px 0;
   text-align: center;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+.titleBar h1 {
   margin: 0;
-  letter-spacing: 0.02em;
-}
-
-.buttonBox {
-  display: flex;
-  justify-content: center;
-}
-
-.button {
-  background: #286ef4;
   color: #fff;
-  border: none;
-  padding: 14px 48px;
-  border-radius: 6px;
   font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(40,110,244,0.11);
-  transition: background 0.18s;
-}
-.button:hover, .button:focus {
-  background: #1c4eb7;
-  outline: none;
+  font-weight: 700;
 }
 
-@media (max-width: 600px) {
-  .box {
-    padding: 20px 7vw 16px 7vw;
-    max-width: 97vw;
+/* 完了メッセージ */
+.sentMessage {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin: 32px 0 40px 0;
+  color: #222;
+}
+
+/* ✅アイコン */
+.icon {
+  font-size: 2.7rem;
+  text-align: center;
+  margin-top: 36px;
+  margin-bottom: 18px;
+  line-height: 1;
+}
+
+/* ボタン */
+.loginButton {
+  width: 100%;
+  margin: 4px 0 12px;
+  padding: 12px 0;
+  background: #0070f3;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.loginButton:hover {
+  background: #0056b3;
+}
+
+/* レスポンシブ */
+@media (max-width: 520px) {
+  .loginWrapper {
+    max-width: 95vw;
+    padding: 18px 3vw 18px 3vw;
   }
-  .button {
-    width: 100%;
-    padding: 13px 0;
+  .loginButton {
     font-size: 1rem;
   }
 }
+
+
+
+
+
+

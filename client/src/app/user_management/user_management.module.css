@@ -249,3 +249,86 @@
     padding: 6px;
   }
 }
+
+/* 追加レスポンシブCSS (スマホ最適化) */
+@media (max-width: 768px) {
+  .container {
+    margin: 16px 8px;
+    padding: 8px;
+  }
+
+  .titleBar {
+    padding: 8px;
+  }
+
+  .descriptionBox {
+    padding: 8px;
+  }
+
+  .mainContent {
+    flex-direction: column;
+    margin-top: 16px;
+  }
+
+  .formPane,
+  .tablePane {
+    padding: 0;
+    min-width: 100%;
+  }
+
+  .formVertical {
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .inputNum,
+  .selectInput,
+  .dateInput {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .buttonActive,
+  .closeButton {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px; /* 横スクロール可能 */
+    font-size: 0.9rem;
+  }
+
+  .modalContent {
+    padding: 16px;
+    width: 92%;
+  }
+
+  .modalFooter {
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .editButton {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* スマホのスムーズスクロール対応 */
+}
+
+.table {
+  width: 100%;
+  min-width: 600px; /* テーブルの最低幅を指定して、内容が見切れないようにする */
+}

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import axios from '@/utils/axiosInstance'
 import { useSessionTimeout } from '@/hooks/useSessionTimeout'
-import styles from './PastEvaluation.module.css'
+import styles from './Submission_period.module.css'
 
 interface PhaseData {
   id: string

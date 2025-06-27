@@ -1,62 +1,78 @@
-/* SubmittedPage.module.css */
-
+/* 画面全体の背景・中央寄せ */
 .container {
-  min-height: 420px;
+  min-height: 100vh;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+/* カード型中央寄せ枠 */
+.loginWrapper {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  padding: 44px 28px 40px 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: #fff;
-  max-width: 420px;
-  margin: 70px auto;
-  border-radius: 10px;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.07);
-  padding: 44px 18px 40px 18px;
 }
 
+/* ✅アイコン */
 .icon {
-  font-size: 3.2rem;
+  font-size: 3rem;
   margin-bottom: 20px;
   color: #23ba3a;
   user-select: none;
 }
 
+/* 完了メッセージ */
 .message {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #253154;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #222;
   margin-bottom: 32px;
   text-align: center;
 }
 
+/* ボタン */
 .button {
-  padding: 12px 32px;
-  font-size: 1.08rem;
-  font-weight: bold;
+  padding: 13px 0;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 700;
   border-radius: 6px;
   border: none;
-  background: #2049a6;
+  background: #0070f3;
   color: #fff;
   cursor: pointer;
-  transition: background 0.16s;
+  transition: background 0.18s;
   box-shadow: 0 2px 8px rgba(30,60,100,0.07);
 }
 .button:hover {
   background: #163570;
 }
 
-/* モバイル向けレスポンシブ */
+/* モバイル対応 */
 @media (max-width: 520px) {
-  .container {
+  .loginWrapper {
     max-width: 95vw;
-    padding: 18px 6px;
-    min-height: 320px;
+    padding: 18px 3vw 18px 3vw;
   }
   .message {
-    font-size: 1.1rem;
+    font-size: 1.02rem;
   }
   .button {
-    font-size: 0.99rem;
-    padding: 10px 10vw;
+    font-size: 1rem;
+    padding: 12px 0;
   }
 }
+
+
+
+
+
+

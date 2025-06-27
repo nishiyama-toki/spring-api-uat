@@ -6,12 +6,14 @@ import styles from "./success.module.css";
 export default function ResetSuccessPage() {
   return (
     <div className={styles.container}>
-      <div className={styles.box}>
-        <h1 className={styles.heading}>パスワードの再設定を完了しました</h1>
-      </div>
-      <div className={styles.buttonBox}>
+      <div className={styles.loginWrapper}>
+        {/* :チェックマーク_緑:アイコン */}
+        <p className={styles.icon}>:チェックマーク_緑:</p>
+        {/* メッセージ */}
+        <p className={styles.sentMessage}>パスワードの再設定が完了しました</p>
+        {/* ログイン画面に戻るボタン */}
         <Link href="/login">
-          <button className={styles.button}>ログイン画面に戻る</button>
+          <button className={styles.loginButton}>ログイン画面に戻る</button>
         </Link>
       </div>
     </div>

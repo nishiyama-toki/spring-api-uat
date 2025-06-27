@@ -1,11 +1,10 @@
-'use client'; 
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import axios from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useSessionTimeout } from '@/hooks/useSessionTimeout';
-
-import styles from './evaluation_requests.module.css'; // そのまま！
+import styles from './evaluation_requests.module.css';
 
 // --- JWTの中身をデコードするユーティリティ関数 ---
 function parseJwt(token: string) {
@@ -17,7 +16,7 @@ function parseJwt(token: string) {
 }
 
 interface EvaluationResponse {
-  phaseId: number; // ★ DTOに合わせて追加
+  phaseId: number;
   targetId: number;
   targetName: string;
   phaseNumber: number;
@@ -63,29 +62,28 @@ export default function EvaluationRequestPage() {
     return `${d.getMonth() + 1}/${d.getDate()}`;
   };
 
-  // --- JSXの返却 ---
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <div className={styles.titleBar}>
         <h1>提出依頼一覧</h1>
       </div>
+
       <div className={styles.descriptionBox}>
         <p>下記の評価提出依頼を選択してください</p>
       </div>
+
       {requests.length === 0 ? (
         <p className={styles.noDataMsg}>現在、評価依頼はありません。</p>
       ) : (
-        <ul className="evaluation-list">
+        <ul className={styles.evaluationList}>
           {requests.map((req, index) => {
             let navPath = '';
             let label = '';
 
             if (req.evaluationType === 'SELF') {
-              // ★ 正しい phaseId を使うように修正
               navPath = `/selfEvaluation?phase=${req.phaseId}&quarter=${encodeURIComponent(req.quarterName)}`;
               label = `${req.phaseNumber}期 ${req.quarterName} 自己評価`;
             } else if (req.evaluationType === 'PEER') {
-              // ★ 正しい phaseId を使うように修正
               navPath = `/multi-evaluations?phase=${req.phaseId}&quarter=${encodeURIComponent(req.quarterName)}`;
               label = `${req.phaseNumber}期 ${req.quarterName} 多面評価`;
             } else {
@@ -94,26 +92,25 @@ export default function EvaluationRequestPage() {
             }
 
             return (
-              <li key={index} className="evaluation-item">
-                <p className="period-label">
+              <li key={index} className={styles.evaluationItem}>
+                <p className={styles.periodLabel}>
                   提出期間 {formatDate(req.startDate)} ～ {formatDate(req.endDate)}
                 </p>
-
-                <a
-                  className="evaluation-link"
-                  style={{ cursor: 'pointer' }} // クリック可能であることを示す
+                <button
+                  type="button"
+                  className={styles.evaluationLink}
                   onClick={() => {
                     localStorage.setItem('heading', label);
                     router.push(navPath);
                   }}
                 >
                   {label}
-                </a>
+                </button>
               </li>
             );
           })}
         </ul>
       )}
-    </div>
+    </main>
   );
 }

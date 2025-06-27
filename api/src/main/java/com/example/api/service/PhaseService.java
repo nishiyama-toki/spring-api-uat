@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,10 +25,8 @@ public class PhaseService {
         return phases.stream().map(phase -> {
             PhaseResponse dto = new PhaseResponse();
             dto.setPhaseId(phase.getId());
-
-            dto.setPhaseNumber(phase. getPhaseNumber());
+            dto.setPhaseNumber(phase.getPhaseNumber());
             dto.setName(phase.getName());
-            
             dto.setStartDate(phase.getStartDate());
             dto.setEndDate(phase.getEndDate());
 
@@ -37,8 +36,29 @@ public class PhaseService {
                 isClosed = phase.getEndDate().isBefore(LocalDate.now());
             }
             dto.setClosed(isClosed);
-            
+
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    // 🔽 追記：IDで1件取得するメソッド
+    public PhaseResponse getPhaseById(Long id) {
+        Optional<Phase> optionalPhase = phaseRepository.findById(id);
+        Phase phase = optionalPhase.orElseThrow(() -> new RuntimeException("フェーズが見つかりません"));
+
+        PhaseResponse dto = new PhaseResponse();
+        dto.setPhaseId(phase.getId());
+        dto.setPhaseNumber(phase.getPhaseNumber());
+        dto.setName(phase.getName());
+        dto.setStartDate(phase.getStartDate());
+        dto.setEndDate(phase.getEndDate());
+
+        boolean isClosed = false;
+        if (phase.getEndDate() != null) {
+            isClosed = phase.getEndDate().isBefore(LocalDate.now());
+        }
+        dto.setClosed(isClosed);
+
+        return dto;
     }
 }
