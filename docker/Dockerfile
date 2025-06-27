@@ -57,7 +57,7 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # ビルド成果物（fat JAR）をコピー
-COPY --from=builder /app/target/api-0.0.1-SNAPSHOT.jar ./app.jar
+# COPY --from=builder /app/target/api-0.0.1-SNAPSHOT.jar ./app.jar
 
 # ポート公開（Spring Boot用）
 EXPOSE 8080
