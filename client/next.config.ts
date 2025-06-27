@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // output: "export",
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8080/api/:path*',
+        destination: 'https://toki-nishiyama-project-4-batsukuendo.onrender.com/api/:path*',//renderのバックエンドURL
       },
     ];
   },
